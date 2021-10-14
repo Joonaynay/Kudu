@@ -14,11 +14,14 @@ class BackButton: UIButton {
 
     init(vc: UIViewController) {
         self.vc = vc
-        super.init(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        super.init(frame: .zero)
         setImage(UIImage(systemName: "chevron.left"), for: .normal)
         vc.view.addSubview(self)
-        height(50)
-        width(50)
+        contentVerticalAlignment = .fill
+        contentHorizontalAlignment = .fill
+        imageEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+        height(45)
+        width(45)
         leadingToSuperview(offset: 10)
         topToSuperview(offset: 10, usingSafeArea: true)
         addTarget(self, action: #selector(didTap), for: .touchUpInside)
