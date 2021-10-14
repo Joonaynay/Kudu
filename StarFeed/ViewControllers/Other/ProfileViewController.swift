@@ -27,8 +27,26 @@ class ProfileViewController: UIViewController {
         
     }()
     
+    var postTitle: UILabel {
+       
+        let title = UILabel()
+        title.text = "This is my title."
+        return title
+        
+    }
+    
+    var rectangle: UIView {
+        
+        let rect = UIView()
+        rect.backgroundColor = .blue
+        return rect
+    }
+    var items = [UIView]()
+
+        
+    
     //Edit Profile || Follow Button
-    let button = Button(text: "Edit Profile")
+    let editProfileButton = Button(text: "Edit Profile")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,10 +70,14 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(username)
         
         //Button
-        scrollView.addSubview(button)
+        scrollView.addSubview(editProfileButton)
         
+        for _ in 1...10 {
+            items.append(rectangle)
+            rectangle.addSubview(postTitle)
+        }
         //Stack View
-        stackView.stack([])
+        stackView.stack(items, spacing: 10)
         
         // ScrollView
         scrollView.addSubview(stackView)
@@ -70,20 +92,29 @@ class ProfileViewController: UIViewController {
         profileImage.width(150)
         profileImage.centerX(to: scrollView)
         profileImage.top(to: scrollView)
-                
+
         username.topToBottom(of: profileImage, offset: 20)
         username.centerX(to: scrollView)
         username.horizontalToSuperview(insets: TinyEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
-                
-        button.height(50)
-        button.width(150)
-        button.centerX(to: scrollView)
-        button.topToBottom(of: username, offset: 30)
-        
-        scrollView.edgesToSuperview(excluding: .top)
+
+        editProfileButton.height(50)
+        editProfileButton.width(150)
+        editProfileButton.centerX(to: scrollView)
+        editProfileButton.topToBottom(of: username, offset: 30)
+
         scrollView.topToBottom(of: backButton)
+        scrollView.leadingToSuperview()
+        scrollView.trailingToSuperview()
+        scrollView.bottomToSuperview()
         
-        stackView.edgesToSuperview()
+        stackView.topToBottom(of: editProfileButton, offset: 10)
+        stackView.leading(to: scrollView)
+        stackView.trailing(to: scrollView)
+        stackView.bottom(to: scrollView)
+        
         stackView.width(view.width)
+        for item in items {
+            item.heightToWidth(of: stackView, multiplier: 9/16)
+        }
     }
 }

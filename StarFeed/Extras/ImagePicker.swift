@@ -14,9 +14,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     @Binding var movie: URL?
     let mediaTypes: [String]
-    
-    let file = FileManagerModel()
-    
+        
     @Environment(\.presentationMode) var pres
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
