@@ -20,14 +20,25 @@ class Button: UIButton {
         super.init(frame: .zero)
         label.text = text
         addSubview(label)
-        setTitleShadowColor(.gray, for: .highlighted)
         clipsToBounds = true
+        setTitleColor(.secondaryLabel, for: .highlighted)
         backgroundColor = UIColor.theme.blueColor
-        
     }
     
     override func layoutSubviews() {
         label.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height)
+    }
+    
+    override var isHighlighted: Bool {
+        didSet {
+            if state == .highlighted {
+                label.textColor = .secondaryLabel
+            } else {
+                label.textColor = .label
+            }
+        
+        }
+        
     }
     
     

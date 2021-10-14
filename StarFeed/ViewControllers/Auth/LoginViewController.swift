@@ -35,9 +35,10 @@ class LoginViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         // Image
-        let image = UIImage(systemName: "person.circle.fill")
+        scrollView.addSubview(imageView)
+        let image = UIImage(systemName: "book")
         imageView.image = image
-                
+        
         //Sign In Button
         signInButton.addTarget(self, action: #selector(didTapSignInButton), for: .touchUpInside)
         signInButton.translatesAutoresizingMaskIntoConstraints = false
@@ -46,19 +47,16 @@ class LoginViewController: UIViewController {
         createAccountButton.backgroundColor = .clear
         createAccountButton.addTarget(self, action: #selector(didTapCreateAccountButton), for: .touchUpInside)
         
-        
         //ScrollView
         view.addSubview(scrollView)
         
         //Stack View
         scrollView.addSubview(stackView)
         stackView.stack([
-            imageView,
             email,
             password,
             signInButton,
             createAccountButton
-            
         ], axis: .vertical, width: nil, height: nil, spacing: 10)
         
         //Detect keyboard
@@ -69,17 +67,21 @@ class LoginViewController: UIViewController {
     
     
     private func setupConstraints() {
+        scrollView.edgesToSuperview(usingSafeArea: true)
         
-        scrollView.edges(to: view)
-        stackView.edgesToSuperview(excluding: .bottom, insets: TinyEdgeInsets(top: 15, left: 15, bottom: 0, right: 15))
+        imageView.width(100)
+        imageView.height(100)
+        imageView.topToSuperview(offset: 100)
+        imageView.centerXToSuperview()
+        
+        stackView.centerYToSuperview(offset: 100)
+        stackView.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         stackView.width(view.width - 30)
         
         email.height(50)
         password.height(50)
         signInButton.height(50)
         createAccountButton.height(50)
-        imageView.height(view.width - 30)
-        
         
     }
     
@@ -105,7 +107,7 @@ class LoginViewController: UIViewController {
         fb.signIn(email: email.text!, password: password.text!, vc: self)
     }
     
-    @objc private func didTapCreateAccountButton() {        
+    @objc private func didTapCreateAccountButton() {
         let create = CreateAccountViewController()
         create.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(CreateAccountViewController(), animated: true)
