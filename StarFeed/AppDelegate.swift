@@ -10,10 +10,25 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.makeKeyAndVisible()
+        
+        let fb = AuthModel.shared
+        
+        if fb.signedIn {
+            window.rootViewController = TabBarController()
+        } else {
+            let loginNav = UINavigationController(rootViewController: LoginViewController())
+            loginNav.navigationBar.isHidden = true
+            window.rootViewController = loginNav
+        }
+        
+        self.window = window
+        
         return true
     }
 
