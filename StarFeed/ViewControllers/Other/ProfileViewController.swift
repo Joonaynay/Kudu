@@ -28,7 +28,7 @@ class ProfileViewController: UIViewController {
     }()
     
     //Edit Profile || Follow Button
-    let button = Button(text: "Edit Profile")
+    let button = Button(text: "Edit Profile", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
         super.viewDidLoad()

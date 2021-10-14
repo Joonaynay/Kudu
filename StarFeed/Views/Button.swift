@@ -16,14 +16,17 @@ class Button: UIButton {
         return label
     }()
     
-    init(text: String) {
+    let color: UIColor
+    
+    init(text: String, color: UIColor) {
+        self.color = color
         super.init(frame: .zero)
         label.text = text
         addSubview(label)
         clipsToBounds = true
         setTitleColor(.secondaryLabel, for: .highlighted)
-        backgroundColor = UIColor.theme.blueColor
-    }
+        backgroundColor = color
+    }    
     
     override func layoutSubviews() {
         label.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height)
@@ -33,8 +36,12 @@ class Button: UIButton {
         didSet {
             if state == .highlighted {
                 label.textColor = .secondaryLabel
+                if color != .clear {
+                    backgroundColor = tintColor
+                }
             } else {
                 label.textColor = .label
+                backgroundColor = color
             }
         
         }

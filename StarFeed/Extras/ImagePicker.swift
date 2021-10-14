@@ -1,70 +1,24 @@
 //
-//  ImagePickder.swift
-//  The Real Ish
+//  ImagePicker.swift
+//  StarFeed
 //
-//  Created by Wendy Buhler on 9/18/21.
+//  Created by Forrest Buhler on 10/14/21.
 //
 
-import SwiftUI
-import MobileCoreServices
-import AVKit
+import UIKit
 
-struct ImagePickerView: UIViewControllerRepresentable {
+class ImagePicker: UIImagePickerController {
     
-    @Binding var image: UIImage?
-    @Binding var movie: URL?
-    let mediaTypes: [String]
-    
-    let file = FileManagerModel()
-    
-    @Environment(\.presentationMode) var pres
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        if mediaTypes == ["public.image"] {
-            picker.allowsEditing = true
-        }
-        picker.videoQuality = .typeLow
-        picker.videoExportPreset = AVAssetExportPreset640x480
-        return picker
+    init(vc: UIViewController, mediaTypes: [String], allowsEditing: Bool) {
+        super.init(navigationBarClass: .none, toolbarClass: .none)
+        self.mediaTypes = mediaTypes
+        self.allowsEditing = allowsEditing
+        self.sourceType = .photoLibrary    
     }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        uiViewController.sourceType = .photoLibrary
-        uiViewController.mediaTypes = mediaTypes
-    }
-    
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePickerView
         
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-                        
-            
-            if let uiImage = info[.editedImage] as? UIImage {
-                
-                if let jpegData = uiImage.jpegData(compressionQuality: 0.25) {
-                    let jpegImage = UIImage(data: jpegData)
-                    parent.image = jpegImage
-                }
-                
-            } else if info[.mediaType] as! String == "public.movie" {
-                print("MOVIE")
-                if let movieURL = info[.mediaURL] as? URL {
-                    parent.movie = movieURL
-                }
-            }
-            
-            parent.pres.wrappedValue.dismiss()
-        }
-        
-        init(_ parent: ImagePickerView) {
-            self.parent = parent
-        }
-        
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
-    }
 }

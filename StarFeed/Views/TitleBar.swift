@@ -6,88 +6,99 @@
 //
 
 import UIKit
+import TinyConstraints
 
-extension UIView {
-    class func titleBar(image: UIImage?, title: String, vc: UIViewController) -> UIView {
-        let auth = AuthModel.shared
-        
-        //Menu
+class TitleBar: UIView {
+    
+    private let auth = AuthModel.shared
+    
+    private let vc: UIViewController
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 35)
+        label.textColor = .label
+        return label
+    }()
+    
+    private let line: UIView = {
+        let line = UIView()
+        line.backgroundColor = .secondarySystemBackground
+        return line
+    }()
+    
+    
+    private let menuButton: UIButton = {
+        let button = UIButton()
+        button.showsMenuAsPrimaryAction = true
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        return button
+    }()
+    
+    init(title: String, vc: UIViewController) {
+        self.vc = vc
+        super.init(frame: .zero)
+        titleLabel.text = title
+        menuButton.menu = createMenu()
+        menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+        addSubview(menuButton)
+        addSubview(titleLabel)
+        addSubview(line)
+        vc.view.addSubview(self)
+        addConstraints()
+    }
+    
+    
+    private func createMenu() -> UIMenu {
         let menu = UIMenu(title: "", options: .displayInline, children: [
             UIAction(title: "Profile") { action in
                 let profile = ProfileViewController()
                 profile.hidesBottomBarWhenPushed = true
-                vc.navigationController?.pushViewController(profile, animated: true)
+                self.vc.navigationController?.pushViewController(profile, animated: true)
             },
             UIAction(title: "New Post") { action in
                 let newPost = NewPostViewController()
                 newPost.hidesBottomBarWhenPushed = true
-                vc.navigationController?.pushViewController(newPost, animated: true)
+                self.vc.navigationController?.pushViewController(newPost, animated: true)
             },
             UIAction(title: "Sign Out") { action in
-                let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .alert)
+                let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 alert.addAction(UIAlertAction(title: "Sign Out", style: .default, handler: { _ in
-                    auth.signOut(vc: vc)
+                    self.auth.signOut(vc: self.vc)
                 }))
-                vc.present(alert, animated: true)
+                self.vc.present(alert, animated: true)
             }
         ])
+        return menu
+    }
+    
+    private func addConstraints() {
+        titleLabel.leadingToSuperview(offset: 10)
+        titleLabel.height(50)
+        titleLabel.widthToSuperview(multiplier: 0.5)
+        titleLabel.bottomToSuperview(offset: -10)
         
-        //Title
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.font = UIFont.systemFont(ofSize: 35)
-        titleLabel.textColor = .label
+        menuButton.trailingToSuperview(offset: 10)
+        menuButton.height(50)
+        menuButton.width(50)
+        menuButton.bottomToSuperview(offset: -10)
         
-        
-        //Button
-        let button = UIButton()
-        button.setBackgroundImage(image == nil ? UIImage(systemName: "person.circle.fill") : image, for: .normal)
-        button.showsMenuAsPrimaryAction = true
-        button.menu = menu
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        //hStack
-        let hStack = UIStackView()
-        hStack.axis = .horizontal
-        hStack.frame = CGRect(x: 15, y: 0, width: UIScreen.main.bounds.width - 20, height: (UIScreen.main.bounds.height / 6.6) - 20)
-        hStack.spacing = 0
-        hStack.alignment = .bottom
-        hStack.distribution = .fill
-        hStack.addArrangedSubview(titleLabel)
-        hStack.addArrangedSubview(button)
-        
-        //ContentView
-        let hContentView = UIView()
-        hContentView.addSubview(hStack)
-             
-        //Line
-        let line = UIView()
-        line.backgroundColor = .systemGray5
-        line.translatesAutoresizingMaskIntoConstraints = false
-        
-        //vStack
-        let vStack = UIStackView(arrangedSubviews: [hContentView, line])
-        vStack.axis = .vertical
-        vStack.alignment = .fill
-        vStack.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 6.6)
-        vStack.spacing = 0
-        vStack.distribution = .fill
-        vStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        //Constraints
-        vStack.addConstraints(hStack.constraints)
-        button.bottomAnchor.constraint(equalTo: vStack.bottomAnchor, constant: -10).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: vStack.bottomAnchor, constant: -10).isActive = true
-        button.heightAnchor.constraint(equalTo: vStack.heightAnchor, multiplier: 0.45).isActive = true
-        button.widthAnchor.constraint(equalTo: vStack.heightAnchor, multiplier: 0.45).isActive = true
-        line.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        line.widthAnchor.constraint(equalTo: vStack.widthAnchor).isActive = true
-        line.bottomAnchor.constraint(equalTo: vStack.bottomAnchor).isActive = true
-        line.leadingAnchor.constraint(equalTo: vStack.leadingAnchor).isActive = true
-        line.trailingAnchor.constraint(equalTo: vStack.trailingAnchor).isActive = true
-        
-        return vStack
+        line.height(1)
+        line.bottomToSuperview()
+        line.leadingToSuperview()
+        line.trailingToSuperview()
+                
+        top(to: vc.view.safeAreaLayoutGuide)
+        leading(to: vc.view.safeAreaLayoutGuide)
+        trailing(to: vc.view.safeAreaLayoutGuide)
+        height(75)
         
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }

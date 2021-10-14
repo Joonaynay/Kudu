@@ -11,7 +11,7 @@ import UIKit
 
 class TrendingViewController: UIViewController {
     
-    private var titleBar = UIView()
+    private var titleBar: TitleBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,17 +24,12 @@ class TrendingViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         // Title Bar
-        titleBar = UIView.titleBar(image: nil, title: "Trending", vc: self)
-        view.addSubview(titleBar)
-        
+        titleBar = TitleBar(title: "Trending", vc: self)
 
     }
  
     private func setupConstraints() {
-        
-        titleBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        titleBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        titleBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+
     }
     
     @objc private func didTapButton() {

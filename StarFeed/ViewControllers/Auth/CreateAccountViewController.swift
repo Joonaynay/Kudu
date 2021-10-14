@@ -35,7 +35,7 @@ class CreateAccountViewController: UIViewController {
     }
     
     private var backButton: BackButton!
-    private let createAccountButton = Button(text: "Create Account")
+    private let createAccountButton = Button(text: "Create Account", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
         super.viewDidLoad()

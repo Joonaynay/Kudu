@@ -18,8 +18,8 @@ class LoginViewController: UIViewController {
     private let imageView = UIImageView()
     private var email = TextField(text: "Email")
     private var password = TextField(text: "Password")
-    private let signInButton = Button(text: "Sign In")
-    private let createAccountButton = Button(text: "Create Account")
+    private let signInButton = Button(text: "Sign In", color: UIColor.theme.blueColor)
+    private let createAccountButton = Button(text: "Create Account", color: .clear)
     private var keyboardShowing: Bool = false
     
     
@@ -28,6 +28,9 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupConstraints()
+    }
+    
+    override func viewDidLayoutSubviews() {
     }
     
     private func setupView() {
@@ -45,6 +48,7 @@ class LoginViewController: UIViewController {
         
         //Create Account Button
         createAccountButton.backgroundColor = .clear
+
         createAccountButton.addTarget(self, action: #selector(didTapCreateAccountButton), for: .touchUpInside)
         
         //ScrollView
