@@ -13,6 +13,7 @@
 		966BEB153153282CE3E63A96 /* Pods_StarFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */; };
 		AB266A46F92D7A92EDCF36B9 /* Pods_StarFeedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */; };
 		E08250E627152D6800C6D58C /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08250E527152D6800C6D58C /* TitleBar.swift */; };
+		E08A54FE2719516500A6406C /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08A54FD2719516500A6406C /* PostModel.swift */; };
 		E099735B27165DFE00073785 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E099735A27165DFE00073785 /* ProfileViewController.swift */; };
 		E09973A727169D4D00073785 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973A627169D4D00073785 /* Button.swift */; };
 		E09973A92716A30400073785 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973A82716A30400073785 /* NewPostViewController.swift */; };
@@ -71,6 +72,7 @@
 		CEA1AFF2681C735988BE5302 /* Pods-StarFeedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeedTests.debug.xcconfig"; path = "Target Support Files/Pods-StarFeedTests/Pods-StarFeedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StarFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E08250E527152D6800C6D58C /* TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBar.swift; sourceTree = "<group>"; };
+		E08A54FD2719516500A6406C /* PostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostModel.swift; path = StarFeed/PostModel.swift; sourceTree = SOURCE_ROOT; };
 		E099735A27165DFE00073785 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E09973A627169D4D00073785 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		E09973A82716A30400073785 /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
@@ -168,6 +170,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		E08A54FA271950E100A6406C /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				52DCF16627194B1F00AD187C /* PostModel.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		E099735827165D9D00073785 /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +206,7 @@
 				E0F11195271937030062E190 /* FirebaseModel.swift */,
 				E09973B52716ADB400073785 /* AuthModel.swift */,
 				E0F11193271932E20062E190 /* SubjectModel.swift */,
+				E08A54FD2719516500A6406C /* PostModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -237,6 +248,7 @@
 				E0EF3AC22714CACF00D5FDF8 /* Products */,
 				802A6640A035ADFB6E9B212F /* Pods */,
 				60C4D3B6704753433CB2D8F1 /* Frameworks */,
+				E08A54FA271950E100A6406C /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -528,6 +540,7 @@
 				E09973BC2716BA6700073785 /* TextField.swift in Sources */,
 				E09973A727169D4D00073785 /* Button.swift in Sources */,
 				E0F11194271932E20062E190 /* SubjectModel.swift in Sources */,
+				E08A54FE2719516500A6406C /* PostModel.swift in Sources */,
 				E08250E627152D6800C6D58C /* TitleBar.swift in Sources */,
 				52DCF16327192DF200AD187C /* Grid.swift in Sources */,
 				E0F111902718BCAC0062E190 /* VideoPlayer.swift in Sources */,
