@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		52DCF16327192DF200AD187C /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF16227192DF200AD187C /* Grid.swift */; };
+		52DCF1652719486100AD187C /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF1642719486100AD187C /* PostView.swift */; };
+		52DCF16727194B1F00AD187C /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF16627194B1F00AD187C /* PostModel.swift */; };
 		966BEB153153282CE3E63A96 /* Pods_StarFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */; };
 		AB266A46F92D7A92EDCF36B9 /* Pods_StarFeedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */; };
 		E08250E627152D6800C6D58C /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08250E527152D6800C6D58C /* TitleBar.swift */; };
@@ -57,6 +59,8 @@
 /* Begin PBXFileReference section */
 		1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StarFeedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52DCF16227192DF200AD187C /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		52DCF1642719486100AD187C /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		52DCF16627194B1F00AD187C /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		89B9F80FC097821D133CD286 /* Pods-StarFeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed.release.xcconfig"; path = "Target Support Files/Pods-StarFeed/Pods-StarFeed.release.xcconfig"; sourceTree = "<group>"; };
 		8A00B277EEC0E0D20519D5E3 /* Pods-StarFeed-StarFeedUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed-StarFeedUITests.debug.xcconfig"; path = "Target Support Files/Pods-StarFeed-StarFeedUITests/Pods-StarFeed-StarFeedUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		90A699AB55424E944917545A /* Pods-StarFeed-StarFeedUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed-StarFeedUITests.release.xcconfig"; path = "Target Support Files/Pods-StarFeed-StarFeedUITests/Pods-StarFeed-StarFeedUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				E08250E527152D6800C6D58C /* TitleBar.swift */,
+				52DCF1642719486100AD187C /* PostView.swift */,
 				E09973A627169D4D00073785 /* Button.swift */,
 				E09973B92716B22600073785 /* BackButton.swift */,
 				E09973BB2716BA6700073785 /* TextField.swift */,
@@ -185,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				E09973B52716ADB400073785 /* AuthModel.swift */,
+				52DCF16627194B1F00AD187C /* PostModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -510,6 +516,7 @@
 				E0EF3AC52714CACF00D5FDF8 /* AppDelegate.swift in Sources */,
 				E09973B82716AFD600073785 /* CreateAccountViewController.swift in Sources */,
 				E0EF3AFC2714CE2F00D5FDF8 /* FollowingViewController.swift in Sources */,
+				52DCF1652719486100AD187C /* PostView.swift in Sources */,
 				E09973B42716AB9600073785 /* Colors.swift in Sources */,
 				E099735B27165DFE00073785 /* ProfileViewController.swift in Sources */,
 				E09973BC2716BA6700073785 /* TextField.swift in Sources */,
@@ -520,6 +527,7 @@
 				E0EF3AC72714CACF00D5FDF8 /* SceneDelegate.swift in Sources */,
 				E09973BA2716B22600073785 /* BackButton.swift in Sources */,
 				E09973B62716ADB400073785 /* AuthModel.swift in Sources */,
+				52DCF16727194B1F00AD187C /* PostModel.swift in Sources */,
 				E0F1118E2718AE400062E190 /* ImagePicker.swift in Sources */,
 				E0EF3AFA2714CE2400D5FDF8 /* SubjectsViewController.swift in Sources */,
 				E0EF3AFE2714D83C00D5FDF8 /* Extensions.swift in Sources */,

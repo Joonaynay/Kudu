@@ -27,14 +27,14 @@ class TabBarController: UITabBarController {
         let search = SearchViewController()
         search.title = "Search"
         let searchNav = UINavigationController(rootViewController: search)
-        searchNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person.2"), selectedImage: UIImage(systemName: "person.2.fill"))
+        searchNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "magnifyingglass"), tag: 2)
         searchNav.navigationBar.isHidden = true
         
         
         let following = FollowingViewController()
         following.title = "Subjects"
         let followingNav = UINavigationController(rootViewController: following)
-        followingNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "magnifyingglass"), tag: 3)
+        followingNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person.2"), selectedImage: UIImage(systemName: "person.2.fill"))
         followingNav.navigationBar.isHidden = true
         
         setViewControllers([trendingNav, subjectsNav , followingNav, searchNav], animated: true)
