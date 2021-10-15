@@ -10,7 +10,7 @@ import TinyConstraints
 
 class LoginViewController: UIViewController {
     
-    private let fb = AuthModel.shared
+    private let auth = AuthModel.shared
     
     private var stackView = UIView()
     private var scrollView = ScrollView()
@@ -108,7 +108,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func didTapSignInButton() {
-        fb.signIn(email: email.text!, password: password.text!, vc: self)
+        auth.signIn(email: email.text!, password: password.text!, vc: self)
     }
     
     @objc private func didTapCreateAccountButton() {

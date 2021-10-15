@@ -25,8 +25,6 @@ class SubjectsViewController: UIViewController {
         titleBar = TitleBar(title: "Subjects", vc: self)
         vGrid = Grid(vc: self)
         view.addSubview(vGrid)
-        
-        
     }
     
     private func setupConstraints() {

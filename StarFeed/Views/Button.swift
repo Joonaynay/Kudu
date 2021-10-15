@@ -43,9 +43,7 @@ class Button: UIButton {
                 label.textColor = .label
                 backgroundColor = color
             }
-        
         }
-        
     }
     
     

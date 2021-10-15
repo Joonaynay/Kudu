@@ -57,7 +57,8 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         videoView.backgroundColor = .secondarySystemBackground         
         videoView.addAction(UIAction(title: "") { _ in
             if let url = self.movieURL {
-                self.present(VideoPlayer(url: url), animated: true)
+                let player = VideoPlayer(url: url)
+                self.present(player, animated: true)
             }
             
         }, for: .touchUpInside)
@@ -102,6 +103,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     
     
     func presentImagePicker(type: [String]) {
+        
         let picker = ImagePicker(vc: self, mediaTypes: type, allowsEditing: type == ["public.image"])
         picker.delegate = self
         present(picker, animated: true)

@@ -10,7 +10,7 @@ import TinyConstraints
 
 class CreateAccountViewController: UIViewController {
     
-    private let fb = AuthModel.shared
+    private let auth = AuthModel.shared
     
     private let scrollView = ScrollView()
     private let stackView = UIView()
