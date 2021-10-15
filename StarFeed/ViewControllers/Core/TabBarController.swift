@@ -37,7 +37,7 @@ class TabBarController: UITabBarController {
         followingNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "magnifyingglass"), tag: 3)
         followingNav.navigationBar.isHidden = true
         
-        setViewControllers([trendingNav, subjectsNav , searchNav, followingNav], animated: true)
+        setViewControllers([trendingNav, subjectsNav , followingNav, searchNav], animated: true)
     }
     
 }
