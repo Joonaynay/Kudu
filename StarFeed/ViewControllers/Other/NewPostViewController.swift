@@ -61,6 +61,11 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
             }
             
         }, for: .touchUpInside)
+        
+        // Next Button
+        nextButton.addAction(UIAction(title: "") { _ in
+            self.navigationController?.pushViewController(NewPostSubjectsViewController(), animated: true)
+        }, for: .touchUpInside)
 
         
         //Scroll View
@@ -76,11 +81,13 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     
 
     private func setupConstraints() {
-        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        scrollView.horizontalToSuperview()
         scrollView.topToBottom(of: backButton)
         
         stackView.edgesToSuperview(insets: TinyEdgeInsets(top: 15, left: 15, bottom: 0, right: 15))
         stackView.width(view.width - 30)
+        
+        scrollView.height(to: stackView, offset: 14)
         
         imageView.heightToWidth(of: stackView, multiplier: 9/16)
         videoView.heightToWidth(of: stackView, multiplier: 9/16)

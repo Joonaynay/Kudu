@@ -25,6 +25,7 @@ class TrendingViewController: UIViewController {
         
         // Title Bar
         titleBar = TitleBar(title: "Trending", vc: self)
+                
 
     }
  
