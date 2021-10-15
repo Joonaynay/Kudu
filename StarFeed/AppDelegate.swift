@@ -16,9 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.makeKeyAndVisible()
         
-        let fb = AuthModel.shared
+        let auth = AuthModel.shared
         
-        if fb.signedIn {
+        if auth.signedIn {
             window.rootViewController = TabBarController()
         } else {
             let loginNav = UINavigationController(rootViewController: LoginViewController())

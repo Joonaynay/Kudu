@@ -16,7 +16,7 @@ class AuthModel: ObservableObject {
         
         let tab = TabBarController()
         tab.modalPresentationStyle = .fullScreen
-        vc.present(tab, animated: false)
+        vc.present(tab, animated: true)
         
     }
     

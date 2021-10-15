@@ -9,6 +9,8 @@ import UIKit
 
 class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
     
+    let fb = FirebaseModel.shared
+    
     init(vc: UIViewController) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -29,11 +31,12 @@ class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 50
+        return fb.subjects.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCollectionViewCell.identifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCollectionViewCell.identifier, for: indexPath) as! CustomCollectionViewCell
+        cell.setSubject(subject: fb.subjects[indexPath.row])
         return cell
     }
     
@@ -50,23 +53,48 @@ class CustomCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "cell"
     
-    let button = Button(text: "sup man", color: .red)
+    private var subject: Subject!
+    
+    private let subjectLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let subjectImage: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(button)
-        backgroundColor = .blue
+                
+        backgroundColor = UIColor.theme.blueColor
+        addSubview(subjectLabel)
+        addSubview(subjectImage)
         addConstraintsToCell()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }        
+    
+    private func addConstraintsToCell() {
+        subjectImage.centerInSuperview(offset: CGPoint(x: 0, y: -10))
+        subjectLabel.topToBottom(of: subjectLabel)
+        subjectLabel.centerXToSuperview()
+        
     }
     
-    func addConstraintsToCell() {
-        
-        button.edgesToSuperview()
-        
+    public func setSubject(subject: Subject) {
+        self.subject = subject
+        subjectImage.image = UIImage(systemName: subject.image)
+        subjectLabel.text = subject.name        
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        subjectLabel.text = nil
     }
     
 }
