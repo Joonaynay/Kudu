@@ -18,7 +18,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     private let stackView = TinyView()
     
     private var backButton: BackButton!
-    private let titleText = TextField(text: "Title")
+    private let titleText = TextField(text: "Title", image: nil)
     private let imageButton = Button(text: "Select a thumbnail...", color: UIColor.theme.blueColor)
     private let videoButton = Button(text: "Select a video...", color: UIColor.theme.blueColor)
     private let videoView = UIButton()

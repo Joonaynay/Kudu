@@ -6,16 +6,31 @@
 //
 
 import UIKit
+import TinyConstraints
 
 class TextField: UITextField, UITextFieldDelegate {
-    let insets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+    var insets: UIEdgeInsets!
     
-    init(text: String) {
+    var image: UIImageView!
+    
+    init(text: String, image: String?) {
         super.init(frame: .zero)
         placeholder = text
         backgroundColor = .secondarySystemBackground
         returnKeyType = .done
         delegate = self
+        if let image = image {
+            self.image = UIImageView(image: UIImage(systemName: image))
+            insets = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 12)
+            addSubview(self.image)
+            self.image.leadingToSuperview(offset: 9)
+            self.image.tintColor = .systemGray2
+            self.image.height(23)
+            self.image.width(23)
+            self.image.centerYToSuperview()
+        } else {
+            insets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        }
     }
         
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

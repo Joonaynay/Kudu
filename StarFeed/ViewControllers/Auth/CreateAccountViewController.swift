@@ -15,12 +15,12 @@ class CreateAccountViewController: UIViewController {
     private let scrollView = ScrollView()
     private let stackView = UIView()
     
-    private var firstName = TextField(text: "First Name")
-    private var lastName = TextField(text: "Last Name")
-    private var username = TextField(text: "Username")
-    private var email = TextField(text: "Email")
-    private var password = TextField(text: "Password")
-    private var confirmPassword = TextField(text: "Confirm Password")
+    private var firstName = TextField(text: "First Name", image: nil)
+    private var lastName = TextField(text: "Last Name", image: nil)
+    private var username = TextField(text: "Username", image: nil)
+    private var email = TextField(text: "Email", image: nil)
+    private var password = TextField(text: "Password", image: nil)
+    private var confirmPassword = TextField(text: "Confirm Password", image: nil)
     
     private var bottomConstraint: NSLayoutConstraint!
 

@@ -16,8 +16,8 @@ class LoginViewController: UIViewController {
     private var scrollView = ScrollView()
     private var bottomConstraint: NSLayoutConstraint!
     private let imageView = UIImageView()
-    private var email = TextField(text: "Email")
-    private var password = TextField(text: "Password")
+    private var email = TextField(text: "Email", image: nil)
+    private var password = TextField(text: "Password", image: nil)
     private let signInButton = Button(text: "Sign In", color: UIColor.theme.blueColor)
     private let createAccountButton = Button(text: "Create Account", color: .clear)
     private var keyboardShowing: Bool = false
