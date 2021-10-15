@@ -2,14 +2,12 @@
 //  PostModel.swift
 //  StarFeed
 //
-//  Created by Wendy Buhler on 10/14/21.
+//  Created by Forrest Buhler on 10/15/21.
 //
 
 import UIKit
 
 struct Post {
-    
     let title: String
     let image: UIImage
-    
 }
