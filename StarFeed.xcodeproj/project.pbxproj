@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		52DCF16327192DF200AD187C /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF16227192DF200AD187C /* Grid.swift */; };
 		966BEB153153282CE3E63A96 /* Pods_StarFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */; };
 		AB266A46F92D7A92EDCF36B9 /* Pods_StarFeedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */; };
 		E08250E627152D6800C6D58C /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08250E527152D6800C6D58C /* TitleBar.swift */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StarFeedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		52DCF16227192DF200AD187C /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		89B9F80FC097821D133CD286 /* Pods-StarFeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed.release.xcconfig"; path = "Target Support Files/Pods-StarFeed/Pods-StarFeed.release.xcconfig"; sourceTree = "<group>"; };
 		8A00B277EEC0E0D20519D5E3 /* Pods-StarFeed-StarFeedUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed-StarFeedUITests.debug.xcconfig"; path = "Target Support Files/Pods-StarFeed-StarFeedUITests/Pods-StarFeed-StarFeedUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		90A699AB55424E944917545A /* Pods-StarFeed-StarFeedUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed-StarFeedUITests.release.xcconfig"; path = "Target Support Files/Pods-StarFeed-StarFeedUITests/Pods-StarFeed-StarFeedUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				E09973B92716B22600073785 /* BackButton.swift */,
 				E09973BB2716BA6700073785 /* TextField.swift */,
 				E09973BF2717593600073785 /* ScrollView.swift */,
+				52DCF16227192DF200AD187C /* Grid.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -512,6 +515,7 @@
 				E09973BC2716BA6700073785 /* TextField.swift in Sources */,
 				E09973A727169D4D00073785 /* Button.swift in Sources */,
 				E08250E627152D6800C6D58C /* TitleBar.swift in Sources */,
+				52DCF16327192DF200AD187C /* Grid.swift in Sources */,
 				E0F111902718BCAC0062E190 /* VideoPlayer.swift in Sources */,
 				E0EF3AC72714CACF00D5FDF8 /* SceneDelegate.swift in Sources */,
 				E09973BA2716B22600073785 /* BackButton.swift in Sources */,
