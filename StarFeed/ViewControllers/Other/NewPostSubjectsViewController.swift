@@ -10,6 +10,8 @@ import TinyConstraints
 
 class NewPostSubjectsViewController: UIViewController {
     
+    let fb = FirebaseModel.shared
+    
     private let scrollView = ScrollView()
     private var backButton: BackButton!
     private let stackView = TinyView()
@@ -31,7 +33,6 @@ class NewPostSubjectsViewController: UIViewController {
         button.setImage(tinted, for: .normal)
         button.setTitleColor(UIColor.theme.accentColor, for: .normal)
         button.contentHorizontalAlignment = .left
-        button.setTitle("Subject", for: .normal)
         return button
     }
     
@@ -56,8 +57,9 @@ class NewPostSubjectsViewController: UIViewController {
         scrollView.addSubview(stackView)
         
         var views = [UIView]()
-        for _ in 1...10 {
+        for subject in fb.subjects {
             let checkRow = checkLine
+            checkRow.setTitle(subject.name, for: .normal)
             var checked = false
             checkRow.addAction(UIAction(title: "") { _ in
                 if !checked {

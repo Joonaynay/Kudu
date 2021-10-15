@@ -81,7 +81,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
     
     private func addConstraintsToCell() {
         subjectImage.centerInSuperview(offset: CGPoint(x: 0, y: -10))
-        subjectLabel.topToBottom(of: subjectLabel)
+        subjectLabel.topToBottom(of: subjectImage)
         subjectLabel.centerXToSuperview()
         
     }
@@ -89,6 +89,8 @@ class CustomCollectionViewCell: UICollectionViewCell {
     public func setSubject(subject: Subject) {
         self.subject = subject
         subjectImage.image = UIImage(systemName: subject.image)
+        subjectImage.tintColor = .label
+        
         subjectLabel.text = subject.name        
     }
     
