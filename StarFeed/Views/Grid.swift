@@ -7,14 +7,18 @@
 
 import UIKit
 
-class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
+class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate, CustomCellectionViewCellDelegate {
+
     
+            
     let fb = FirebaseModel.shared
     
-    init(vc: UIViewController) {
+    weak var vc: UIViewController?
+
+    init() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: (vc.view.width / 2) - 15, height: vc.view.width / 4)
+        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width / 2) - 15, height: UIScreen.main.bounds.width / 4)
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 10
         super.init(frame: .zero, collectionViewLayout: layout)
@@ -36,6 +40,7 @@ class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCollectionViewCell.identifier, for: indexPath) as! CustomCollectionViewCell
+        cell.delegate = self
         cell.setSubject(subject: fb.subjects[indexPath.row])
         return cell
     }
@@ -46,15 +51,25 @@ class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelega
         }
         return super.touchesShouldCancel(in: view)
     }
+    
+    func didPressCell(subject: Subject) {
+        if let vc = self.vc {
+            vc.navigationController!.pushViewController(SubjectPostViewController(subject: subject), animated: true)
+        }
+    }
 
+}
+
+protocol CustomCellectionViewCellDelegate: AnyObject {
+    func didPressCell(subject: Subject)
 }
 
 class CustomCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "cell"
-    
-    private var subject: Subject!
-    
+
+    weak var delegate: CustomCellectionViewCellDelegate?
+        
     private let subjectLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -66,32 +81,39 @@ class CustomCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    private let button = Button(text: "", color: UIColor.theme.blueColor)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
                 
-        backgroundColor = UIColor.theme.blueColor
+        addSubview(button)
         addSubview(subjectLabel)
         addSubview(subjectImage)
-        addConstraintsToCell()
+
+        addConstraintsToCell()        
     }
-    
+            
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }        
     
     private func addConstraintsToCell() {
+        button.edgesToSuperview()
+    
         subjectImage.centerInSuperview(offset: CGPoint(x: 0, y: -10))
         subjectLabel.topToBottom(of: subjectImage)
         subjectLabel.centerXToSuperview()
         
     }
     
-    public func setSubject(subject: Subject) {
-        self.subject = subject
+    func setSubject(subject: Subject) {
         subjectImage.image = UIImage(systemName: subject.image)
         subjectImage.tintColor = .label
-        
-        subjectLabel.text = subject.name        
+        subjectLabel.text = subject.name
+
+        button.addAction(UIAction(title: "") { _ in
+            self.delegate!.didPressCell(subject: subject)            
+        }, for: .touchUpInside)
     }
     
     override func prepareForReuse() {

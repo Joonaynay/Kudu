@@ -50,7 +50,8 @@ class NewPostSubjectsViewController: UIViewController {
         view.addSubview(scrollView)
         view.backgroundColor = .systemBackground
         
-        backButton = BackButton(vc: self)
+        backButton = BackButton()
+        backButton.vc = self
         
         view.addSubview(titleLabel)
         
@@ -80,17 +81,16 @@ class NewPostSubjectsViewController: UIViewController {
     
     func addConstraints() {
         titleLabel.topToBottom(of: backButton)
-        titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10))
+        titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
 
         scrollView.horizontalToSuperview()
         scrollView.topToBottom(of: titleLabel, offset: 20)
+        scrollView.bottomToTop(of: postButton, offset: -10)
         
         
         stackView.edgesToSuperview(insets: UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30))
         stackView.width(to: view, offset: -60)
-        
-        scrollView.height(to: stackView, offset: -1)
-        
+                
         checkLine.height(50)
         
         postButton.height(50)

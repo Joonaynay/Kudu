@@ -22,15 +22,23 @@ class SubjectsViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = .systemBackground
-        titleBar = TitleBar(title: "Subjects", vc: self)
-        vGrid = Grid(vc: self)
+        let titleBar = TitleBar(title: "Subjects", backButton: false)
+        titleBar.vc = self
+        self.titleBar = titleBar
+        view.addSubview(self.titleBar)
+        
+        let vGrid = Grid()
+        vGrid.vc = self
+        self.vGrid = vGrid
         view.addSubview(vGrid)
     }
     
     private func setupConstraints() {
+        titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
+        titleBar.height(70)
                 
         vGrid.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
-        vGrid.topToBottom(of: titleBar)
+        vGrid.topToBottom(of: titleBar, offset: 5)
     }
     
 }

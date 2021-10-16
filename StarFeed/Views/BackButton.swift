@@ -10,13 +10,11 @@ import TinyConstraints
 
 class BackButton: UIButton {
     
-    let vc: UIViewController
+    weak var vc: UIViewController?
 
-    init(vc: UIViewController) {
-        self.vc = vc
+    init() {    
         super.init(frame: .zero)
         setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        vc.view.addSubview(self)
         contentVerticalAlignment = .fill
         contentHorizontalAlignment = .fill
         imageEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
@@ -29,7 +27,8 @@ class BackButton: UIButton {
     }
     
     @objc private func didTap() {
-        vc.navigationController?.popViewController(animated: true)
+        let parent = superclass as? UIViewController
+        parent!.navigationController?.popViewController(animated: true)
     }
     
     required init?(coder: NSCoder) {

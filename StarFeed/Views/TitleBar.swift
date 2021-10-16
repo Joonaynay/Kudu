@@ -12,7 +12,8 @@ class TitleBar: UIView {
     
     private let auth = AuthModel.shared
     
-    private let vc: UIViewController
+    weak var vc: UIViewController?
+    private let backButton: UIButton?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -36,16 +37,32 @@ class TitleBar: UIView {
         return button
     }()
     
-    init(title: String, vc: UIViewController) {
-        self.vc = vc
+    init(title: String, backButton: Bool) {        
+        if backButton {
+            let backButton = UIButton()
+            backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+            backButton.contentVerticalAlignment = .fill
+            backButton.contentHorizontalAlignment = .fill
+            self.backButton = backButton
+        } else {
+            self.backButton = nil
+        }
         super.init(frame: .zero)
         titleLabel.text = title
         menuButton.menu = createMenu()
         menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+        if backButton {
+            self.backButton?.addAction(UIAction(title: "") { _ in
+                if let vc = self.vc {
+                    vc.navigationController?.popViewController(animated: true)
+                }
+            }, for: .touchUpInside)
+            self.addSubview(self.backButton!)
+        }
         addSubview(menuButton)
         addSubview(titleLabel)
-        addSubview(line)
-        vc.view.addSubview(self)
+        addSubview(line)                
+        
         addConstraints()
     }
     
@@ -55,27 +72,37 @@ class TitleBar: UIView {
             UIAction(title: "Profile") { action in
                 let profile = ProfileViewController()
                 profile.hidesBottomBarWhenPushed = true
-                self.vc.navigationController?.pushViewController(profile, animated: true)
+                self.vc?.navigationController?.pushViewController(profile, animated: true)
             },
             UIAction(title: "New Post") { action in
                 let newPost = NewPostViewController()
                 newPost.hidesBottomBarWhenPushed = true
-                self.vc.navigationController?.pushViewController(newPost, animated: true)
+                self.vc?.navigationController?.pushViewController(newPost, animated: true)
             },
             UIAction(title: "Sign Out") { action in
                 let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 alert.addAction(UIAlertAction(title: "Sign Out", style: .default, handler: { _ in
-                    self.auth.signOut(vc: self.vc)
+                    self.auth.signOut()
                 }))
-                self.vc.present(alert, animated: true)
+                self.vc?.present(alert, animated: true)
             }
         ])
         return menu
     }
     
     private func addConstraints() {
-        titleLabel.leadingToSuperview(offset: 10)
+        if backButton == nil {
+            titleLabel.leadingToSuperview(offset: 10)
+        } else {
+            backButton!.imageEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+            backButton!.height(45)
+            backButton!.width(45)
+            backButton!.bottomToSuperview(offset: -14)
+            backButton!.leadingToSuperview()
+            titleLabel.leadingToTrailing(of: backButton!)
+        }
+        
         titleLabel.height(50)
         titleLabel.widthToSuperview(multiplier: 0.5)
         titleLabel.bottomToSuperview(offset: -10)
@@ -89,11 +116,7 @@ class TitleBar: UIView {
         line.bottomToSuperview()
         line.leadingToSuperview()
         line.trailingToSuperview()
-                
-        top(to: vc.view.safeAreaLayoutGuide)
-        leading(to: vc.view.safeAreaLayoutGuide)
-        trailing(to: vc.view.safeAreaLayoutGuide)
-        height(75)
+        
         
     }
     

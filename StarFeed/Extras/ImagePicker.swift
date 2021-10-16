@@ -9,7 +9,7 @@ import UIKit
 
 class ImagePicker: UIImagePickerController {
     
-    init(vc: UIViewController, mediaTypes: [String], allowsEditing: Bool) {
+    init(mediaTypes: [String], allowsEditing: Bool) {
         super.init(navigationBarClass: .none, toolbarClass: .none)
         self.mediaTypes = mediaTypes
         self.allowsEditing = allowsEditing

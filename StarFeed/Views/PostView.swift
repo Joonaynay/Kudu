@@ -30,12 +30,9 @@ class PostView: UIView {
         button.tintColor = .label
         return button
         
-    }()
+    }()        
     
-    private let vc: UIViewController
-    
-    init(post: Post, vc: UIViewController) {
-        self.vc = vc
+    init(post: Post) {
         super.init(frame: .zero)        
         titleLabel.text = post.title
         addSubview(titleLabel)

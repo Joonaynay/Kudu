@@ -37,7 +37,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         view.backgroundColor = .systemBackground
         
         // Back Button
-        backButton = BackButton(vc: self)
+        backButton = BackButton()
         view.addSubview(backButton)
         
         // Image Button
@@ -82,14 +82,12 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     
 
     private func setupConstraints() {
-        scrollView.horizontalToSuperview()
+        scrollView.edgesToSuperview(excluding: .top)
         scrollView.topToBottom(of: backButton)
         
         stackView.edgesToSuperview(insets: TinyEdgeInsets(top: 15, left: 15, bottom: 0, right: 15))
         stackView.width(view.width - 30)
-        
-        scrollView.height(to: stackView, offset: 14)
-        
+                
         imageView.heightToWidth(of: stackView, multiplier: 9/16)
         videoView.heightToWidth(of: stackView, multiplier: 9/16)
 
@@ -104,7 +102,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     
     func presentImagePicker(type: [String]) {
         
-        let picker = ImagePicker(vc: self, mediaTypes: type, allowsEditing: type == ["public.image"])
+        let picker = ImagePicker(mediaTypes: type, allowsEditing: type == ["public.image"])
         picker.delegate = self
         present(picker, animated: true)
     }

@@ -20,14 +20,21 @@ class SearchViewController: UIViewController {
     }
     
     private func setupView() {
-        titleBar = TitleBar(title: "Search", vc: self)
+        let titleBar = TitleBar(title: "Search", backButton: false)
+        titleBar.vc = self
+        self.titleBar = titleBar
+        view.addSubview(self.titleBar)
+        
         view.addSubview(textField)
         view.backgroundColor = .systemBackground
     }
     
     private func setupConstraints() {
         
-        textField.topToBottom(of: titleBar)
+        titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
+        titleBar.height(70)
+        
+        textField.topToBottom(of: titleBar, offset: 5)
         textField.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         textField.height(50)
         

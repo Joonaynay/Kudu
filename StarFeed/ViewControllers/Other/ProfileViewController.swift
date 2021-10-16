@@ -60,7 +60,8 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         // Back Button
-        backButton = BackButton(vc: self)
+        backButton = BackButton()
+        backButton.vc = self
         view.addSubview(backButton)
         
         //Profile Image

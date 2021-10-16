@@ -61,14 +61,22 @@ class CreateAccountViewController: UIViewController {
         passwordHeader.text = "PASSWORD"
         
         //BackButton
-        backButton = BackButton(vc: self)
+        backButton = BackButton()
         
         //Password and Confirm
         password.isSecureTextEntry = true
         confirmPassword.isSecureTextEntry = true
         
         //Create Account Button
-        createAccountButton.addTarget(self, action: #selector(didTapCreateAccountButton), for: .touchUpInside)
+        createAccountButton.addAction(UIAction(title: "") { _ in
+            self.isEditing = false
+            let email = EmailViewController()
+            email.modalPresentationStyle = .fullScreen
+            self.present(email, animated: true)
+        
+            
+        }, for: .touchUpInside)
+        
         
         //Scroll View
         view.addSubview(scrollView)
@@ -138,11 +146,6 @@ class CreateAccountViewController: UIViewController {
                 keyboardShowing = false
             }
         }
-    }
-    
-    
-    @objc private func didTapCreateAccountButton() {
-        self.view.endEditing(true)
     }
 }
 

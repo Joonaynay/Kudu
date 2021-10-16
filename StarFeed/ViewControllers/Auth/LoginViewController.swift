@@ -108,7 +108,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func didTapSignInButton() {
-        auth.signIn(email: email.text!, password: password.text!, vc: self)
+        auth.signIn(email: email.text!, password: password.text!)
     }
     
     @objc private func didTapCreateAccountButton() {

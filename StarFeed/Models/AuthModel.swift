@@ -10,18 +10,25 @@ import UIKit
 class AuthModel: ObservableObject {
     static let shared = AuthModel()
     
+    weak var vc: UIViewController?
+    
     @Published public var signedIn = false
     
-    func signIn(email: String, password: String, vc: UIViewController) {
+    func signIn(email: String, password: String) {
         
         let tab = TabBarController()
         tab.modalPresentationStyle = .fullScreen
-        vc.present(tab, animated: true)
+        
+        if let vc = vc {
+            vc.present(tab, animated: true)
+        }
         
     }
     
-    func signOut(vc: UIViewController) {
-        vc.dismiss(animated: false)
+    func signOut() {
+        if let vc = vc {
+            vc.dismiss(animated: false)
+        }
     }
     
 }
