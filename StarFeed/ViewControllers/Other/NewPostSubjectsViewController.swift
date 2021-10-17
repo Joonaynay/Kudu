@@ -80,6 +80,12 @@ class NewPostSubjectsViewController: UIViewController {
         }
         stackView.stack(views, axis: .vertical, width: nil, height: nil, spacing: 10)
         
+        //Post button
+        postButton.addAction(UIAction(title: "") { _ in
+            self.navigationController?.popToRootViewController(animated: true)
+            
+        }, for: .touchUpInside)
+        
         view.addSubview(postButton)
         
     }

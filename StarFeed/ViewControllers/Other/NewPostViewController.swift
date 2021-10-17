@@ -12,7 +12,7 @@ import TinyConstraints
 
 class NewPostViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
         
-    private var imageView = UIImageView()
+    var imageView = UIImageView()
     
     private let scrollView = ScrollView()
     private let stackView = TinyView()
@@ -22,9 +22,9 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     private let imageButton = Button(text: "Select a thumbnail...", color: UIColor.theme.blueColor)
     private let videoButton = Button(text: "Select a video...", color: UIColor.theme.blueColor)
     private let videoView = UIButton()
-    private let nextButton = Button(text: "Next", color: UIColor.theme.blueColor)
+    let nextButton = Button(text: "Next", color: UIColor.theme.blueColor)
     
-    private var movieURL: URL!
+    var movieURL: URL!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +34,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     
     override func viewDidAppear(_ animated: Bool) {
         backButton.vc = self
+        titleText.vc = self
     }
     
     private func setupView() {
@@ -43,7 +44,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         // Back Button
         view.addSubview(backButton)
         backButton.setupBackButton()
-                
+        
         // Image Button
         imageButton.addAction(UIAction(title: "") { _ in
             self.presentImagePicker(type: ["public.image"])
@@ -102,7 +103,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         videoButton.height(50)
         nextButton.height(50)
 
-    }
+    }        
     
     
     func presentImagePicker(type: [String]) {
@@ -111,12 +112,13 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         picker.delegate = self
         present(picker, animated: true)
     }
-        
-        
+                        
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         dismiss(animated: true)
         if imageView.image != nil && videoView.layer.sublayers?.first != nil && titleText.text != "" {
             nextButton.isEnabled = true
+        } else {
+            nextButton.isEnabled = false
         }
         
         if let image = info[.editedImage] as? UIImage {

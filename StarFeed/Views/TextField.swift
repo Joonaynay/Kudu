@@ -13,6 +13,8 @@ class TextField: UITextField, UITextFieldDelegate {
     
     var image: UIImageView!
     
+    weak var vc: UIViewController?
+    
     init(text: String, image: String?) {
         super.init(frame: .zero)
         placeholder = text
@@ -30,6 +32,16 @@ class TextField: UITextField, UITextFieldDelegate {
             self.image.centerYToSuperview()
         } else {
             insets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let vc = vc as? NewPostViewController {
+            if vc.imageView.image != nil && vc.movieURL != nil && self.text != "" {
+                vc.nextButton.isEnabled = true
+            } else {
+                vc.nextButton.isEnabled = false
+            }
         }
     }
         
