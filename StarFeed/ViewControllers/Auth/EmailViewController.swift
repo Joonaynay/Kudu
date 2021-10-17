@@ -104,7 +104,7 @@ class EmailViewController: UIViewController {
         
     }
     
-    @objc func timerFire(string: String) {
+    @objc func timerFire() {
         if num == 1 {
             resendButton.isEnabled = true
             timerLabel.text = ""
