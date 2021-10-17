@@ -53,10 +53,10 @@ class EmailViewController: UIViewController {
         label.text = "You should have recieved an email with a link to verify your account."
         return label
     }()
-    
+        
     var timer: Timer!
     
-    let doneButton = Button(text: "Done", color: UIColor.theme.blueColor)
+    let nextButton = Button(text: "Next", color: UIColor.theme.blueColor)
     let cancelButton = Button(text: "Cancel", color: .clear)
     
     
@@ -80,14 +80,17 @@ class EmailViewController: UIViewController {
             self.timerLabel.text = "60"
         }, for: .touchUpInside)
         
-        doneButton.addAction(UIAction(title: "") { _ in
-            
+        nextButton.addAction(UIAction(title: "") { _ in
+            let profilePictureView = ProfilePictureViewController()
+            profilePictureView.modalPresentationStyle = .fullScreen
+            self.present(profilePictureView, animated: true)
         }, for: .touchUpInside)
         
         cancelButton.addAction(UIAction(title: "") { _ in
             let alert = UIAlertController(title: "Clicking cancel will delete your account.", message: "You wil have to create a new account to use the app later. Are you sure you want to cancel?", preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
-            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in                
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                self.dismiss(animated: true)
             }))
             self.present(alert, animated: true)
             
@@ -98,7 +101,7 @@ class EmailViewController: UIViewController {
         view.addSubview(timerLabel)
         view.addSubview(activity)
         view.addSubview(descriptionLabel)
-        view.addSubview(doneButton)
+        view.addSubview(nextButton)
         view.addSubview(cancelButton)
         activity.startAnimating()
         
@@ -132,12 +135,12 @@ class EmailViewController: UIViewController {
         activity.height(50)
         activity.width(50)
         
-        descriptionLabel.bottomToTop(of: doneButton, offset: -15)
+        descriptionLabel.bottomToTop(of: nextButton, offset: -15)
         descriptionLabel.horizontalToSuperview()
         
-        doneButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
-        doneButton.bottomToTop(of: cancelButton)
-        doneButton.height(50)
+        nextButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+        nextButton.bottomToTop(of: cancelButton)
+        nextButton.height(50)
         
         cancelButton.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 15), usingSafeArea: true)
         cancelButton.height(50)
