@@ -27,7 +27,7 @@ class SubjectsViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = .systemBackground
-        view.addSubview(self.titleBar)
+        view.addSubview(self.titleBar)    
         view.addSubview(vGrid)
     }
     

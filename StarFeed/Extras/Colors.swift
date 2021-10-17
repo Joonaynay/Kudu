@@ -21,4 +21,5 @@ struct ColorTheme {
     let accentColor = UIColor(named: "AccentColor")!
     let lineColor = UIColor(named: "LineColor")!
     let blueTextColor = UIColor(named: "BlueTextColor")!
+    let blueTintColor = UIColor(named: "BlueTintColor")!
 }

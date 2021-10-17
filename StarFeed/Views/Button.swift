@@ -37,7 +37,21 @@ class Button: UIButton {
             if state == .highlighted {
                 label.textColor = .secondaryLabel
                 if color != .clear {
-                    backgroundColor = tintColor
+                    backgroundColor = UIColor.theme.blueTintColor
+                }
+            } else {
+                label.textColor = .label
+                backgroundColor = color
+            }
+        }
+    }
+    
+    override var isEnabled: Bool {
+        didSet {
+            if state == .disabled {
+                label.textColor = .secondaryLabel
+                if color != .clear {
+                    backgroundColor = UIColor.theme.secondaryText
                 }
             } else {
                 label.textColor = .label

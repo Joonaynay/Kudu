@@ -43,8 +43,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         // Back Button
         view.addSubview(backButton)
         backButton.setupBackButton()
-        
-        
+                
         // Image Button
         imageButton.addAction(UIAction(title: "") { _ in
             self.presentImagePicker(type: ["public.image"])
@@ -72,6 +71,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         nextButton.addAction(UIAction(title: "") { _ in
             self.navigationController?.pushViewController(NewPostSubjectsViewController(), animated: true)
         }, for: .touchUpInside)
+        nextButton.isEnabled = false
 
         
         //Scroll View
@@ -112,8 +112,13 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         present(picker, animated: true)
     }
         
+        
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         dismiss(animated: true)
+        if imageView.image != nil && videoView.layer.sublayers?.first != nil && titleText.text != "" {
+            nextButton.isEnabled = true
+        }
+        
         if let image = info[.editedImage] as? UIImage {
             self.imageView.image = image
         } else if let url = info[.mediaURL] as? URL {
