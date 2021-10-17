@@ -33,7 +33,7 @@ class TrendingViewController: UIViewController {
         view.addSubview(titleBar)
         
         // Post
-        let postView = PostView(post: Post(title: "Title", image: UIImage(systemName: "person.circle.fill")!))
+        let postView = PostView(post: Post(title: "This is a long title. I am making it long so i can see what it looks like.", image: UIImage(systemName: "person.circle.fill")!))
         stackView.stack([postView])
         view.addSubview(stackView)
 
