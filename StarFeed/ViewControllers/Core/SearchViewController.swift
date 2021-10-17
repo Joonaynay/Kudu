@@ -9,7 +9,7 @@ import UIKit
 
 class SearchViewController: UIViewController {
     
-    private var titleBar: TitleBar!
+    private let titleBar = TitleBar(title: "Search", backButton: false)
     
     private var textField = TextField(text: "Search...", image: "magnifyingglass")
 
@@ -19,12 +19,12 @@ class SearchViewController: UIViewController {
         setupConstraints()
     }
     
-    private func setupView() {
-        let titleBar = TitleBar(title: "Search", backButton: false)
+    override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
-        self.titleBar = titleBar
-        view.addSubview(self.titleBar)
-        
+    }
+    
+    private func setupView() {
+        view.addSubview(self.titleBar)        
         view.addSubview(textField)
         view.backgroundColor = .systemBackground
     }

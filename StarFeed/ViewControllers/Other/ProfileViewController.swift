@@ -11,8 +11,9 @@ import TinyConstraints
 class ProfileViewController: UIViewController {
     
     private let scrollView = ScrollView()
-    private var backButton: BackButton!
+    private var backButton = BackButton()
     let stackView = UIView()
+            
     
     //Profile Image
     let profileImage = UIImageView(image: UIImage(systemName: "person.circle.fill"))
@@ -54,15 +55,18 @@ class ProfileViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        backButton.vc = self
+    }
+    
     private func setupView() {
         
         // View
         view.backgroundColor = .systemBackground
         
         // Back Button
-        backButton = BackButton()
-        backButton.vc = self
         view.addSubview(backButton)
+        backButton.setupBackButton()
         
         //Profile Image
         scrollView.addSubview(profileImage)

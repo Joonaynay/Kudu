@@ -9,7 +9,6 @@ import UIKit
 
 class SubjectPostViewController: UIViewController {    
     private var titleBar: TitleBar!
-    
     private var stackView = UIView()
     
     let subject: Subject
@@ -30,13 +29,17 @@ class SubjectPostViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        titleBar.vc = self
+    }
+    
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
         
         // Title Bar
         let titleBar = TitleBar(title: subject.name, backButton: true)
-        titleBar.vc = self
+        
         self.titleBar = titleBar
         view.addSubview(self.titleBar)
         

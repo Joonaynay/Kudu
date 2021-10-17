@@ -11,7 +11,7 @@ import UIKit
 
 class TrendingViewController: UIViewController {
     
-    private var titleBar: TitleBar!
+    private let titleBar = TitleBar(title: "Trending", backButton: false)
     
     private var stackView = UIView()
 
@@ -21,23 +21,25 @@ class TrendingViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        titleBar.vc = self
+    }
+    
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
         
         // Title Bar
-        let bar = TitleBar(title: "Trending", backButton: false)
-        bar.vc = self
-        self.titleBar = bar
         view.addSubview(titleBar)
         
         // Post
         let postView = PostView(post: Post(title: "Title", image: UIImage(systemName: "person.circle.fill")!))
         stackView.stack([postView])
         view.addSubview(stackView)
-                
 
     }
+    
+    
  
     private func setupConstraints() {        
         

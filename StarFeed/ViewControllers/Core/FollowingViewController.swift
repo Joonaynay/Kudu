@@ -9,7 +9,7 @@ import UIKit
 
 class FollowingViewController: UIViewController {
     
-    private var titleBar: TitleBar!
+    private let titleBar = TitleBar(title: "Following", backButton: false)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,11 +17,12 @@ class FollowingViewController: UIViewController {
         setupConstraints()
     }
     
-    private func setupView() {
-        titleBar = TitleBar(title: "Following", backButton: false)
+    override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
-        view.addSubview(self.titleBar)
-        
+    }
+    
+    private func setupView() {
+        view.addSubview(self.titleBar)        
         view.backgroundColor = .systemBackground
     }
     

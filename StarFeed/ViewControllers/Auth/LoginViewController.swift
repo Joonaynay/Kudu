@@ -25,13 +25,15 @@ class LoginViewController: UIViewController {
     
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()        
         setupView()
         setupConstraints()
     }
     
-    override func viewDidLayoutSubviews() {
+    override func viewDidAppear(_ animated: Bool) {
+        auth.vc = self
     }
+
     
     private func setupView() {
         // View

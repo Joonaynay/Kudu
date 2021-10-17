@@ -34,13 +34,18 @@ class CreateAccountViewController: UIViewController {
         return label
     }
     
-    private var backButton: BackButton!
+    private let backButton = BackButton()
     private let createAccountButton = Button(text: "Create Account", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         addConstraints()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        auth.vc = self
+        backButton.vc = self
     }
     
     private func setupView() {
@@ -61,7 +66,8 @@ class CreateAccountViewController: UIViewController {
         passwordHeader.text = "PASSWORD"
         
         //BackButton
-        backButton = BackButton()
+        view.addSubview(backButton)
+        backButton.setupBackButton()
         
         //Password and Confirm
         password.isSecureTextEntry = true

@@ -12,23 +12,24 @@ class BackButton: UIButton {
     
     weak var vc: UIViewController?
 
-    init() {    
+    init() {
         super.init(frame: .zero)
         setImage(UIImage(systemName: "chevron.left"), for: .normal)
         contentVerticalAlignment = .fill
         contentHorizontalAlignment = .fill
         imageEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+        addTarget(self, action: #selector(didTap), for: .touchUpInside)        
+    }
+    
+    func setupBackButton() {
         height(45)
         width(45)
         leadingToSuperview(offset: 10)
         topToSuperview(offset: 10, usingSafeArea: true)
-        addTarget(self, action: #selector(didTap), for: .touchUpInside)
-        
     }
     
     @objc private func didTap() {
-        let parent = superclass as? UIViewController
-        parent!.navigationController?.popViewController(animated: true)
+        vc?.navigationController?.popViewController(animated: true)
     }
     
     required init?(coder: NSCoder) {

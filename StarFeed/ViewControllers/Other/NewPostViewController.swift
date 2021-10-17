@@ -17,7 +17,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     private let scrollView = ScrollView()
     private let stackView = TinyView()
     
-    private var backButton: BackButton!
+    private var backButton = BackButton()
     private let titleText = TextField(text: "Title", image: nil)
     private let imageButton = Button(text: "Select a thumbnail...", color: UIColor.theme.blueColor)
     private let videoButton = Button(text: "Select a video...", color: UIColor.theme.blueColor)
@@ -32,13 +32,18 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        backButton.vc = self
+    }
+    
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
         
         // Back Button
-        backButton = BackButton()
         view.addSubview(backButton)
+        backButton.setupBackButton()
+        
         
         // Image Button
         imageButton.addAction(UIAction(title: "") { _ in

@@ -10,9 +10,9 @@ import TinyConstraints
 
 class SubjectsViewController: UIViewController {
     
-    var titleBar: TitleBar!
+    private let titleBar = TitleBar(title: "Subjects", backButton: false)
             
-    var vGrid: Grid!
+    private let vGrid = Grid()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,16 +20,14 @@ class SubjectsViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        titleBar.vc = self
+        vGrid.vc = self
+    }
+    
     private func setupView() {
         view.backgroundColor = .systemBackground
-        let titleBar = TitleBar(title: "Subjects", backButton: false)
-        titleBar.vc = self
-        self.titleBar = titleBar
         view.addSubview(self.titleBar)
-        
-        let vGrid = Grid()
-        vGrid.vc = self
-        self.vGrid = vGrid
         view.addSubview(vGrid)
     }
     

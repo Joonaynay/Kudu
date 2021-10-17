@@ -13,7 +13,7 @@ class NewPostSubjectsViewController: UIViewController {
     let fb = FirebaseModel.shared
     
     private let scrollView = ScrollView()
-    private var backButton: BackButton!
+    private let backButton = BackButton()
     private let stackView = TinyView()
     
     private let titleLabel: UILabel = {
@@ -46,12 +46,17 @@ class NewPostSubjectsViewController: UIViewController {
         addConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        backButton.vc = self
+    }
+    
     func setupView() {
         view.addSubview(scrollView)
         view.backgroundColor = .systemBackground
         
-        backButton = BackButton()
-        backButton.vc = self
+        
+        view.addSubview(backButton)
+        backButton.setupBackButton()
         
         view.addSubview(titleLabel)
         

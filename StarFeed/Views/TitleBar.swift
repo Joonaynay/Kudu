@@ -47,7 +47,7 @@ class TitleBar: UIView {
         } else {
             self.backButton = nil
         }
-        super.init(frame: .zero)
+        super.init(frame: .zero)        
         titleLabel.text = title
         menuButton.menu = createMenu()
         menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
