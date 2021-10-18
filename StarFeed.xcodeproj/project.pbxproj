@@ -45,6 +45,7 @@
 		E0F11194271932E20062E190 /* SubjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F11193271932E20062E190 /* SubjectModel.swift */; };
 		E0F11196271937030062E190 /* FirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F11195271937030062E190 /* FirebaseModel.swift */; };
 		E0FDBFEA271D205A00EC1D1B /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */; };
+		E0FDBFEC271D3A5400EC1D1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */; };
 		EFB8493977A2933A2BB47982 /* Pods_StarFeed_StarFeedUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC46F631ED90F78D39744D6 /* Pods_StarFeed_StarFeedUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -114,6 +115,7 @@
 		E0F11193271932E20062E190 /* SubjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectModel.swift; sourceTree = "<group>"; };
 		E0F11195271937030062E190 /* FirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseModel.swift; sourceTree = "<group>"; };
 		E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
+		E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		EC64BC4B5BA1B681BAF0899C /* Pods-StarFeedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeedTests.release.xcconfig"; path = "Target Support Files/Pods-StarFeedTests/Pods-StarFeedTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -226,6 +228,7 @@
 				E0EF3ACD2714CAD400D5FDF8 /* Assets.xcassets */,
 				E0EF3ACF2714CAD400D5FDF8 /* LaunchScreen.storyboard */,
 				E0EF3AD22714CAD400D5FDF8 /* Info.plist */,
+				E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 			files = (
 				E0EF3AD12714CAD400D5FDF8 /* LaunchScreen.storyboard in Resources */,
 				E0EF3ACE2714CAD400D5FDF8 /* Assets.xcassets in Resources */,
+				E0FDBFEC271D3A5400EC1D1B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
