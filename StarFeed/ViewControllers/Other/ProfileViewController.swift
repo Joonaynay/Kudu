@@ -75,6 +75,10 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(username)
         
         //Button
+        editProfileButton.addAction(UIAction(title: "") { _ in
+            self.present(EditProfileViewController(), animated: true)
+        }, for: .touchUpInside)
+        
         scrollView.addSubview(editProfileButton)
         
         for _ in 1...10 {

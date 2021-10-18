@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5246D9E6271BBF1F0024500C /* ProfilePictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246D9E5271BBF1F0024500C /* ProfilePictureViewController.swift */; };
+		5246D9E8271D1CFD0024500C /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246D9E7271D1CFD0024500C /* EditProfileViewController.swift */; };
 		52DCF16327192DF200AD187C /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF16227192DF200AD187C /* Grid.swift */; };
 		52DCF1652719486100AD187C /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF1642719486100AD187C /* PostView.swift */; };
 		966BEB153153282CE3E63A96 /* Pods_StarFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */; };
@@ -64,6 +65,7 @@
 /* Begin PBXFileReference section */
 		1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StarFeedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5246D9E5271BBF1F0024500C /* ProfilePictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureViewController.swift; sourceTree = "<group>"; };
+		5246D9E7271D1CFD0024500C /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		52DCF16227192DF200AD187C /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		52DCF1642719486100AD187C /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		89B9F80FC097821D133CD286 /* Pods-StarFeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed.release.xcconfig"; path = "Target Support Files/Pods-StarFeed/Pods-StarFeed.release.xcconfig"; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				E099735A27165DFE00073785 /* ProfileViewController.swift */,
+				5246D9E7271D1CFD0024500C /* EditProfileViewController.swift */,
 				E09973A82716A30400073785 /* NewPostViewController.swift */,
 				E0F111912719164B0062E190 /* NewPostSubjectsViewController.swift */,
 				E08A65FA2719FDC000254D66 /* SubjectPostViewController.swift */,
@@ -525,6 +528,7 @@
 				5246D9E6271BBF1F0024500C /* ProfilePictureViewController.swift in Sources */,
 				E09973C02717593600073785 /* ScrollView.swift in Sources */,
 				E09973A92716A30400073785 /* NewPostViewController.swift in Sources */,
+				5246D9E8271D1CFD0024500C /* EditProfileViewController.swift in Sources */,
 				E08A65FB2719FDC000254D66 /* SubjectPostViewController.swift in Sources */,
 				E0EF3AF62714CB4F00D5FDF8 /* TabBarController.swift in Sources */,
 				E0F11196271937030062E190 /* FirebaseModel.swift in Sources */,
