@@ -92,8 +92,7 @@ class ProfileViewController: UIViewController {
             self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
         }, for: .touchUpInside)
         
-        scrollView.addSubview(profileImage)
-        
+        scrollView.addSubview(profileImage)        
         
         //Username
         username.text = auth.currentUser.username
