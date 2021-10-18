@@ -10,4 +10,6 @@ import UIKit
 struct Post {
     let title: String
     let image: UIImage
+    let user: User
+    var likes: Int
 }

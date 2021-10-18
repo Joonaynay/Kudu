@@ -7,14 +7,16 @@
 
 import UIKit
 
+protocol GridFunction: AnyObject {
+    func presentView(subject: Subject)
+}
+
 class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate, CustomCellectionViewCellDelegate {
 
-    
-            
     let fb = FirebaseModel.shared
     
     weak var vc: UIViewController?
-
+        
     init() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -53,11 +55,9 @@ class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func didPressCell(subject: Subject) {
-        if let vc = self.vc {
-            vc.navigationController!.pushViewController(SubjectPostViewController(subject: subject), animated: true)
-        }
+        
+        vc?.navigationController?.pushViewController(SubjectPostViewController(subject: subject), animated: true)
     }
-
 }
 
 protocol CustomCellectionViewCellDelegate: AnyObject {
@@ -67,9 +67,9 @@ protocol CustomCellectionViewCellDelegate: AnyObject {
 class CustomCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "cell"
-
+    
     weak var delegate: CustomCellectionViewCellDelegate?
-        
+    
     private let subjectLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -85,21 +85,21 @@ class CustomCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-                
+        
         addSubview(button)
         addSubview(subjectLabel)
         addSubview(subjectImage)
-
+        
         addConstraintsToCell()        
     }
-            
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }        
     
     private func addConstraintsToCell() {
         button.edgesToSuperview()
-    
+        
         subjectImage.centerInSuperview(offset: CGPoint(x: 0, y: -10))
         subjectLabel.topToBottom(of: subjectImage)
         subjectLabel.centerXToSuperview()
@@ -110,7 +110,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
         subjectImage.image = UIImage(systemName: subject.image)
         subjectImage.tintColor = .label
         subjectLabel.text = subject.name
-
+        
         button.addAction(UIAction(title: "") { _ in
             self.delegate!.didPressCell(subject: subject)            
         }, for: .touchUpInside)

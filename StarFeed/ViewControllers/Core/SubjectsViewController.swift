@@ -9,7 +9,8 @@ import UIKit
 import TinyConstraints
 
 class SubjectsViewController: UIViewController {
-    
+
+   
     private let titleBar = TitleBar(title: "Subjects", backButton: false)
             
     private let vGrid = Grid()
@@ -26,8 +27,9 @@ class SubjectsViewController: UIViewController {
     }
     
     private func setupView() {
+        
         view.backgroundColor = .systemBackground
-        view.addSubview(self.titleBar)    
+        view.addSubview(self.titleBar)
         view.addSubview(vGrid)
     }
     

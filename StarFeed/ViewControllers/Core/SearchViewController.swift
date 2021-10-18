@@ -7,12 +7,12 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
-    
-    private let titleBar = TitleBar(title: "Search", backButton: false)
-    
-    private var textField = TextField(text: "Search...", image: "magnifyingglass")
+class SearchViewController: UIViewController, UICollectionViewDataSource {
 
+    private let titleBar = TitleBar(title: "Search", backButton: false)
+
+    private let collectionView = CollectionView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -24,19 +24,30 @@ class SearchViewController: UIViewController {
     }
     
     private func setupView() {
-        view.addSubview(self.titleBar)        
-        view.addSubview(textField)
+        view.addSubview(titleBar)
         view.backgroundColor = .systemBackground
+        collectionView.dataSource = self
+        view.addSubview(collectionView)
     }
     
+    
+ 
     private func setupConstraints() {
-        
         titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         titleBar.height(70)
         
-        textField.topToBottom(of: titleBar, offset: 5)
-        textField.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
-        textField.height(50)
-        
+        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.topToBottom(of: titleBar)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+        cell.setPost(post: Post(title: "Title", image: UIImage(systemName: "person.circle.fill")!, user: User(name: "Name", username: "Username", profileImage: UIImage(systemName: "person.circle.fill")), likes: 100))
+        return cell
+    }
+    
 }

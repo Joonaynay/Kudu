@@ -9,12 +9,12 @@ import UIKit
 
 
 
-class TrendingViewController: UIViewController {
-    
-    private let titleBar = TitleBar(title: "Trending", backButton: false)
-    
-    private var stackView = UIView()
+class TrendingViewController: UIViewController, UICollectionViewDataSource {
 
+    private let titleBar = TitleBar(title: "Trending", backButton: false)
+
+    private let collectionView = CollectionView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -26,31 +26,30 @@ class TrendingViewController: UIViewController {
     }
     
     private func setupView() {
-        // View
-        view.backgroundColor = .systemBackground
-        
-        // Title Bar
         view.addSubview(titleBar)
-        
-        // Post
-        let postView = PostView(post: Post(title: "This is a long title. I am making it long so i can see what it looks like.", image: UIImage(systemName: "person.circle.fill")!))
-        stackView.stack([postView])
-        view.addSubview(stackView)
-
+        view.backgroundColor = .systemBackground
+        collectionView.dataSource = self
+        view.addSubview(collectionView)
     }
     
     
  
-    private func setupConstraints() {        
-        
+    private func setupConstraints() {
         titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         titleBar.height(70)
         
-        stackView.edgesToSuperview(excluding: .top)        
-        stackView.widthToSuperview()
-        stackView.topToBottom(of: titleBar)
-
-        
+        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.topToBottom(of: titleBar)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+        cell.setPost(post: Post(title: "Title \(indexPath.row)", image: UIImage(systemName: "person.circle.fill")!, user: User(name: "Name", username: "Username", profileImage: UIImage(systemName: "person.circle.fill")), likes: 100))
+        return cell
     }
     
 }
