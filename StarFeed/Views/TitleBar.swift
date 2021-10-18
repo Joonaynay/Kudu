@@ -29,15 +29,15 @@ class TitleBar: UIView {
     }()
     
     
-    private let menuButton: UIButton = {
+    public let menuButton: UIButton = {
         let button = UIButton()
         button.showsMenuAsPrimaryAction = true
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         return button
-    }()
+    }()            
     
-    init(title: String, backButton: Bool) {        
+    init(title: String, backButton: Bool) {
         if backButton {
             let backButton = UIButton()
             backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
@@ -50,7 +50,15 @@ class TitleBar: UIView {
         super.init(frame: .zero)        
         titleLabel.text = title
         menuButton.menu = createMenu()
-        menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+        if let profileImage = auth.currentUser.profileImage {
+            menuButton.setImage(profileImage, for: .normal)
+            menuButton.imageView!.layer.masksToBounds = false
+            menuButton.imageView!.layer.cornerRadius = 25
+            menuButton.imageView!.clipsToBounds = true
+        } else {
+            menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+        }
+        
         if backButton {
             self.backButton?.addAction(UIAction(title: "") { _ in
                 if let vc = self.vc {
@@ -83,7 +91,17 @@ class TitleBar: UIView {
                 let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 alert.addAction(UIAlertAction(title: "Sign Out", style: .default, handler: { _ in
-                    self.auth.signOut()
+                    self.auth.signOut { error in
+                        if error == nil {
+                            
+                            let loginNav = UINavigationController(rootViewController: LoginViewController())
+                            loginNav.navigationBar.isHidden = true
+                            loginNav.modalPresentationStyle = .fullScreen
+                            loginNav.modalTransitionStyle = .flipHorizontal
+                            self.vc?.present(loginNav, animated: true)
+                            
+                        }
+                    }
                 }))
                 self.vc?.present(alert, animated: true)
             }

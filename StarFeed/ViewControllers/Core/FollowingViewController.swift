@@ -13,6 +13,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource {
 
     private let collectionView = CollectionView()
     
+    private let auth = AuthModel.shared
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -21,6 +24,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
+        if let image = auth.currentUser.profileImage {
+            titleBar.menuButton.setImage(image, for: .normal)
+        }    
     }
     
     private func setupView() {

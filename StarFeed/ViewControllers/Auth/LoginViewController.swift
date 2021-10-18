@@ -39,6 +39,13 @@ class LoginViewController: UIViewController {
         let image = UIImage(systemName: "book")
         imageView.image = image
         
+        //Email
+        email.keyboardType = .emailAddress
+        email.autocorrectionType = .no
+        
+        //Password
+        password.isSecureTextEntry = true
+        
         //Sign In Button
         signInButton.addTarget(self, action: #selector(didTapSignInButton), for: .touchUpInside)
         signInButton.translatesAutoresizingMaskIntoConstraints = false

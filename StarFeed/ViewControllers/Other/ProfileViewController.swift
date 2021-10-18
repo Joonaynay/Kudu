@@ -10,19 +10,25 @@ import TinyConstraints
 
 class ProfileViewController: UIViewController {
     
+    private let auth = AuthModel.shared
+    
     private let scrollView = ScrollView()
     private var backButton = BackButton()
     let stackView = UIView()
             
     
     //Profile Image
-    let profileImage = UIImageView(image: UIImage(systemName: "person.circle.fill"))
+    private let profileImage: UIButton = {
+        let button = UIButton()
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        return button
+    }()
     
     // Username Label
     let username: UILabel = {
         
         let username = UILabel()
-        username.text = "Username"
         username.textAlignment = .center
         return username
         
@@ -49,6 +55,8 @@ class ProfileViewController: UIViewController {
     //Edit Profile || Follow Button
     let editProfileButton = Button(text: "Edit Profile", color: UIColor.theme.blueColor)
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -57,6 +65,9 @@ class ProfileViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         backButton.vc = self
+        if let image = auth.currentUser.profileImage {
+            self.profileImage.setImage(image, for: .normal)
+        }
     }
     
     private func setupView() {
@@ -69,9 +80,23 @@ class ProfileViewController: UIViewController {
         backButton.setupBackButton()
         
         //Profile Image
+        if let image = auth.currentUser.profileImage {
+            profileImage.setImage(image, for: .normal)
+            profileImage.imageView!.layer.masksToBounds = false
+            profileImage.imageView!.layer.cornerRadius = 75
+            profileImage.imageView!.clipsToBounds = true
+        } else {
+            profileImage.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+        }
+        profileImage.addAction(UIAction() { _ in
+            self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
+        }, for: .touchUpInside)
+        
         scrollView.addSubview(profileImage)
         
+        
         //Username
+        username.text = auth.currentUser.username
         scrollView.addSubview(username)
         
         //Button

@@ -13,6 +13,9 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
 
     private let collectionView = CollectionView()
     
+    private let auth = AuthModel.shared
+
+    
     let subject: Subject
     
     init(subject: Subject) {
@@ -32,6 +35,9 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
+        if let image = auth.currentUser.profileImage {
+            titleBar.menuButton.setImage(image, for: .normal)
+        }    
     }
     
     private func setupView() {

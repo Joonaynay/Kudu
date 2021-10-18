@@ -12,6 +12,7 @@ import UIKit
 class TrendingViewController: UIViewController, UICollectionViewDataSource {
 
     private let titleBar = TitleBar(title: "Trending", backButton: false)
+    private let auth = AuthModel.shared
 
     private let collectionView = CollectionView()
     
@@ -23,6 +24,9 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
+        if let image = auth.currentUser.profileImage {
+            titleBar.menuButton.setImage(image, for: .normal)
+        }        
     }
     
     private func setupView() {

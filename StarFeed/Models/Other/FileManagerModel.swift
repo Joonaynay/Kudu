@@ -9,6 +9,8 @@ import UIKit
 
 struct FileManagerModel {
     
+    static let shared = FileManagerModel()
+    
     func saveImage(image: UIImage, name: String) {
         
         let imageData = image.jpegData(compressionQuality: 1.0)

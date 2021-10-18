@@ -12,6 +12,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
     private let titleBar = TitleBar(title: "Search", backButton: false)
     
     private let searchBar = TextField(text: "Search...", image: "magnifyingglass")
+    
+    private let auth = AuthModel.shared
+
 
     private let collectionView = CollectionView()
     
@@ -23,6 +26,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
+        if let image = auth.currentUser.profileImage {
+            titleBar.menuButton.setImage(image, for: .normal)
+        }    
     }
     
     private func setupView() {

@@ -8,6 +8,8 @@
 import CoreData
 
 struct Persistence {
+    static let shared = Persistence()
+    
     var container: NSPersistentContainer
     var context: NSManagedObjectContext
     

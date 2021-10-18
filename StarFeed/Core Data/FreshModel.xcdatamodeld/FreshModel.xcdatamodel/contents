@@ -8,6 +8,6 @@
         <attribute name="username" attributeType="String"/>
     </entity>
     <elements>
-        <element name="CurrentUser" positionX="-54" positionY="0" width="128" height="104"/>
+        <element name="CurrentUser" positionX="-54" positionY="0" width="128" height="14"/>
     </elements>
 </model>

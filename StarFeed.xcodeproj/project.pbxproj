@@ -51,6 +51,7 @@
 		E0FDBFF7271D411900EC1D1B /* FileManagerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFF6271D411900EC1D1B /* FileManagerModel.swift */; };
 		E0FDBFF9271D41D100EC1D1B /* FirestoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFF8271D41D100EC1D1B /* FirestoreModel.swift */; };
 		E0FDBFFB271D425B00EC1D1B /* StorageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFFA271D425B00EC1D1B /* StorageModel.swift */; };
+		E0FDC000271E047400EC1D1B /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFFF271E047400EC1D1B /* ProfileImage.swift */; };
 		EFB8493977A2933A2BB47982 /* Pods_StarFeed_StarFeedUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC46F631ED90F78D39744D6 /* Pods_StarFeed_StarFeedUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +127,7 @@
 		E0FDBFF6271D411900EC1D1B /* FileManagerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerModel.swift; sourceTree = "<group>"; };
 		E0FDBFF8271D41D100EC1D1B /* FirestoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreModel.swift; sourceTree = "<group>"; };
 		E0FDBFFA271D425B00EC1D1B /* StorageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageModel.swift; sourceTree = "<group>"; };
+		E0FDBFFF271E047400EC1D1B /* ProfileImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImage.swift; sourceTree = "<group>"; };
 		EC64BC4B5BA1B681BAF0899C /* Pods-StarFeedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeedTests.release.xcconfig"; path = "Target Support Files/Pods-StarFeedTests/Pods-StarFeedTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,6 +194,7 @@
 				52DCF16227192DF200AD187C /* Grid.swift */,
 				E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */,
 				E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */,
+				E0FDBFFF271E047400EC1D1B /* ProfileImage.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -617,6 +620,7 @@
 				E0EF3AC72714CACF00D5FDF8 /* SceneDelegate.swift in Sources */,
 				E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */,
 				E09973BA2716B22600073785 /* BackButton.swift in Sources */,
+				E0FDC000271E047400EC1D1B /* ProfileImage.swift in Sources */,
 				E09973B62716ADB400073785 /* AuthModel.swift in Sources */,
 				E0FDBFF7271D411900EC1D1B /* FileManagerModel.swift in Sources */,
 				E0FDBFF5271D40C300EC1D1B /* FreshModel.xcdatamodeld in Sources */,

@@ -12,6 +12,8 @@ class SubjectsViewController: UIViewController {
 
    
     private let titleBar = TitleBar(title: "Subjects", backButton: false)
+    
+    private let auth = AuthModel.shared
             
     private let vGrid = Grid()
 
@@ -23,6 +25,9 @@ class SubjectsViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
+        if let image = auth.currentUser.profileImage {
+            titleBar.menuButton.setImage(image, for: .normal)
+        }
         vGrid.vc = self
     }
     

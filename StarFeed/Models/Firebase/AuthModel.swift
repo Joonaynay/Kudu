@@ -14,58 +14,14 @@ class AuthModel: ObservableObject {
     
     private let auth = Auth.auth()
     
-    private let file = FileManagerModel()
-    private lazy var storage = StorageModel()
-    private lazy var cd = Persistence()
-    private lazy var db = FirestoreModel.shared
+    private let file = FileManagerModel.shared
+    private let storage = StorageModel.shared
+    private lazy var cd = Persistence.shared
+    private let db = FirestoreModel.shared
+    private let fb = FirebaseModel.shared
     
-    public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
-    public var users = [User]()
+    @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
     
-    
-    @Published public var signedIn = false
-    
-    func loadUser(uid: String, completion:@escaping (User?) -> Void) {
-        
-        //Check if can load from Core Data
-        if let user = cd.fetchUser(uid: uid) {
-            print("Loaded User From Core Data")
-            
-            if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: nil))
-            } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: nil))
-            }
-            
-        } else {
-            
-            //Load Firestore doc
-            db.getDoc(collection: "users", id: uid) { doc in
-                
-                print("Loaded User From Firebase")
-                
-                
-                let username = doc?.get("username") as! String
-                let name = doc?.get("name") as! String
-                let following = doc?.get("following") as! [String]
-                let followers = doc?.get("followers") as! [String]
-                
-                //Load Profile Image
-                self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-                    
-                    //Core Data
-                    
-                    
-                    //Create User
-                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: nil)
-                    self.users.append(user)
-                    
-                    //Return User
-                    completion(user)
-                }
-            }
-        }
-    }
     
     func checkEmail(completion:@escaping (String?) -> Void) {
         auth.currentUser?.reload(completion: { error in
@@ -101,7 +57,7 @@ class AuthModel: ObservableObject {
                 //Save uid to userdefaults
                 UserDefaults.standard.setValue(self.auth.currentUser?.uid, forKeyPath: "uid")
                 
-                self.loadUser(uid: self.auth.currentUser!.uid) { user in
+                self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
                     if let user = user {
                         self.currentUser = user
                         
@@ -181,10 +137,10 @@ class AuthModel: ObservableObject {
                                         if error != nil {
                                             completion(error?.localizedDescription)
                                         } else {
-                                            self.loadUser(uid: self.auth.currentUser!.uid) { user in
+                                            self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
                                                 self.currentUser = user!
+                                                completion(nil)
                                             }
-                                            completion(nil)
                                         }
                                     })
                                     
@@ -206,7 +162,7 @@ class AuthModel: ObservableObject {
         }
     }
     
-    func signOut() {
+    func signOut(completion:@escaping (String?) -> Void) {
         UserDefaults.standard.setValue(nil, forKeyPath: "uid")
         self.file.deleteAllImages()
         self.cd.deleteAll()
@@ -219,10 +175,10 @@ class AuthModel: ObservableObject {
         self.cd.context = self.cd.container.viewContext
         do {
             try auth.signOut()
-        } catch let error {
-            print("Error signing out. \(error)")
+        } catch {
+            completion(nil)
         }
-        self.signedIn = false
+        completion(nil)
     }
     
     

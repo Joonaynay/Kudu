@@ -84,7 +84,7 @@ class EmailViewController: UIViewController {
         nextButton.addAction(UIAction(title: "") { _ in
             self.auth.checkEmail { error in
                 if error == nil {
-                    let profilePictureView = ProfilePictureViewController()
+                    let profilePictureView = ProfilePictureViewController(showBackButton: false)
                     profilePictureView.modalPresentationStyle = .fullScreen
                     self.present(profilePictureView, animated: true)
                 }
