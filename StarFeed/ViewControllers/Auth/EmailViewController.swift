@@ -11,6 +11,7 @@ class EmailViewController: UIViewController {
     
     let activity = UIActivityIndicatorView()
     
+    private let auth = AuthModel.shared
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -81,9 +82,13 @@ class EmailViewController: UIViewController {
         }, for: .touchUpInside)
         
         nextButton.addAction(UIAction(title: "") { _ in
-            let profilePictureView = ProfilePictureViewController()
-            profilePictureView.modalPresentationStyle = .fullScreen
-            self.present(profilePictureView, animated: true)
+            self.auth.checkEmail { error in
+                if error == nil {
+                    let profilePictureView = ProfilePictureViewController()
+                    profilePictureView.modalPresentationStyle = .fullScreen
+                    self.present(profilePictureView, animated: true)
+                }
+            }
         }, for: .touchUpInside)
         
         cancelButton.addAction(UIAction(title: "") { _ in

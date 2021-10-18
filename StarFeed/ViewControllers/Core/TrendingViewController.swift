@@ -48,7 +48,7 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setPost(post: Post(title: "Title \(indexPath.row)", image: UIImage(systemName: "person.circle.fill")!, user: User(name: "Name", username: "Username", profileImage: UIImage(systemName: "person.circle.fill")), likes: 100))
+        cell.setPost(post: Post(id: "", image: UIImage(systemName: "person.circle.fill")!, title: "", subjects: [], date: "", user: User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil), likes: [], comments: [], movie: nil))
         return cell
     }
     

@@ -7,7 +7,12 @@
 
 import UIKit
 
-class ProfilePictureViewController: UIViewController {
+class ProfilePictureViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    
+    private let storage = StorageModel.shared
+    private let auth = AuthModel.shared
+    
+    private var image: UIImage?
     
     let profileLabel: UILabel = {
         
@@ -48,21 +53,26 @@ class ProfilePictureViewController: UIViewController {
         view.addSubview(doneButton)
         view.addSubview(skipButton)
         
-        doneButton.addAction(UIAction(title: "") {_ in
+        profileImageButton.addAction(UIAction() { _ in
+            self.presentImagePicker(type: ["public.image"])
+        }, for: .touchUpInside)
+        
+        doneButton.addAction(UIAction() { _ in
+            if let image = self.image {
+                self.storage.saveImage(path: "Profile Images", file: self.auth.currentUser.id, image: image)
+            }
             let home = TabBarController()
+            home.modalTransitionStyle = .flipHorizontal
             home.modalPresentationStyle = .fullScreen
             self.present(home, animated: true)
         }, for: .touchUpInside)
-        
-        
     }
     
     func addConstraints() {
         
         profileLabel.edgesToSuperview(excluding: .bottom, insets: UIEdgeInsets(top: 20, left: 15, bottom: 0, right: 15), usingSafeArea: true)
         profileLabel.centerXToSuperview()
-        
-        
+                
         profileImageButton.centerYToSuperview(offset: -20)
         profileImageButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 50))
         profileImageButton.heightToWidth(of: view, offset: -100)
@@ -74,9 +84,20 @@ class ProfilePictureViewController: UIViewController {
         skipButton.bottomToSuperview(offset: -10)
         skipButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         skipButton.height(50)
-        
     }
     
-
-
+    func presentImagePicker(type: [String]) {
+        
+        let picker = ImagePicker(mediaTypes: type, allowsEditing: type == ["public.image"])
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+                        
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        dismiss(animated: true)
+        if let image = info[.editedImage] as? UIImage {
+            self.image = image
+            self.profileImageButton.setImage(image, for: .normal)
+        }
+    }
 }

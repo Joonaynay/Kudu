@@ -30,11 +30,6 @@ class LoginViewController: UIViewController {
         setupConstraints()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        auth.vc = self
-    }
-
-    
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
@@ -110,7 +105,14 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func didTapSignInButton() {
-        auth.signIn(email: email.text!, password: password.text!)
+        auth.signIn(email: email.text!, password: password.text!) { error in
+            if error == nil {
+                let tab = TabBarController()
+                tab.modalTransitionStyle = .flipHorizontal                
+                tab.modalPresentationStyle = .fullScreen
+                self.present(tab, animated: true)
+            }
+        }
     }
     
     @objc private func didTapCreateAccountButton() {

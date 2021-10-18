@@ -44,7 +44,6 @@ class CreateAccountViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        auth.vc = self
         backButton.vc = self
     }
     
@@ -75,10 +74,16 @@ class CreateAccountViewController: UIViewController {
         
         //Create Account Button
         createAccountButton.addAction(UIAction(title: "") { _ in
-            self.isEditing = false
-            let email = EmailViewController()
-            email.modalPresentationStyle = .fullScreen
-            self.present(email, animated: true)
+            
+            self.auth.signUp(email: self.email.text!, password: self.password.text!, confirm: self.confirmPassword.text!, name: "\(self.firstName.text!) \(self.lastName.text!)", username: self.username.text!) { error in
+                if error == nil {
+                    self.isEditing = false
+                    let email = EmailViewController()
+                    email.modalPresentationStyle = .fullScreen
+                    self.present(email, animated: true)
+                }
+            }
+
         
             
         }, for: .touchUpInside)
