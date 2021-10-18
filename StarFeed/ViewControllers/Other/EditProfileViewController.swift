@@ -23,6 +23,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
+        view.backgroundColor = .systemBackground
         view.addSubview(label)
         setupView()
         addConstraints()
@@ -37,9 +38,10 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func addConstraints() {
         
-        tableView.edgesToSuperview(usingSafeArea: true)
+        tableView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        tableView.topToBottom(of: label)
         
-        label.topToSuperview(offset: 5)
+        label.topToSuperview(offset: 10)
         label.centerXToSuperview()
         
         

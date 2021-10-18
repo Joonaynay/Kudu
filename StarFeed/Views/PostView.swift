@@ -78,17 +78,11 @@ class PostView: UICollectionViewCell {
         let result = String(format: "%ld %@", locale: Locale.current, post.likes, "")
         likeCount.text = result
         
-        var liked: Bool = false
+        likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .highlighted)
+        likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+        
         likeButton.addAction(UIAction() { _ in
-            if !liked {
-                liked = true
-                self.likeButton.tintColor = UIColor.theme.blueColor
-                self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
-            } else {
-                liked = false
-                self.likeButton.tintColor = .label
-                self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-            }
+
         }, for: .touchUpInside)
         
         titleLabel.text = post.title

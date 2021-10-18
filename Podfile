@@ -7,6 +7,10 @@ target 'StarFeed' do
 
   # Pods for StarFeed
 pod 'TinyConstraints'
+pod 'Firebase/Firestore'
+pod 'Firebase/Auth'
+pod 'Firebase/Analytics'
+pod 'Firebase/Storage'
 
   target 'StarFeedTests' do
     inherit! :search_paths
