@@ -70,7 +70,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         
         // Next Button
         nextButton.addAction(UIAction(title: "") { _ in
-            self.navigationController?.pushViewController(NewPostSubjectsViewController(), animated: true)
+            self.navigationController?.pushViewController(NewPostSubjectsViewController(movieURL: self.movieURL, image: self.imageView.image, titleString: self.titleText.text!), animated: true)
         }, for: .touchUpInside)
         nextButton.isEnabled = false
 

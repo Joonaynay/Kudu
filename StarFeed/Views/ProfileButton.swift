@@ -26,9 +26,13 @@ class ProfileButton: UIButton {
         super.init(frame: .zero)
         if let image = image {
             profileImage.image = image
+            profileImage.layer.masksToBounds = false
+            profileImage.layer.cornerRadius = 20
+            profileImage.clipsToBounds = true
         } else {
             profileImage.image = UIImage(systemName: "person.circle.fill")
         }
+        profileImage.contentMode = .scaleAspectFill
         usernameLabel.text = username
         addSubview(profileImage)
         addSubview(usernameLabel)

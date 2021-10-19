@@ -17,6 +17,9 @@ class TextField: UITextField, UITextFieldDelegate {
     
     init(text: String, image: String?) {
         super.init(frame: .zero)
+        addAction(UIAction() { _ in
+            self.textChanged()
+        }, for: .allEditingEvents)
         placeholder = text
         backgroundColor = .secondarySystemBackground
         returnKeyType = .done
@@ -35,12 +38,18 @@ class TextField: UITextField, UITextFieldDelegate {
         }
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    func textChanged() {
         if let vc = vc as? NewPostViewController {
             if vc.imageView.image != nil && vc.movieURL != nil && self.text != "" {
                 vc.nextButton.isEnabled = true
             } else {
                 vc.nextButton.isEnabled = false
+            }
+        } else if let vc = vc as? CreateAccountViewController {
+            if !vc.firstName.text!.isEmpty && !vc.lastName.text!.isEmpty && !vc.email.text!.isEmpty && !vc.username.text!.isEmpty && !vc.password.text!.isEmpty && !vc.confirmPassword.text!.isEmpty {
+                vc.createAccountButton.isEnabled = true
+            } else {
+                vc.createAccountButton.isEnabled = false
             }
         }
     }

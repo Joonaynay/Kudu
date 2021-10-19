@@ -13,7 +13,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
 
     private let collectionView = CollectionView()
     
-    private let auth = AuthModel.shared
+    private let fb = FirebaseModel.shared
 
     
     let subject: Subject
@@ -35,7 +35,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
-        if let image = auth.currentUser.profileImage {
+        if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
         }    
     }

@@ -11,16 +11,17 @@ import TinyConstraints
 class CreateAccountViewController: UIViewController {
     
     private let auth = AuthModel.shared
-    
+        
+    private let progressView = ProgressView()
     private let scrollView = ScrollView()
     private let stackView = UIView()
     
-    private var firstName = TextField(text: "First Name", image: nil)
-    private var lastName = TextField(text: "Last Name", image: nil)
-    private var username = TextField(text: "Username", image: nil)
-    private var email = TextField(text: "Email", image: nil)
-    private var password = TextField(text: "Password", image: nil)
-    private var confirmPassword = TextField(text: "Confirm Password", image: nil)
+    public var firstName = TextField(text: "First Name", image: nil)
+    public var lastName = TextField(text: "Last Name", image: nil)
+    public var username = TextField(text: "Username", image: nil)
+    public var email = TextField(text: "Email", image: nil)
+    public var password = TextField(text: "Password", image: nil)
+    public var confirmPassword = TextField(text: "Confirm Password", image: nil)
     
     private var bottomConstraint: NSLayoutConstraint!
 
@@ -35,7 +36,7 @@ class CreateAccountViewController: UIViewController {
     }
     
     private let backButton = BackButton()
-    private let createAccountButton = Button(text: "Create Account", color: UIColor.theme.blueColor)
+    public let createAccountButton = Button(text: "Create Account", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,11 +46,20 @@ class CreateAccountViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         backButton.vc = self
+        firstName.vc = self
+        lastName.vc = self
+        username.vc = self
+        email.vc = self
+        password.vc = self
+        confirmPassword.vc = self
     }
     
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
+        
+        // ProgressView
+        view.addSubview(progressView)
         
         //Text Fields
         let name = header
@@ -73,18 +83,23 @@ class CreateAccountViewController: UIViewController {
         confirmPassword.isSecureTextEntry = true
         
         //Create Account Button
+        createAccountButton.isEnabled = false
         createAccountButton.addAction(UIAction(title: "") { _ in
-            
+            self.progressView.start()
+            self.isEditing = false
             self.auth.signUp(email: self.email.text!, password: self.password.text!, confirm: self.confirmPassword.text!, name: "\(self.firstName.text!) \(self.lastName.text!)", username: self.username.text!) { error in
                 if error == nil {
-                    self.isEditing = false
+                    self.progressView.stop()
                     let email = EmailViewController()
                     email.modalPresentationStyle = .fullScreen
                     self.present(email, animated: true)
+                } else {
+                    self.progressView.stop()
+                    let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Ok", style: .default))
+                    self.present(alert, animated: true)
                 }
             }
-
-        
             
         }, for: .touchUpInside)
         
@@ -139,6 +154,9 @@ class CreateAccountViewController: UIViewController {
         password.height(50)
         confirmPassword.height(50)
         createAccountButton.height(50)
+        
+        progressView.edgesToSuperview()
+        view.bringSubviewToFront(progressView)
     }
     
     @objc func handleKeyboard(notification: NSNotification) {
@@ -158,5 +176,6 @@ class CreateAccountViewController: UIViewController {
             }
         }
     }
+    
 }
 

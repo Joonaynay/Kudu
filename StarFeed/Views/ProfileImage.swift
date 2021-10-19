@@ -13,7 +13,7 @@ class ProfileImage: UIImageView {
         super.init(image: image)        
         layer.borderWidth = 1.0
         layer.masksToBounds = false
-        layer.cornerRadius = self.frame.size.height/2
+        layer.cornerRadius = self.bounds.height / 2
         clipsToBounds = true
     }
     

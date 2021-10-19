@@ -14,7 +14,7 @@ class PostView: UICollectionViewCell {
         let titleLabel = UILabel()
         titleLabel.textColor = .label
         titleLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        titleLabel.numberOfLines = 3
+        titleLabel.numberOfLines = 2
         return titleLabel
     }()
     
@@ -75,7 +75,8 @@ class PostView: UICollectionViewCell {
     
     public func setPost(post: Post) {
         profile = ProfileButton(image: post.user.profileImage, username: post.user.username)
-        let result = String(format: "%ld %@", locale: Locale.current, post.likes, "")
+        
+        let result = String(format: "%ld %@", locale: Locale.current, post.likes.count, "")
         likeCount.text = result
         
         likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .highlighted)
@@ -106,7 +107,8 @@ class PostView: UICollectionViewCell {
         imageView.widthToSuperview()
         
         titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
-        titleLabel.topToBottom(of: imageView, offset: 10)
+        titleLabel.topToBottom(of: imageView, offset: 5)
+        titleLabel.height(60)
         
         likeButton.topToBottom(of: titleLabel, offset: 10)
         likeButton.trailingToSuperview(offset: 10)
@@ -114,7 +116,7 @@ class PostView: UICollectionViewCell {
         likeButton.width(32)
         
         profile.leadingToSuperview(offset: 5)
-        profile.topToBottom(of: titleLabel, offset: 5)
+        profile.topToBottom(of: titleLabel, offset: 10)
         profile.widthToSuperview(multiplier: 0.4)
         
         likeCount.trailingToLeading(of: likeButton, offset: -5)

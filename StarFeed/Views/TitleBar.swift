@@ -11,6 +11,7 @@ import TinyConstraints
 class TitleBar: UIView {
     
     private let auth = AuthModel.shared
+    private let fb = FirebaseModel.shared
     
     weak var vc: UIViewController?
     private let backButton: UIButton?
@@ -50,13 +51,16 @@ class TitleBar: UIView {
         super.init(frame: .zero)        
         titleLabel.text = title
         menuButton.menu = createMenu()
-        if let profileImage = auth.currentUser.profileImage {
+        if let profileImage = fb.currentUser.profileImage {
             menuButton.setImage(profileImage, for: .normal)
             menuButton.imageView!.layer.masksToBounds = false
             menuButton.imageView!.layer.cornerRadius = 25
             menuButton.imageView!.clipsToBounds = true
         } else {
             menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+            menuButton.imageView!.layer.masksToBounds = false
+            menuButton.imageView!.layer.cornerRadius = 25
+            menuButton.imageView!.clipsToBounds = true
         }
         
         if backButton {

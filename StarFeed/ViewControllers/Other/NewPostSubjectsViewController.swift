@@ -16,6 +16,12 @@ class NewPostSubjectsViewController: UIViewController {
     private let backButton = BackButton()
     private let stackView = TinyView()
     
+    public let titleString: String
+    
+    public let image: UIImage?
+    public let movieURL: URL?
+    
+    
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = "Select up to 3 subjects that your post corrosponds with"
@@ -38,7 +44,17 @@ class NewPostSubjectsViewController: UIViewController {
     
     private let postButton = Button(text: "Post", color: UIColor.theme.blueColor)
     
-
+    init(movieURL: URL?, image: UIImage?, titleString: String) {
+        self.movieURL = movieURL
+        self.image = image
+        self.titleString = titleString
+        super.init(nibName: nil, bundle: nil)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,7 +98,10 @@ class NewPostSubjectsViewController: UIViewController {
         
         //Post button
         postButton.addAction(UIAction(title: "") { _ in
-            self.navigationController?.popToRootViewController(animated: true)
+            if let image = self.image, let movieURL = self.movieURL {
+                self.fb.addPost(image: image, title: self.titleString, subjects: [], movie: movieURL)
+                self.navigationController?.popToRootViewController(animated: true)
+            }
             
         }, for: .touchUpInside)
         

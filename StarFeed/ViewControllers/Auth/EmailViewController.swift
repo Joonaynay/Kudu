@@ -87,6 +87,10 @@ class EmailViewController: UIViewController {
                     let profilePictureView = ProfilePictureViewController(showBackButton: false)
                     profilePictureView.modalPresentationStyle = .fullScreen
                     self.present(profilePictureView, animated: true)
+                } else {
+                    let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Ok", style: .default))
+                    self.present(alert, animated: true)
                 }
             }
         }, for: .touchUpInside)
@@ -95,7 +99,14 @@ class EmailViewController: UIViewController {
             let alert = UIAlertController(title: "Clicking cancel will delete your account.", message: "You wil have to create a new account to use the app later. Are you sure you want to cancel?", preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-                self.dismiss(animated: true)
+                self.auth.signOut { error in
+                    if error == nil {
+                        let navLogin = UINavigationController(rootViewController: LoginViewController())
+                        navLogin.modalPresentationStyle = .fullScreen
+                        navLogin.navigationBar.isHidden = true
+                        self.present(navLogin, animated: true)
+                    }
+                }
             }))
             self.present(alert, animated: true)
             

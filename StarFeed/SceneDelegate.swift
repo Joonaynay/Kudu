@@ -19,12 +19,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
         
         let fb = FirebaseModel.shared
-        let auth = AuthModel.shared
         if let uid = UserDefaults.standard.value(forKey: "uid") as? String {
             fb.loadUser(uid: uid) { user in
                 if let user = user {
-                    auth.currentUser = user
-                    window.rootViewController = TabBarController()
+                    if Auth.auth().currentUser?.isEmailVerified == true {
+                        window.rootViewController = TabBarController()
+                    } else {
+                        window.rootViewController = EmailViewController()
+                    }
+                    fb.currentUser = user
                 } else {
                     let loginNav = UINavigationController(rootViewController: LoginViewController())
                     loginNav.navigationBar.isHidden = true

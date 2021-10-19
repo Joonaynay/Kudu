@@ -12,7 +12,7 @@ class CollectionView: UICollectionView {
     init() {        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width / 1.13)
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         super.init(frame: .zero, collectionViewLayout: layout)

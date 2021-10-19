@@ -12,6 +12,8 @@ class LoginViewController: UIViewController {
     
     private let auth = AuthModel.shared
     
+    private let progressView = ProgressView()
+    
     private var stackView = UIView()
     private var scrollView = ScrollView()
     private var bottomConstraint: NSLayoutConstraint!
@@ -33,6 +35,9 @@ class LoginViewController: UIViewController {
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
+        
+        // ProgressView
+        view.addSubview(progressView)
         
         // Image
         scrollView.addSubview(imageView)
@@ -91,6 +96,9 @@ class LoginViewController: UIViewController {
         signInButton.height(50)
         createAccountButton.height(50)
         
+        progressView.edgesToSuperview()
+        view.bringSubviewToFront(progressView)
+        
     }
     
     @objc func handleKeyboard(notification: NSNotification) {
@@ -112,12 +120,19 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func didTapSignInButton() {
+        self.progressView.start()
         auth.signIn(email: email.text!, password: password.text!) { error in
             if error == nil {
+                self.progressView.stop()
                 let tab = TabBarController()
                 tab.modalTransitionStyle = .flipHorizontal                
                 tab.modalPresentationStyle = .fullScreen
                 self.present(tab, animated: true)
+            } else {
+                self.progressView.stop()
+                let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                self.present(alert, animated: true)
             }
         }
     }

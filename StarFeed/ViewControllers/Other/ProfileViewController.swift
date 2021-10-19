@@ -10,7 +10,7 @@ import TinyConstraints
 
 class ProfileViewController: UIViewController {
     
-    private let auth = AuthModel.shared
+    private let fb = FirebaseModel.shared
     
     private let scrollView = ScrollView()
     private var backButton = BackButton()
@@ -65,7 +65,7 @@ class ProfileViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         backButton.vc = self
-        if let image = auth.currentUser.profileImage {
+        if let image = fb.currentUser.profileImage {
             self.profileImage.setImage(image, for: .normal)
         }
     }
@@ -80,13 +80,16 @@ class ProfileViewController: UIViewController {
         backButton.setupBackButton()
         
         //Profile Image
-        if let image = auth.currentUser.profileImage {
+        if let image = fb.currentUser.profileImage {
             profileImage.setImage(image, for: .normal)
             profileImage.imageView!.layer.masksToBounds = false
             profileImage.imageView!.layer.cornerRadius = 75
             profileImage.imageView!.clipsToBounds = true
         } else {
             profileImage.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+            profileImage.imageView!.layer.masksToBounds = false
+            profileImage.imageView!.layer.cornerRadius = 75
+            profileImage.imageView!.clipsToBounds = true
         }
         profileImage.addAction(UIAction() { _ in
             self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
@@ -95,7 +98,7 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(profileImage)        
         
         //Username
-        username.text = auth.currentUser.username
+        username.text = fb.currentUser.username
         scrollView.addSubview(username)
         
         //Button

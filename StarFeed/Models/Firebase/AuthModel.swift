@@ -20,9 +20,6 @@ class AuthModel: ObservableObject {
     private let db = FirestoreModel.shared
     private let fb = FirebaseModel.shared
     
-    @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
-    
-    
     func checkEmail(completion:@escaping (String?) -> Void) {
         auth.currentUser?.reload(completion: { error in
             if error == nil {
@@ -59,7 +56,7 @@ class AuthModel: ObservableObject {
                 
                 self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
                     if let user = user {
-                        self.currentUser = user
+                        self.fb.currentUser = user
                         
                         //Save to Core Data
                         let currentUser = CurrentUser(context: self.cd.context)
@@ -100,7 +97,6 @@ class AuthModel: ObservableObject {
                             group.enter()
                             let otherUsername = doc.get("username") as! String
                             if otherUsername == username {
-                                group.leave()
                                 completion("That username is already taken.")
                                 break
                             } else {
@@ -138,7 +134,7 @@ class AuthModel: ObservableObject {
                                             completion(error?.localizedDescription)
                                         } else {
                                             self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
-                                                self.currentUser = user!
+                                                self.fb.currentUser = user!
                                                 completion(nil)
                                             }
                                         }

@@ -13,8 +13,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
     
     private let searchBar = TextField(text: "Search...", image: "magnifyingglass")
     
-    private let auth = AuthModel.shared
-
+    private let fb = FirebaseModel.shared
 
     private let collectionView = CollectionView()
     
@@ -26,7 +25,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
         titleBar.vc = self
-        if let image = auth.currentUser.profileImage {
+        if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
         }    
     }
