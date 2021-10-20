@@ -59,12 +59,12 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return fb.posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setPost(post: Post(id: "", image: UIImage(systemName: "person.circle.fill")!, title: "", subjects: [], date: "", user: User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil), likes: [], comments: [], movie: nil))
+        cell.setPost(post: fb.posts[indexPath.row])
         return cell
     }
     

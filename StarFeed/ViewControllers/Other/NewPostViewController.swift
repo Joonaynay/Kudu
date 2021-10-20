@@ -91,7 +91,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         scrollView.edgesToSuperview(excluding: .top)
         scrollView.topToBottom(of: backButton)
         
-        stackView.edgesToSuperview(insets: TinyEdgeInsets(top: 15, left: 15, bottom: 0, right: 15))
+        stackView.edgesToSuperview(insets: TinyEdgeInsets(top: 15, left: 15, bottom: 15, right: 15))
         stackView.width(view.width - 30)
                 
         imageView.heightToWidth(of: stackView, multiplier: 9/16)
