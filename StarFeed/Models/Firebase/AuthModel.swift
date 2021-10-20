@@ -159,33 +159,32 @@ class AuthModel: ObservableObject {
     }
     
     func deleteUser(completion:@escaping (String?) -> Void) {
-        UserDefaults.standard.setValue(nil, forKeyPath: "uid")
-        guard let uid = auth.currentUser?.uid else { return }
-        self.db.deleteDoc(collection: "users", document: uid)
-        self.storage.delete(path: "Profile Images", file: uid)
-        for post in fb.currentUser.posts! {
-            self.db.deleteDoc(collection: "posts", document: post.id)
-            self.storage.delete(path: "images", file: post.id)
-            self.storage.delete(path: "videos", file: post.id)
-        }
-        self.file.deleteAllImages()
-        self.cd.deleteAll()        
-        self.cd.container = NSPersistentContainer(name: "FreshModel")
-        self.cd.container.loadPersistentStores { desc, error in
-            if let error = error {
-                fatalError(error.localizedDescription)
-            }
-        }
-        self.cd.context = self.cd.container.viewContext
         auth.currentUser?.delete(completion: { error in
             if error == nil {
+                guard let uid = UserDefaults.standard.value(forKey: "uid") as? String else { return }
+                self.db.deleteDoc(collection: "users", document: uid)
+                self.storage.delete(path: "Profile Images", file: uid)
+                if self.fb.currentUser.posts != nil {
+                    for post in self.fb.currentUser.posts! {
+                        self.db.deleteDoc(collection: "posts", document: post.id)
+                        self.storage.delete(path: "images", file: post.id)
+                        self.storage.delete(path: "videos", file: post.id)
+                    }
+                }
+                self.file.deleteAllImages()
+                self.cd.deleteAll()
+                self.cd.container = NSPersistentContainer(name: "FreshModel")
+                self.cd.container.loadPersistentStores { desc, error in
+                    if let error = error {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+                self.cd.context = self.cd.container.viewContext
                 completion(nil)
             } else {
                 completion(error?.localizedDescription)
             }
         })
-        
-        
     }
     
     

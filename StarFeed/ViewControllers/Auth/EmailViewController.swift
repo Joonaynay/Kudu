@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class EmailViewController: UIViewController {
     
@@ -99,14 +100,34 @@ class EmailViewController: UIViewController {
             let alert = UIAlertController(title: "Clicking cancel will delete your account.", message: "You wil have to create a new account to use the app later. Are you sure you want to cancel?", preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-                self.auth.deleteUser { error in
-                    if error == nil {
-                        let navLogin = UINavigationController(rootViewController: LoginViewController())
-                        navLogin.modalPresentationStyle = .fullScreen
-                        navLogin.navigationBar.isHidden = true
-                        self.present(navLogin, animated: true)
-                    }                    
+                // Delete Account
+                let alert = UIAlertController(title: "Delete Account", message: "Please type in your password to delete your account.", preferredStyle: .alert)
+                alert.addTextField { textField in
+                    textField.placeholder = "Password"
+                    textField.isSecureTextEntry = true
                 }
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+                    self.auth.signIn(email: Auth.auth().currentUser!.email!, password: alert.textFields!.first!.text!) { error in
+                        if error == nil {
+                            self.auth.deleteUser { error in
+                                if error == nil {
+                                    let login = UINavigationController(rootViewController: LoginViewController())
+                                    login.modalTransitionStyle = .flipHorizontal
+                                    login.modalPresentationStyle = .fullScreen
+                                    login.navigationBar.isHidden = true
+                                    self.present(login, animated: true)
+                                }
+                            }
+                        } else {
+                            let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                            self.present(alert, animated: true)
+                        }
+                        
+                    }
+                }))
+                self.present(alert, animated: true)
             }))
             self.present(alert, animated: true)
             
