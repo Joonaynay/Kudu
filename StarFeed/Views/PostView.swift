@@ -9,8 +9,9 @@ import UIKit
 
 class PostView: UICollectionViewCell {
     
+    
+    //Post Title
     private let titleLabel: UILabel = {
-       
         let titleLabel = UILabel()
         titleLabel.textColor = .label
         titleLabel.font = UIFont.preferredFont(forTextStyle: .title2)
@@ -18,14 +19,14 @@ class PostView: UICollectionViewCell {
         return titleLabel
     }()
     
+    //Main Image/Thumbnail
     private let imageView: UIImageView = {
-       
         let image = UIImageView()
         image.backgroundColor = .blue
         return image
-        
     }()
     
+    //Button to move to comments
     private let commentsButton: UIButton = {
         let button = UIButton()
         button.setTitle("Comments", for: .normal)
@@ -34,6 +35,7 @@ class PostView: UICollectionViewCell {
         return button
     }()
     
+    //Like Count Label
     private let likeCount: UILabel = {
         let label = UILabel()
         label.textColor = .label
@@ -42,32 +44,31 @@ class PostView: UICollectionViewCell {
         return label
     }()
     
+    //Button to like
     private let likeButton: UIButton = {
-        
         let button = UIButton()
         button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
         button.tintColor = .label
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         return button
-        
     }()
     
+    //Line at bottom of post for separation
     private let line: UIView = {
         let line = UIView()
         line.backgroundColor = .secondarySystemBackground
         return line
     }()
     
+    //Has Profile Image and username
     private var profile: ProfileButton!
-    
+        
     private let followButton = Button(text: "Follow", color: UIColor.theme.blueColor)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
-
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

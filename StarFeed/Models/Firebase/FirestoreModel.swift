@@ -39,6 +39,10 @@ class FirestoreModel: ObservableObject {
         }
     }
     
+    func deleteDoc(collection: String, document: String) {
+        db.collection(collection).document(document).delete()
+    }
+    
     func save(collection: String, document: String, field: String, data: Any) {
         
         // Check if data is an array

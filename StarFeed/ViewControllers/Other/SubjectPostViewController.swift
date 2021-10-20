@@ -15,6 +15,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
     
     private let fb = FirebaseModel.shared
 
+
     
     let subject: Subject
     
@@ -59,12 +60,24 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fb.posts.count
+        var posts = [Post]()
+        for post in fb.posts {
+            if post.subjects.contains(subject.name) {
+               posts.append(post)
+            }
+        }
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setPost(post: fb.posts[indexPath.row])
+        var posts = [Post]()
+        for post in fb.posts {
+            if post.subjects.contains(subject.name) {
+               posts.append(post)
+            }
+        }
+        cell.setPost(post: posts[indexPath.row])
         return cell
     }
     

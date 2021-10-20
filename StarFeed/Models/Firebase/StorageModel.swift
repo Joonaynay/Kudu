@@ -36,6 +36,9 @@ class StorageModel: ObservableObject {
         }
     }
     
+    func delete(path: String, file: String) {
+        storage.child(path).child(file).delete()
+    }
     
     func saveImage(path: String, file: String, image: UIImage) {
         if path == "Profile Images" {

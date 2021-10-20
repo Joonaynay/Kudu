@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchViewController: UIViewController, UICollectionViewDataSource {
+class SearchViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
 
     private let titleBar = TitleBar(title: "Search", backButton: false)
     
@@ -15,6 +15,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
     
     private let fb = FirebaseModel.shared
 
+    private var posts = [Post]()
     private let collectionView = CollectionView()
     
     override func viewDidLoad() {
@@ -32,8 +33,13 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
     
     private func setupView() {
         view.addSubview(titleBar)
+        
+        searchBar.delegate = self
+        searchBar.returnKeyType = .search
         view.addSubview(searchBar)
         view.backgroundColor = .systemBackground
+        collectionView.alwaysBounceVertical = false
+        collectionView.refreshControl = nil
         collectionView.dataSource = self
         view.addSubview(collectionView)
     }
@@ -52,13 +58,22 @@ class SearchViewController: UIViewController, UICollectionViewDataSource {
         searchBar.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        searchBar.endEditing(true)
+        fb.search(string: searchBar.text!) { loadedPosts in
+            self.posts = loadedPosts
+            self.collectionView.reloadData()
+        }
+        return true
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return self.posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setPost(post: Post(id: "", image: UIImage(systemName: "person.circle.fill")!, title: "", subjects: [], date: "", user: User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil), likes: [], comments: [], movie: nil))
+        cell.setPost(post: self.posts[indexPath.row])
         return cell
     }
     

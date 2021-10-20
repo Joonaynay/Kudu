@@ -25,6 +25,84 @@ class FirebaseModel: ObservableObject {
         self.subjects = [Subject(name: "Business", image: "building.2"), Subject(name: "Workout", image: "heart")]
     }
     
+    func search(string: String, completion:@escaping ([Post]) -> Void) {
+        
+        DispatchQueue.main.async {
+
+            let group = DispatchGroup()
+            //Load all documents
+            self.db.getDocs(collection: "posts") { query in
+                
+                var postsArray = [Post]()
+                
+                for doc in query!.documents {
+                    
+
+                    group.enter()
+                    var postId = ""
+                    let title = doc.get("title") as! String
+                    if title.lowercased().contains(string.lowercased()) {
+                        postId = doc.documentID
+                    }
+                    
+                    self.loadPost(postId: postId, completion: { post in
+                        if let p = post {
+                            postsArray.append(p)
+                        }
+                        
+                        
+                        group.leave()
+                    })
+                }
+                
+                group.notify(queue: .main, execute: {
+                    completion(postsArray)
+                })
+            }
+        }
+    }
+    
+    func loadPost(postId: String, completion:@escaping (Post?) -> Void) {
+        
+        //Load Post Firestore Document
+        self.db.getDoc(collection: "posts", id: postId) { document in
+            
+            
+            if let doc = document {
+                //Check if local loaded posts is equal to firebase docs
+                //Loop through each document and get data
+                let title = doc.get("title") as! String
+                let postId = doc.documentID
+                let subjects = doc.get("subjects") as! [String]
+                let date = doc.get("date") as! String
+                let uid = doc.get("uid") as! String
+                let likes = doc.get("likes") as! [String]
+                
+                //Load user for post
+                self.loadConservativeUser(uid: uid) { user in
+                    
+                    //Load image
+                    self.storage.loadImage(path: "images", id: doc.documentID) { image in
+                        
+                        //Load Movie
+                        self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
+                            //Add to view model
+                            
+                            if let image = image, let url = url {
+                                let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
+                                completion(post)
+                            } else {
+                                completion(nil)
+                            }
+                        }
+                    }
+                }
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
     func loadPosts(completion:@escaping (Bool) -> Void) {
                 
         //Load all Post Firestore Documents
