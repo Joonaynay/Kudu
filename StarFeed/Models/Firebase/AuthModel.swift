@@ -118,6 +118,7 @@ class AuthModel: ObservableObject {
                                     currentUser.name = name
                                     currentUser.followers = []
                                     currentUser.following = []
+                                    currentUser.posts = []
                                     self.cd.save()
                                     
                                     //Save uid to userdefaults
@@ -159,16 +160,16 @@ class AuthModel: ObservableObject {
     }
     
     func deleteUser(completion:@escaping (String?) -> Void) {
-        auth.currentUser?.delete(completion: { error in
+        auth.currentUser!.delete(completion: { error in
             if error == nil {
                 guard let uid = UserDefaults.standard.value(forKey: "uid") as? String else { return }
                 self.db.deleteDoc(collection: "users", document: uid)
                 self.storage.delete(path: "Profile Images", file: uid)
                 if self.fb.currentUser.posts != nil {
                     for post in self.fb.currentUser.posts! {
-                        self.db.deleteDoc(collection: "posts", document: post.id)
-                        self.storage.delete(path: "images", file: post.id)
-                        self.storage.delete(path: "videos", file: post.id)
+                        self.db.deleteDoc(collection: "posts", document: post)
+                        self.storage.delete(path: "images", file: post)
+                        self.storage.delete(path: "videos", file: post)
                     }
                 }
                 self.file.deleteAllImages()
@@ -181,6 +182,7 @@ class AuthModel: ObservableObject {
                 }
                 self.cd.context = self.cd.container.viewContext
                 completion(nil)
+                UserDefaults.standard.setValue(nil, forKey: "uid")
             } else {
                 completion(error?.localizedDescription)
             }

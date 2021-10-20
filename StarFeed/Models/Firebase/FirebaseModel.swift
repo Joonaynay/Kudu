@@ -158,9 +158,9 @@ class FirebaseModel: ObservableObject {
             print("Loaded User From Core Data")
             
             if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: nil))
+                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!))
             } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: nil))
+                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: user.posts!))
             }
             
         } else {
@@ -216,6 +216,13 @@ class FirebaseModel: ObservableObject {
             
             //Save movie to Firestore
             self.storage.saveMovie(path: "videos", file: postId!, url: movie)
+            
+            //Save to core data
+            if let current = self.cd.fetchUser(uid: self.currentUser.id) {
+                current.posts?.append(postId!)
+            }
+            
+            
         }
     }
     

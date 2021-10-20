@@ -14,5 +14,5 @@ struct User: Identifiable {
     var profileImage: UIImage?
     var following: [String]
     var followers: [String]
-    var posts: [Post]?
+    var posts: [String]?
 }
