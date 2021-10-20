@@ -21,6 +21,9 @@ class FirebaseModel: ObservableObject {
     @Published public var posts = [Post]()
     @Published public var subjects = [Subject]()
     
+    init() {
+        self.subjects = [Subject(name: "Business", image: "building.2"), Subject(name: "Workout", image: "heart")]
+    }
     
     func loadPosts(completion:@escaping (Bool) -> Void) {
                 

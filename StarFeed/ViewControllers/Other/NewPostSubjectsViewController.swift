@@ -17,7 +17,7 @@ class NewPostSubjectsViewController: UIViewController {
     private let stackView = TinyView()
     
     public let titleString: String
-    
+    public var subjects: [String] = []
     public let image: UIImage?
     public let movieURL: URL?
     
@@ -86,9 +86,14 @@ class NewPostSubjectsViewController: UIViewController {
             checkRow.addAction(UIAction(title: "") { _ in
                 if !checked {
                     checkRow.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+                    self.subjects.append(subject.name)
                     checked = true
                 } else {
                     checkRow.setImage(UIImage(systemName: "square"), for: .normal)
+                    let index = self.subjects.firstIndex(where: { string in
+                        subject.name == string
+                    })
+                    self.subjects.remove(at: index!)
                     checked = false
                 }
             }, for: .touchUpInside)
@@ -99,7 +104,7 @@ class NewPostSubjectsViewController: UIViewController {
         //Post button
         postButton.addAction(UIAction(title: "") { _ in
             if let image = self.image, let movieURL = self.movieURL {
-                self.fb.addPost(image: image, title: self.titleString, subjects: [], movie: movieURL)
+                self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: movieURL)
                 self.navigationController?.popToRootViewController(animated: true)
             }
             
