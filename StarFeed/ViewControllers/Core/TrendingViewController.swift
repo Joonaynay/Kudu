@@ -16,9 +16,7 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
     private let titleBar = TitleBar(title: "Trending", backButton: false)
 
     private let collectionView = CollectionView()
-    
-    private let loadButton = Button(text: "Load", color: UIColor.theme.blueColor)
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -33,30 +31,33 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
     }
     
     private func setupView() {
+        //View
         view.addSubview(titleBar)
         view.backgroundColor = .systemBackground
+        
+        //Collection View
         collectionView.dataSource = self
-        view.addSubview(collectionView)
-        view.addSubview(loadButton)
-        loadButton.addAction(UIAction() { _ in
-            self.fb.loadPosts { completion in
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            self.fb.loadPosts { boolValue in
+                print("refresh")
                 self.collectionView.reloadData()
+                self.collectionView.refreshControl?.endRefreshing()
             }
-            
-        }, for: .touchUpInside)
+        }, for: .valueChanged)
+        view.addSubview(collectionView)
+                
     }
-    
-    
+        
  
     private func setupConstraints() {
         titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         titleBar.height(70)
         
         collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        collectionView.topToBottom(of: loadButton)
-        
-        loadButton.topToBottom(of: titleBar)
+        collectionView.topToBottom(of: titleBar)
+
     }
+        
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fb.posts.count

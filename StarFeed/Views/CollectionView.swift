@@ -8,7 +8,7 @@
 import UIKit
 
 class CollectionView: UICollectionView {
-    
+        
     init() {        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -17,10 +17,11 @@ class CollectionView: UICollectionView {
         layout.minimumInteritemSpacing = 0
         super.init(frame: .zero, collectionViewLayout: layout)
         register(PostView.self, forCellWithReuseIdentifier: "post")
+        refreshControl = UIRefreshControl()
         showsVerticalScrollIndicator = false
         backgroundColor = .clear
         delaysContentTouches = false
-        
+        alwaysBounceVertical = true
     }
     
     override func touchesShouldCancel(in view: UIView) -> Bool {
