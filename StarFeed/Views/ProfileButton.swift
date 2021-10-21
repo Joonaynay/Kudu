@@ -9,13 +9,13 @@ import UIKit
 
 class ProfileButton: UIButton {
     
-    private let usernameLabel: UILabel = {
+    public let usernameLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         return label
     }()
     
-    private let profileImage: UIImageView = {
+    public let profileImage: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
@@ -31,6 +31,9 @@ class ProfileButton: UIButton {
             profileImage.clipsToBounds = true
         } else {
             profileImage.image = UIImage(systemName: "person.circle.fill")
+            profileImage.layer.masksToBounds = false
+            profileImage.layer.cornerRadius = 20
+            profileImage.clipsToBounds = true
         }
         profileImage.contentMode = .scaleAspectFill
         usernameLabel.text = username

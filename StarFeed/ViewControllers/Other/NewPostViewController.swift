@@ -59,13 +59,13 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         }, for: .touchUpInside)
         
         // Video View
-        videoView.backgroundColor = .secondarySystemBackground         
+        videoView.backgroundColor = .secondarySystemBackground
+
         videoView.addAction(UIAction(title: "") { _ in
             if let url = self.movieURL {
                 let player = VideoPlayer(url: url)
                 self.present(player, animated: true)
             }
-            
         }, for: .touchUpInside)
         
         // Next Button
@@ -126,9 +126,15 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         } else if let url = info[.mediaURL] as? URL {
             self.movieURL = url
             let videoPlayer = AVPlayerLayer(player: AVPlayer(url: url))
-            videoView.layer.addSublayer(videoPlayer)
             videoPlayer.frame = videoView.bounds
-            videoPlayer.videoGravity = .resizeAspectFill
+            
+            let play = UIImageView(image: UIImage(systemName: "play.circle.fill"))
+            play.frame = CGRect(x: 10, y: 10, width: 100, height: 100)
+            
+            view.addSubview(play)
+            videoPlayer.addSublayer(play.layer)
+            videoView.layer.addSublayer(videoPlayer)
+            
         }
     }
 }

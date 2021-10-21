@@ -9,6 +9,7 @@ import UIKit
 
 class PostView: UICollectionViewCell {
     
+    weak var vc: UIViewController?
     
     //Post Title
     private let titleLabel: UILabel = {
@@ -20,10 +21,9 @@ class PostView: UICollectionViewCell {
     }()
     
     //Main Image/Thumbnail
-    private let imageView: UIImageView = {
-        let image = UIImageView()
-        image.backgroundColor = .blue
-        return image
+    private let imageViewButton: UIButton = {
+        let button = UIButton()
+        return button
     }()
     
     //Button to move to comments
@@ -62,36 +62,15 @@ class PostView: UICollectionViewCell {
     }()
     
     //Has Profile Image and username
-    private var profile: ProfileButton!
+    private let profile = ProfileButton(image: nil, username: "")
         
     private let followButton = Button(text: "Follow", color: UIColor.theme.blueColor)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func setPost(post: Post) {
-        profile = ProfileButton(image: post.user.profileImage, username: post.user.username)
-        
-        let result = String(format: "%ld %@", locale: Locale.current, post.likes.count, "")
-        likeCount.text = result
-        
-        likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .highlighted)
-        likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-        
-        likeButton.addAction(UIAction() { _ in
-
-        }, for: .touchUpInside)
-        
-        titleLabel.text = post.title
         addSubview(commentsButton)
         addSubview(titleLabel)
-        imageView.image = post.image
-        addSubview(imageView)
+        addSubview(imageViewButton)
         addSubview(likeButton)
         addSubview(followButton)
         addSubview(profile)
@@ -100,15 +79,48 @@ class PostView: UICollectionViewCell {
         addConstraints()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func setPost(post: Post) {
+        
+        imageViewButton.setBackgroundImage(post.image, for: .normal)
+        imageViewButton.addAction(UIAction() { _ in
+            self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
+        }, for: .touchUpInside)
+        
+        profile.usernameLabel.text = post.user.username
+        profile.profileImage.image = post.user.profileImage
+        
+        let result = String(format: "%ld %@", locale: Locale.current, post.likes.count, "")
+        likeCount.text = result
+        
+
+        
+        
+        likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .highlighted)
+        likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+        
+        likeButton.addAction(UIAction() { _ in
+            
+        }, for: .touchUpInside)
+        
+        titleLabel.text = post.title
+
+        self.reloadInputViews()
+
+    }
+    
     
     private func addConstraints() {
         
-        imageView.edgesToSuperview(excluding: .bottom)
-        imageView.heightToWidth(of: self, multiplier: 9/16 )
-        imageView.widthToSuperview()
+        imageViewButton.edgesToSuperview(excluding: .bottom)
+        imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
+        imageViewButton.widthToSuperview()
         
         titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
-        titleLabel.topToBottom(of: imageView, offset: 5)
+        titleLabel.topToBottom(of: imageViewButton, offset: 5)
         titleLabel.height(60)
         
         likeButton.topToBottom(of: titleLabel, offset: 10)
