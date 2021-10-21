@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class FirebaseModel: ObservableObject {
     
@@ -23,6 +24,44 @@ class FirebaseModel: ObservableObject {
     
     init() {
         self.subjects = [Subject(name: "Business", image: "building.2"), Subject(name: "Workout", image: "heart")]
+    }
+    
+    func followUser(followUser: User) {
+        if !currentUser.following.contains(followUser.id) {
+            //Follow the user
+            
+            //Save who the user followed
+            db.save(collection: "users", document: currentUser.id, field: "following", data: [followUser.id])
+            
+            //Save that the followed user got followed
+            db.save(collection: "users", document: followUser.id, field: "followers", data: [currentUser.id])
+            
+            //Add to UserModel
+            
+            self.currentUser.following.append(followUser.id)
+            
+            //Save to core data
+            let coreUser = cd.fetchUser(uid: currentUser.id)
+            coreUser?.following?.append(followUser.id)
+            cd.save()
+            
+        } else {
+            // Unfollow user
+            Firestore.firestore().collection("users").document(followUser.id).updateData(["followers": FieldValue.arrayRemove([currentUser.id])])
+            Firestore.firestore().collection("users").document(currentUser.id).updateData(["following": FieldValue.arrayRemove([followUser.id])])
+            
+            // Delete from UserModel
+            let index = currentUser.following.firstIndex(of: followUser.id)
+            currentUser.following.remove(at: index!)
+            
+            //Save to core data
+            let deleteCoreUser = cd.fetchUser(uid: currentUser.id)
+            let newIndex = deleteCoreUser?.following?.firstIndex(of: followUser.id)
+            deleteCoreUser?.following?.remove(at: newIndex!)
+            cd.save()
+            
+        }
+        
     }
     
     func search(string: String, completion:@escaping ([Post]) -> Void) {

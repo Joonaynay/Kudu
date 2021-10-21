@@ -78,6 +78,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
             }
         }
         cell.setPost(post: posts[indexPath.row])
+        cell.vc = self
         return cell
     }
     

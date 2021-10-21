@@ -65,7 +65,7 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.vc = self
+        cell.vc = self        
         cell.setPost(post: fb.posts[indexPath.row])        
         return cell
     }

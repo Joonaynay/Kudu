@@ -9,7 +9,7 @@ import UIKit
 
 class Button: UIButton {
     
-    private let label: UILabel = {
+    public let label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.textColor = .label

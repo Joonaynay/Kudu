@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class PostView: UICollectionViewCell {
+    
+    let fb = FirebaseModel.shared
     
     weak var vc: UIViewController?
     
@@ -21,7 +24,7 @@ class PostView: UICollectionViewCell {
     }()
     
     //Main Image/Thumbnail
-    private let imageViewButton: UIButton = {
+    public let imageViewButton: UIButton = {
         let button = UIButton()
         return button
     }()
@@ -63,7 +66,7 @@ class PostView: UICollectionViewCell {
     
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
-        
+    
     private let followButton = Button(text: "Follow", color: UIColor.theme.blueColor)
     
     override init(frame: CGRect) {
@@ -85,6 +88,21 @@ class PostView: UICollectionViewCell {
     
     public func setPost(post: Post) {
         
+        let db = Firestore.firestore()
+        db.collection("users").document(post.user.id).addSnapshotListener { doc, error in
+            if let followers = doc?.get("followers") as? [String] {
+                if followers.contains(self.fb.currentUser.id) {
+                    self.followButton.label.text = "Unfollow"
+                } else {
+                    self.followButton.label.text = "Follow"
+                }
+            }
+        }
+        
+        followButton.addAction(UIAction() { _ in
+            self.fb.followUser(followUser: post.user)
+        }, for: .touchUpInside)
+        
         imageViewButton.setBackgroundImage(post.image, for: .normal)
         imageViewButton.addAction(UIAction() { _ in
             self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
@@ -96,9 +114,6 @@ class PostView: UICollectionViewCell {
         let result = String(format: "%ld %@", locale: Locale.current, post.likes.count, "")
         likeCount.text = result
         
-
-        
-        
         likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .highlighted)
         likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
         
@@ -107,9 +122,9 @@ class PostView: UICollectionViewCell {
         }, for: .touchUpInside)
         
         titleLabel.text = post.title
-
+        
         self.reloadInputViews()
-
+        
     }
     
     
