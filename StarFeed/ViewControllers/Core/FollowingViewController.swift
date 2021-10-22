@@ -26,7 +26,8 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource {
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
-        }    
+        }
+        self.collectionView.reloadData()
     }
     
     private func setupView() {
@@ -47,12 +48,24 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        var posts = [Post]()
+        for post in fb.posts {
+            if fb.currentUser.following.contains(post.user.id) {
+                posts.append(post)
+            }
+        }
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setPost(post: Post(id: "1", image: UIImage(systemName: "person.circle.fill")!, title: "", subjects: [], date: "", user: User(id: "1", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil), likes: [], comments: [], movie: nil))
+        var posts = [Post]()
+        for post in fb.posts {
+            if fb.currentUser.following.contains(post.user.id) {
+                posts.append(post)
+            }
+        }
+        cell.setPost(post: posts[indexPath.row])
         return cell
     }
     

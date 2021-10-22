@@ -14,7 +14,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     private let searchBar = TextField(text: "Search...", image: "magnifyingglass")
     
     private let fb = FirebaseModel.shared
-
+    
+    private let progressView = ProgressView()
+    
     private var posts = [Post]()
     private let collectionView = CollectionView()
     
@@ -42,6 +44,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         collectionView.refreshControl = nil
         collectionView.dataSource = self
         view.addSubview(collectionView)
+        view.addSubview(progressView)
     }
     
     
@@ -56,13 +59,18 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         searchBar.topToBottom(of: titleBar, offset: 10)
         searchBar.height(50)
         searchBar.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+        
+        view.bringSubviewToFront(progressView)
+        progressView.edgesToSuperview()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchBar.endEditing(true)
+        self.progressView.start()
         fb.search(string: searchBar.text!) { loadedPosts in
             self.posts = loadedPosts
             self.collectionView.reloadData()
+            self.progressView.stop()
         }
         return true
     }

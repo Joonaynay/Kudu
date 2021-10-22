@@ -76,7 +76,6 @@ class FirebaseModel: ObservableObject {
                 
                 for doc in query!.documents {
                     
-
                     group.enter()
                     var postId = ""
                     let title = doc.get("title") as! String
