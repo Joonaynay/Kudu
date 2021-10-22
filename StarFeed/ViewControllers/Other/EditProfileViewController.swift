@@ -113,6 +113,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
                     self.present(login, animated: true)
                 }
             }))
+            self.present(alert, animated: true)
         default:
             return
         }

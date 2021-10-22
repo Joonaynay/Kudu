@@ -14,7 +14,7 @@ class FirebaseModel: ObservableObject {
     
     private let file = FileManagerModel.shared
     private let storage = StorageModel.shared
-    private let cd = Persistence.shared
+    private let cd = Persistence()
     private let db = FirestoreModel.shared
     
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
@@ -24,6 +24,16 @@ class FirebaseModel: ObservableObject {
     
     init() {
         self.subjects = [Subject(name: "Business", image: "building.2"), Subject(name: "Workout", image: "heart")]
+    }
+    
+    func likePost(currentPost: Post) {
+        
+        if !currentPost.likes.contains(currentUser.id) {
+            //Save the users current ID to the likes on the post, so we can later get the number of people who have liked the post.
+            db.save(collection: "posts", document: currentPost.id, field: "likes", data: [self.currentUser.id])
+        } else {
+            Firestore.firestore().collection("posts").document(currentPost.id).updateData(["likes": FieldValue.arrayRemove([currentUser.id])])
+        }
     }
     
     func followUser(followUser: User) {

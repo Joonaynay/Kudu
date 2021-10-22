@@ -69,6 +69,8 @@ class PostView: UICollectionViewCell {
     
     private let followButton = Button(text: "Follow", color: UIColor.theme.blueColor)
     
+    private var first = true
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(commentsButton)
@@ -87,44 +89,70 @@ class PostView: UICollectionViewCell {
     }
     
     public func setPost(post: Post) {
+        var post = post
         
-        let db = Firestore.firestore()
-        db.collection("users").document(post.user.id).addSnapshotListener { doc, error in
-            if let followers = doc?.get("followers") as? [String] {
-                if followers.contains(self.fb.currentUser.id) {
+        if fb.currentUser.following.contains(post.user.id) {
+            followButton.label.text = "Unfollow"
+        } else {
+            followButton.label.text = "Follow"
+        }
+        
+        if first {
+            self.followButton.addAction(UIAction() { _ in
+                self.fb.followUser(followUser: post.user)
+                if self.fb.currentUser.following.contains(post.user.id) {
                     self.followButton.label.text = "Unfollow"
                 } else {
                     self.followButton.label.text = "Follow"
                 }
-            }
+            }, for: .touchUpInside)
         }
         
-        followButton.addAction(UIAction() { _ in
-            self.fb.followUser(followUser: post.user)
-        }, for: .touchUpInside)
-        
         imageViewButton.setBackgroundImage(post.image, for: .normal)
-        imageViewButton.addAction(UIAction() { _ in
-            self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
-        }, for: .touchUpInside)
+        
+        if first {
+            imageViewButton.addAction(UIAction() { _ in
+                self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
+            }, for: .touchUpInside)
+        }
+        
         
         profile.usernameLabel.text = post.user.username
         profile.profileImage.image = post.user.profileImage
         
-        let result = String(format: "%ld %@", locale: Locale.current, post.likes.count, "")
-        likeCount.text = result
+        if first {
+            let db = Firestore.firestore()
+            db.collection("posts").document(post.id).addSnapshotListener { doc, error in
+                guard let likes = doc?.get("likes") as? [String] else { return }
+                if likes.contains(self.fb.currentUser.id) {
+                    self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
+                    self.likeButton.tintColor = UIColor.theme.blueColor
+                } else {
+                    self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+                    self.likeButton.tintColor = .label
+                }
+                let result = String(format: "%ld %@", locale: Locale.current, likes.count, "")
+                self.likeCount.text = result
+            }
+
+        }
         
-        likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .highlighted)
-        likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
         
-        likeButton.addAction(UIAction() { _ in
-            
-        }, for: .touchUpInside)
+        if first {
+            likeButton.addAction(UIAction() { _ in
+                self.fb.likePost(currentPost: post)
+                if self.likeButton.tintColor == UIColor.theme.blueColor {
+                    guard let index = post.likes.firstIndex(of: self.fb.currentUser.id) else { return }
+                    post.likes.remove(at: index)                    
+                } else {
+                    post.likes.append(self.fb.currentUser.id)
+                }
+            }, for: .touchUpInside)
+        }
         
         titleLabel.text = post.title
         
-        self.reloadInputViews()
-        
+        first = false
     }
     
     

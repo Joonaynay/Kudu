@@ -28,6 +28,7 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
         }
+        collectionView.reloadData()
     }
     
     private func setupView() {
@@ -66,7 +67,7 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.vc = self        
-        cell.setPost(post: fb.posts[indexPath.row])        
+        cell.setPost(post: fb.posts[indexPath.row])
         return cell
     }
     

@@ -16,7 +16,7 @@ class AuthModel: ObservableObject {
     
     private let file = FileManagerModel.shared
     private let storage = StorageModel.shared
-    private lazy var cd = Persistence.shared
+    private lazy var cd = Persistence()
     private let db = FirestoreModel.shared
     private let fb = FirebaseModel.shared
     
@@ -195,6 +195,11 @@ class AuthModel: ObservableObject {
         UserDefaults.standard.setValue(nil, forKeyPath: "uid")
         self.file.deleteAllImages()
         self.cd.deleteAll()
+        do {
+            try auth.signOut()
+        } catch {
+            completion(nil)
+        }
         self.cd.container = NSPersistentContainer(name: "FreshModel")
         self.cd.container.loadPersistentStores { desc, error in
             if let error = error {
@@ -202,12 +207,9 @@ class AuthModel: ObservableObject {
             }
         }
         self.cd.context = self.cd.container.viewContext
-        do {
-            try auth.signOut()
-        } catch {
-            completion(nil)
-        }
+
         completion(nil)
+        
     }
     
     

@@ -24,7 +24,7 @@ class ProgressView: UIView {
     }
     
     func start() {
-        backgroundColor = .black.withAlphaComponent(0.1)
+        backgroundColor = .label.withAlphaComponent(0.1)
         self.activity.startAnimating()
         isUserInteractionEnabled = true
     }

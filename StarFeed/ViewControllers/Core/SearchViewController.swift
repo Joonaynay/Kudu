@@ -81,6 +81,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+        cell.vc = self
         cell.setPost(post: self.posts[indexPath.row])
         return cell
     }
