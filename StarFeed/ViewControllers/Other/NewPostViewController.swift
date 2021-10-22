@@ -129,7 +129,8 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
             videoPlayer.frame = videoView.bounds
             
             let play = UIImageView(image: UIImage(systemName: "play.circle.fill"))
-            play.frame = CGRect(x: 10, y: 10, width: 100, height: 100)
+            play.tintColor = .white
+            play.frame = CGRect(x: videoView.bounds.width / 2 - 25, y: videoView.bounds.height / 2 - 25, width: 50, height: 50)
             
             view.addSubview(play)
             videoPlayer.addSublayer(play.layer)

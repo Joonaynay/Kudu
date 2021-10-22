@@ -65,6 +65,7 @@ class AuthModel: ObservableObject {
                         currentUser.name = user.name
                         currentUser.followers = user.followers
                         currentUser.following = user.following
+                        currentUser.posts = []
                         self.cd.save()
                         
                         //Save ProfileImage to FileManager
