@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Button: UIButton {
+class CustomButton: UIButton {
     
     public let label: UILabel = {
         let label = UILabel()

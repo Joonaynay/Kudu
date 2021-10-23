@@ -47,9 +47,9 @@ class ProfilePictureViewController: UIViewController, UIImagePickerControllerDel
         
     }()
     
-    let skipButton = Button(text: "Skip", color: .clear)
+    let skipButton = CustomButton(text: "Skip", color: .clear)
     
-    let doneButton = Button(text: "Done", color: UIColor.theme.blueColor)
+    let doneButton = CustomButton(text: "Done", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -67,7 +67,7 @@ class PostView: UICollectionViewCell {
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     
-    private let followButton = Button(text: "Follow", color: UIColor.theme.blueColor)
+    private let followButton = CustomButton(text: "Follow", color: UIColor.theme.blueColor)
     
     private var first = true
     
@@ -90,35 +90,12 @@ class PostView: UICollectionViewCell {
     
     public func setPost(post: Post) {
         var post = post
-        
+                
         if fb.currentUser.following.contains(post.user.id) {
             followButton.label.text = "Unfollow"
         } else {
             followButton.label.text = "Follow"
         }
-        
-        if first {
-            self.followButton.addAction(UIAction() { _ in
-                self.fb.followUser(followUser: post.user)
-                if self.fb.currentUser.following.contains(post.user.id) {
-                    self.followButton.label.text = "Unfollow"
-                } else {
-                    self.followButton.label.text = "Follow"
-                }
-            }, for: .touchUpInside)
-        }
-        
-        imageViewButton.setBackgroundImage(post.image, for: .normal)
-        
-        if first {
-            imageViewButton.addAction(UIAction() { _ in
-                self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
-            }, for: .touchUpInside)
-        }
-        
-        
-        profile.usernameLabel.text = post.user.username
-        profile.profileImage.image = post.user.profileImage
         
         if first {
             let db = Firestore.firestore()
@@ -135,23 +112,38 @@ class PostView: UICollectionViewCell {
                 self.likeCount.text = result
             }
 
-        }
-        
-        
-        if first {
             likeButton.addAction(UIAction() { _ in
                 self.fb.likePost(currentPost: post)
                 if self.likeButton.tintColor == UIColor.theme.blueColor {
                     guard let index = post.likes.firstIndex(of: self.fb.currentUser.id) else { return }
-                    post.likes.remove(at: index)                    
+                    post.likes.remove(at: index)
                 } else {
                     post.likes.append(self.fb.currentUser.id)
                 }
             }, for: .touchUpInside)
+            
+            followButton.addAction(UIAction() { _ in
+                self.fb.followUser(followUser: post.user) {
+                    if self.fb.currentUser.following.contains(post.user.id) {
+                        self.followButton.label.text = "Unfollow"
+                    } else {
+                        self.followButton.label.text = "Follow"                        
+                    }
+                }
+            }, for: .touchUpInside)
+            
+            imageViewButton.addAction(UIAction() { _ in
+                self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
+            }, for: .touchUpInside)
         }
         
+        imageViewButton.setBackgroundImage(post.image, for: .normal)
+                                
+        profile.usernameLabel.text = post.user.username
+        profile.profileImage.image = post.user.profileImage
+                                
         titleLabel.text = post.title
-        
+
         first = false
     }
     
@@ -193,3 +185,5 @@ class PostView: UICollectionViewCell {
     }
     
 }
+
+

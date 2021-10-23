@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ScrollView: UIScrollView {
+class CustomScrollView: UIScrollView {
     
     init() {
         super.init(frame: .zero)

@@ -8,7 +8,7 @@
 import UIKit
 import TinyConstraints
 
-class TextField: UITextField, UITextFieldDelegate {
+class CustomTextField: UITextField, UITextFieldDelegate {
     var insets: UIEdgeInsets!
     
     var image: UIImageView!

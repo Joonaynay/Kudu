@@ -81,7 +81,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let button = Button(text: "", color: UIColor.theme.blueColor)
+    private let button = CustomButton(text: "", color: UIColor.theme.blueColor)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

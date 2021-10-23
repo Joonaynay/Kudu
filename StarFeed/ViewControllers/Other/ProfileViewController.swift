@@ -12,7 +12,7 @@ class ProfileViewController: UIViewController {
     
     private let fb = FirebaseModel.shared
     
-    private let scrollView = ScrollView()
+    private let scrollView = CustomScrollView()
     private var backButton = BackButton()
     let stackView = UIView()
             
@@ -50,13 +50,9 @@ class ProfileViewController: UIViewController {
     }
     var items = [UIView]()
 
-        
-    
     //Edit Profile || Follow Button
-    let editProfileButton = Button(text: "Edit Profile", color: UIColor.theme.blueColor)
-    
-    
-    
+    let editProfileButton = CustomButton(text: "Edit Profile", color: UIColor.theme.blueColor)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()

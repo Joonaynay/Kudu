@@ -36,7 +36,7 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func followUser(followUser: User) {
+    func followUser(followUser: User, completion:@escaping () -> Void) {
         if !currentUser.following.contains(followUser.id) {
             //Follow the user
             
@@ -46,14 +46,15 @@ class FirebaseModel: ObservableObject {
             //Save that the followed user got followed
             db.save(collection: "users", document: followUser.id, field: "followers", data: [currentUser.id])
             
-            //Add to UserModel
-            
+            //Add to UserModel            
             self.currentUser.following.append(followUser.id)
             
             //Save to core data
             let coreUser = cd.fetchUser(uid: currentUser.id)
             coreUser?.following?.append(followUser.id)
             cd.save()
+            
+            completion()
             
         } else {
             // Unfollow user
@@ -69,6 +70,8 @@ class FirebaseModel: ObservableObject {
             let newIndex = deleteCoreUser?.following?.firstIndex(of: followUser.id)
             deleteCoreUser?.following?.remove(at: newIndex!)
             cd.save()
+            
+            completion()
             
         }
         
@@ -151,7 +154,7 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func loadPosts(completion:@escaping (Bool) -> Void) {
+    func loadPosts(completion:@escaping () -> Void) {
                 
         //Load all Post Firestore Documents
         self.db.getDocs(collection: "posts") { query in
@@ -191,10 +194,10 @@ class FirebaseModel: ObservableObject {
                 }
                 group.notify(queue: .main) {
                     self.posts = posts
-                    completion(true)
+                    completion()
                 }
             } else {
-                completion(false)
+                completion()
             }
         }
     }
@@ -269,8 +272,6 @@ class FirebaseModel: ObservableObject {
             if let current = self.cd.fetchUser(uid: self.currentUser.id) {
                 current.posts?.append(postId!)
             }
-            
-            
         }
     }
     

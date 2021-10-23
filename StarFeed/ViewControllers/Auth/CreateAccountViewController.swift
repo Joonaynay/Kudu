@@ -13,15 +13,15 @@ class CreateAccountViewController: UIViewController {
     private let auth = AuthModel.shared
         
     private let progressView = ProgressView()
-    private let scrollView = ScrollView()
+    private let scrollView = CustomScrollView()
     private let stackView = UIView()
     
-    public var firstName = TextField(text: "First Name", image: nil)
-    public var lastName = TextField(text: "Last Name", image: nil)
-    public var username = TextField(text: "Username", image: nil)
-    public var email = TextField(text: "Email", image: nil)
-    public var password = TextField(text: "Password", image: nil)
-    public var confirmPassword = TextField(text: "Confirm Password", image: nil)
+    public var firstName = CustomTextField(text: "First Name", image: nil)
+    public var lastName = CustomTextField(text: "Last Name", image: nil)
+    public var username = CustomTextField(text: "Username", image: nil)
+    public var email = CustomTextField(text: "Email", image: nil)
+    public var password = CustomTextField(text: "Password", image: nil)
+    public var confirmPassword = CustomTextField(text: "Confirm Password", image: nil)
     
     private var bottomConstraint: NSLayoutConstraint!
 
@@ -36,7 +36,7 @@ class CreateAccountViewController: UIViewController {
     }
     
     private let backButton = BackButton()
-    public let createAccountButton = Button(text: "Create Account", color: UIColor.theme.blueColor)
+    public let createAccountButton = CustomButton(text: "Create Account", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
         super.viewDidLoad()

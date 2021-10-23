@@ -39,10 +39,9 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
         //Collection View
         collectionView.dataSource = self
         collectionView.refreshControl?.addAction(UIAction() { _ in
-            self.fb.loadPosts { boolValue in
-                print("refresh")
-                self.collectionView.reloadData()
+            self.fb.loadPosts { 
                 self.collectionView.refreshControl?.endRefreshing()
+                self.collectionView.reloadData()
             }
         }, for: .valueChanged)
         view.addSubview(collectionView)

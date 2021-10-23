@@ -18,15 +18,15 @@
 		E08250E627152D6800C6D58C /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08250E527152D6800C6D58C /* TitleBar.swift */; };
 		E08A65FB2719FDC000254D66 /* SubjectPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08A65FA2719FDC000254D66 /* SubjectPostViewController.swift */; };
 		E099735B27165DFE00073785 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E099735A27165DFE00073785 /* ProfileViewController.swift */; };
-		E09973A727169D4D00073785 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973A627169D4D00073785 /* Button.swift */; };
+		E09973A727169D4D00073785 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973A627169D4D00073785 /* CustomButton.swift */; };
 		E09973A92716A30400073785 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973A82716A30400073785 /* NewPostViewController.swift */; };
 		E09973B22716A60200073785 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B12716A60200073785 /* LoginViewController.swift */; };
 		E09973B42716AB9600073785 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B32716AB9600073785 /* Colors.swift */; };
 		E09973B62716ADB400073785 /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B52716ADB400073785 /* AuthModel.swift */; };
 		E09973B82716AFD600073785 /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B72716AFD600073785 /* CreateAccountViewController.swift */; };
 		E09973BA2716B22600073785 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B92716B22600073785 /* BackButton.swift */; };
-		E09973BC2716BA6700073785 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BB2716BA6700073785 /* TextField.swift */; };
-		E09973C02717593600073785 /* ScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BF2717593600073785 /* ScrollView.swift */; };
+		E09973BC2716BA6700073785 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BB2716BA6700073785 /* CustomTextField.swift */; };
+		E09973C02717593600073785 /* CustomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BF2717593600073785 /* CustomScrollView.swift */; };
 		E0A61F2D271A41FF00026CE1 /* EmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */; };
 		E0B6F48C271BDDA700DEDDC3 /* ProfileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */; };
 		E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48D271BDED500DEDDC3 /* UserModel.swift */; };
@@ -91,15 +91,15 @@
 		E08250E527152D6800C6D58C /* TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBar.swift; sourceTree = "<group>"; };
 		E08A65FA2719FDC000254D66 /* SubjectPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectPostViewController.swift; sourceTree = "<group>"; };
 		E099735A27165DFE00073785 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		E09973A627169D4D00073785 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		E09973A627169D4D00073785 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		E09973A82716A30400073785 /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		E09973B12716A60200073785 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		E09973B32716AB9600073785 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		E09973B52716ADB400073785 /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
 		E09973B72716AFD600073785 /* CreateAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
 		E09973B92716B22600073785 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
-		E09973BB2716BA6700073785 /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
-		E09973BF2717593600073785 /* ScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollView.swift; sourceTree = "<group>"; };
+		E09973BB2716BA6700073785 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		E09973BF2717593600073785 /* CustomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomScrollView.swift; sourceTree = "<group>"; };
 		E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
 		E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
 		E0B6F48D271BDED500DEDDC3 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
@@ -190,10 +190,10 @@
 				E08250E527152D6800C6D58C /* TitleBar.swift */,
 				5246D9E9271E55970024500C /* ProgressView.swift */,
 				52DCF1642719486100AD187C /* PostView.swift */,
-				E09973A627169D4D00073785 /* Button.swift */,
+				E09973A627169D4D00073785 /* CustomButton.swift */,
 				E09973B92716B22600073785 /* BackButton.swift */,
-				E09973BB2716BA6700073785 /* TextField.swift */,
-				E09973BF2717593600073785 /* ScrollView.swift */,
+				E09973BB2716BA6700073785 /* CustomTextField.swift */,
+				E09973BF2717593600073785 /* CustomScrollView.swift */,
 				52DCF16227192DF200AD187C /* Grid.swift */,
 				E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */,
 				E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */,
@@ -592,7 +592,7 @@
 			files = (
 				E0EF3AF82714CD1A00D5FDF8 /* SearchViewController.swift in Sources */,
 				5246D9E6271BBF1F0024500C /* ProfilePictureViewController.swift in Sources */,
-				E09973C02717593600073785 /* ScrollView.swift in Sources */,
+				E09973C02717593600073785 /* CustomScrollView.swift in Sources */,
 				E09973A92716A30400073785 /* NewPostViewController.swift in Sources */,
 				5246D9E8271D1CFD0024500C /* EditProfileViewController.swift in Sources */,
 				E08A65FB2719FDC000254D66 /* SubjectPostViewController.swift in Sources */,
@@ -610,8 +610,8 @@
 				52DCF1652719486100AD187C /* PostView.swift in Sources */,
 				E09973B42716AB9600073785 /* Colors.swift in Sources */,
 				E099735B27165DFE00073785 /* ProfileViewController.swift in Sources */,
-				E09973BC2716BA6700073785 /* TextField.swift in Sources */,
-				E09973A727169D4D00073785 /* Button.swift in Sources */,
+				E09973BC2716BA6700073785 /* CustomTextField.swift in Sources */,
+				E09973A727169D4D00073785 /* CustomButton.swift in Sources */,
 				E0A61F2D271A41FF00026CE1 /* EmailViewController.swift in Sources */,
 				E0F11194271932E20062E190 /* SubjectModel.swift in Sources */,
 				E058F9B6271952FC006CC85C /* PostModel.swift in Sources */,

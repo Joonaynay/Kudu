@@ -14,15 +14,15 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         
     var imageView = UIImageView()
     
-    private let scrollView = ScrollView()
+    private let scrollView = CustomScrollView()
     private let stackView = TinyView()
     
     private var backButton = BackButton()
-    private let titleText = TextField(text: "Title", image: nil)
-    private let imageButton = Button(text: "Select a thumbnail...", color: UIColor.theme.blueColor)
-    private let videoButton = Button(text: "Select a video...", color: UIColor.theme.blueColor)
+    private let titleText = CustomTextField(text: "Title", image: nil)
+    private let imageButton = CustomButton(text: "Select a thumbnail...", color: UIColor.theme.blueColor)
+    private let videoButton = CustomButton(text: "Select a video...", color: UIColor.theme.blueColor)
     private let videoView = UIButton()
-    let nextButton = Button(text: "Next", color: UIColor.theme.blueColor)
+    let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
     
     var movieURL: URL!
 

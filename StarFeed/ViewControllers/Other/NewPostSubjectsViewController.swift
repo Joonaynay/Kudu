@@ -12,7 +12,7 @@ class NewPostSubjectsViewController: UIViewController {
     
     let fb = FirebaseModel.shared
     
-    private let scrollView = ScrollView()
+    private let scrollView = CustomScrollView()
     private let backButton = BackButton()
     private let stackView = TinyView()
     
@@ -42,7 +42,7 @@ class NewPostSubjectsViewController: UIViewController {
         return button
     }
     
-    private let postButton = Button(text: "Post", color: UIColor.theme.blueColor)
+    private let postButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
     init(movieURL: URL?, image: UIImage?, titleString: String) {
         self.movieURL = movieURL

@@ -11,7 +11,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
 
     private let titleBar = TitleBar(title: "Search", backButton: false)
     
-    private let searchBar = TextField(text: "Search...", image: "magnifyingglass")
+    private let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
     
     private let fb = FirebaseModel.shared
     

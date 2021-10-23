@@ -58,8 +58,8 @@ class EmailViewController: UIViewController {
         
     var timer: Timer!
     
-    let nextButton = Button(text: "Next", color: UIColor.theme.blueColor)
-    let cancelButton = Button(text: "Cancel", color: .clear)
+    let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
+    let cancelButton = CustomButton(text: "Cancel", color: .clear)
     
     
     override func viewDidLoad() {

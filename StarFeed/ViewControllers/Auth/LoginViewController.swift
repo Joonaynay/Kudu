@@ -15,13 +15,13 @@ class LoginViewController: UIViewController {
     private let progressView = ProgressView()
     
     private var stackView = UIView()
-    private var scrollView = ScrollView()
+    private var scrollView = CustomScrollView()
     private var bottomConstraint: NSLayoutConstraint!
     private let imageView = UIImageView()
-    private var email = TextField(text: "Email", image: nil)
-    private var password = TextField(text: "Password", image: nil)
-    private let signInButton = Button(text: "Sign In", color: UIColor.theme.blueColor)
-    private let createAccountButton = Button(text: "Create Account", color: .clear)
+    private var email = CustomTextField(text: "Email", image: nil)
+    private var password = CustomTextField(text: "Password", image: nil)
+    private let signInButton = CustomButton(text: "Sign In", color: UIColor.theme.blueColor)
+    private let createAccountButton = CustomButton(text: "Create Account", color: .clear)
     private var keyboardShowing: Bool = false
     
     

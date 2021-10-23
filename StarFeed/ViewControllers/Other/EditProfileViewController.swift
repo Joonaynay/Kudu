@@ -41,7 +41,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     private func addConstraints() {
         
         tableView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        tableView.topToBottom(of: label)
+        tableView.topToBottom(of: label, offset: -10)
         
         label.topToSuperview(offset: 10)
         label.centerXToSuperview()
@@ -57,9 +57,9 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! TableCell
         switch indexPath.row {
         case 0:
-            cell.setupCell(title: "Delete Account", image: false)
+            cell.setupCell(title: "Delete Account", image: true)
         case 1:
-            cell.setupCell(title: "Sign Out", image: false)
+            cell.setupCell(title: "Sign Out", image: true)
         default:
             cell.setupCell(title: "Title", image: false)
         }
