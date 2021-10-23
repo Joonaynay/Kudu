@@ -20,6 +20,8 @@ class FirebaseModel: ObservableObject {
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
     @Published public var users = [User]()
     @Published public var posts = [Post]()
+
+    
     @Published public var subjects = [Subject]()
     
     init() {

@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController {
     private let scrollView = CustomScrollView()
     private var backButton = BackButton()
     let stackView = UIView()
-            
+    
     
     //Profile Image
     private let profileImage: UIButton = {
@@ -35,7 +35,7 @@ class ProfileViewController: UIViewController {
     }()
     
     var postTitle: UILabel {
-       
+        
         let title = UILabel()
         title.text = "This is my title."
         return title
@@ -49,22 +49,35 @@ class ProfileViewController: UIViewController {
         return rect
     }
     var items = [UIView]()
-
+    
     //Edit Profile || Follow Button
     let editProfileButton = CustomButton(text: "Edit Profile", color: UIColor.theme.blueColor)
-
+    
+    private let user: User
+    
+    init(user: User) {
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupConstraints()
     }
     
+    
     override func viewDidAppear(_ animated: Bool) {
         backButton.vc = self
-        if let image = fb.currentUser.profileImage {
+        if let image = self.user.profileImage {
             self.profileImage.setImage(image, for: .normal)
         }
     }
+    
     
     private func setupView() {
         
@@ -76,17 +89,15 @@ class ProfileViewController: UIViewController {
         backButton.setupBackButton()
         
         //Profile Image
-        if let image = fb.currentUser.profileImage {
+        if let image = user.profileImage {
             profileImage.setImage(image, for: .normal)
-            profileImage.imageView!.layer.masksToBounds = false
-            profileImage.imageView!.layer.cornerRadius = 75
-            profileImage.imageView!.clipsToBounds = true
         } else {
             profileImage.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
-            profileImage.imageView!.layer.masksToBounds = false
-            profileImage.imageView!.layer.cornerRadius = 75
-            profileImage.imageView!.clipsToBounds = true
         }
+        profileImage.imageView!.layer.masksToBounds = false
+        profileImage.imageView!.layer.cornerRadius = 75
+        profileImage.imageView!.clipsToBounds = true
+        
         profileImage.addAction(UIAction() { _ in
             self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
         }, for: .touchUpInside)
@@ -94,7 +105,7 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(profileImage)        
         
         //Username
-        username.text = fb.currentUser.username
+        username.text = user.username
         scrollView.addSubview(username)
         
         //Button
@@ -104,12 +115,14 @@ class ProfileViewController: UIViewController {
         
         scrollView.addSubview(editProfileButton)
         
-        for _ in 1...10 {
-            items.append(rectangle)
-            rectangle.addSubview(postTitle)
+        for post in fb.posts {
+            let pview = PostView()
+            pview.vc = self
+            pview.setPost(post: post)
+            items.append(pview)
         }
         //Stack View
-        stackView.stack(items, spacing: 10)
+        stackView.stack(items)
         
         // ScrollView
         scrollView.addSubview(stackView)
@@ -124,16 +137,16 @@ class ProfileViewController: UIViewController {
         profileImage.width(150)
         profileImage.centerX(to: scrollView)
         profileImage.top(to: scrollView)
-
+        
         username.topToBottom(of: profileImage, offset: 20)
         username.centerX(to: scrollView)
         username.horizontalToSuperview(insets: TinyEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
-
+        
         editProfileButton.height(50)
         editProfileButton.width(150)
         editProfileButton.centerX(to: scrollView)
         editProfileButton.topToBottom(of: username, offset: 30)
-
+        
         scrollView.topToBottom(of: backButton)
         scrollView.leadingToSuperview()
         scrollView.trailingToSuperview()
@@ -145,8 +158,9 @@ class ProfileViewController: UIViewController {
         stackView.bottom(to: scrollView)
         
         stackView.width(view.width)
+        
         for item in items {
-            item.heightToWidth(of: stackView, multiplier: 9/16)
+            item.heightToWidth(of: stackView)
         }
     }
 }

@@ -82,7 +82,7 @@ class TitleBar: UIView {
     private func createMenu() -> UIMenu {
         let menu = UIMenu(title: "", options: .displayInline, children: [
             UIAction(title: "Profile") { action in
-                let profile = ProfileViewController()
+                let profile = ProfileViewController(user: self.fb.currentUser)
                 profile.hidesBottomBarWhenPushed = true
                 self.vc?.navigationController?.pushViewController(profile, animated: true)
             },

@@ -41,7 +41,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     private func addConstraints() {
         
         tableView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        tableView.topToBottom(of: label, offset: -10)
+        tableView.topToBottom(of: label, offset: -20)
         
         label.topToSuperview(offset: 10)
         label.centerXToSuperview()

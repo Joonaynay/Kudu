@@ -24,7 +24,7 @@ class PostView: UICollectionViewCell {
     }()
     
     //Main Image/Thumbnail
-    public let imageViewButton: UIButton = {
+    private let imageViewButton: UIButton = {
         let button = UIButton()
         return button
     }()
@@ -89,15 +89,20 @@ class PostView: UICollectionViewCell {
     }
     
     public func setPost(post: Post) {
-        var post = post
-                
-        if fb.currentUser.following.contains(post.user.id) {
-            followButton.label.text = "Unfollow"
-        } else {
-            followButton.label.text = "Follow"
-        }
         
+                
+                
+
+                
         if first {
+            var post = post
+            if fb.currentUser.following.contains(post.user.id) {
+                followButton.label.text = "Unfollow"
+            } else {
+                followButton.label.text = "Follow"
+            }
+            
+            print("First: \(post.title)")
             let db = Firestore.firestore()
             db.collection("posts").document(post.id).addSnapshotListener { doc, error in
                 guard let likes = doc?.get("likes") as? [String] else { return }
@@ -135,14 +140,20 @@ class PostView: UICollectionViewCell {
             imageViewButton.addAction(UIAction() { _ in
                 self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
             }, for: .touchUpInside)
+            
+            profile.addAction(UIAction() { _ in
+                self.vc?.navigationController?.pushViewController(ProfileViewController(user: post.user), animated: true)
+            }, for: .touchUpInside)
+            
+            imageViewButton.setBackgroundImage(post.image, for: .normal)
+                                    
+            profile.usernameLabel.text = post.user.username
+            profile.profileImage.image = post.user.profileImage
+                                    
+            titleLabel.text = post.title
         }
         
-        imageViewButton.setBackgroundImage(post.image, for: .normal)
-                                
-        profile.usernameLabel.text = post.user.username
-        profile.profileImage.image = post.user.profileImage
-                                
-        titleLabel.text = post.title
+
 
         first = false
     }

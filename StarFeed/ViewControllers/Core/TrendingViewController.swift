@@ -28,7 +28,6 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
         }
-        collectionView.reloadData()
     }
     
     private func setupView() {
@@ -57,7 +56,6 @@ class TrendingViewController: UIViewController, UICollectionViewDataSource {
         collectionView.topToBottom(of: titleBar)
 
     }
-        
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fb.posts.count
