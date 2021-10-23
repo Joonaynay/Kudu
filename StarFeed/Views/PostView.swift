@@ -142,7 +142,9 @@ class PostView: UICollectionViewCell {
             }, for: .touchUpInside)
             
             profile.addAction(UIAction() { _ in
-                self.vc?.navigationController?.pushViewController(ProfileViewController(user: post.user), animated: true)
+                let profileView = ProfileViewController(user: post.user)
+                profileView.hidesBottomBarWhenPushed = true
+                self.vc?.navigationController?.pushViewController(profileView, animated: true)
             }, for: .touchUpInside)
             
             imageViewButton.setBackgroundImage(post.image, for: .normal)
