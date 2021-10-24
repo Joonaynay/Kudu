@@ -24,7 +24,34 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     private let videoView = UIButton()
     let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
     
+
+    
     var movieURL: URL!
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if !UserDefaults.standard.bool(forKey: "isFirstTime") {
+            let alert = UIAlertController(title: "Important!", message: "", preferredStyle: .alert)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .left
+            let messageText = NSAttributedString(
+                string: "_Name_ is a place for inspiration, developing personal skills, and self improvement. Because of this we ask that you do not post any material that is unrelated. \n\nExamples of unrelated content include: \n\n- Memes \n\n- Posts about your weekend fun \n\n- Family photos, etc. \n\nIf you do post unrelated content then your account can and will be banned.",
+                attributes: [
+                    NSAttributedString.Key.paragraphStyle: paragraphStyle,
+                    NSAttributedString.Key.foregroundColor : UIColor.label,
+                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)
+                ]
+            )
+
+            alert.setValue(messageText, forKey: "attributedMessage")
+            
+            let action = UIAlertAction(title: "I understand", style: .default) { _ in
+                UserDefaults.standard.set(true, forKey: "isFirstTime")
+            }
+            alert.addAction(action)
+            present(alert, animated: true)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,4 +165,6 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
             
         }
     }
+    
+    
 }
