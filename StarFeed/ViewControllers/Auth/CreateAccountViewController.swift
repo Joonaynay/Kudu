@@ -91,8 +91,8 @@ class CreateAccountViewController: UIViewController {
                 if error == nil {
                     self.progressView.stop()
                     let email = EmailViewController()
-                    email.modalPresentationStyle = .fullScreen
-                    self.present(email, animated: true)
+                    self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+                    self.navigationController?.pushViewController(email, animated: true)
                 } else {
                     self.progressView.stop()
                     let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
@@ -107,6 +107,7 @@ class CreateAccountViewController: UIViewController {
         //Scroll View
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
+        scrollView.refreshControl = nil
         
         //Stack View
         stackView.stack([

@@ -27,6 +27,7 @@
 		E09973BA2716B22600073785 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B92716B22600073785 /* BackButton.swift */; };
 		E09973BC2716BA6700073785 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BB2716BA6700073785 /* CustomTextField.swift */; };
 		E09973C02717593600073785 /* CustomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BF2717593600073785 /* CustomScrollView.swift */; };
+		E0A1AC402724C3D100848E50 /* TourViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1AC3F2724C3D100848E50 /* TourViewController.swift */; };
 		E0A61F2D271A41FF00026CE1 /* EmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */; };
 		E0B6F48C271BDDA700DEDDC3 /* ProfileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */; };
 		E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48D271BDED500DEDDC3 /* UserModel.swift */; };
@@ -45,7 +46,6 @@
 		E0F111922719164B0062E190 /* NewPostSubjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F111912719164B0062E190 /* NewPostSubjectsViewController.swift */; };
 		E0F11194271932E20062E190 /* SubjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F11193271932E20062E190 /* SubjectModel.swift */; };
 		E0F11196271937030062E190 /* FirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F11195271937030062E190 /* FirebaseModel.swift */; };
-		E0FDBFEA271D205A00EC1D1B /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */; };
 		E0FDBFEC271D3A5400EC1D1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */; };
 		E0FDBFEF271D3F0000EC1D1B /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFEE271D3F0000EC1D1B /* Persistence.swift */; };
 		E0FDBFF5271D40C300EC1D1B /* FreshModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFF3271D40C300EC1D1B /* FreshModel.xcdatamodeld */; };
@@ -100,6 +100,7 @@
 		E09973B92716B22600073785 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		E09973BB2716BA6700073785 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		E09973BF2717593600073785 /* CustomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomScrollView.swift; sourceTree = "<group>"; };
+		E0A1AC3F2724C3D100848E50 /* TourViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourViewController.swift; sourceTree = "<group>"; };
 		E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
 		E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
 		E0B6F48D271BDED500DEDDC3 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
@@ -122,7 +123,6 @@
 		E0F111912719164B0062E190 /* NewPostSubjectsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostSubjectsViewController.swift; sourceTree = "<group>"; };
 		E0F11193271932E20062E190 /* SubjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectModel.swift; sourceTree = "<group>"; };
 		E0F11195271937030062E190 /* FirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseModel.swift; sourceTree = "<group>"; };
-		E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		E0FDBFEE271D3F0000EC1D1B /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E0FDBFF4271D40C300EC1D1B /* FreshModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FreshModel.xcdatamodel; sourceTree = "<group>"; };
@@ -196,7 +196,6 @@
 				E09973BF2717593600073785 /* CustomScrollView.swift */,
 				52DCF16227192DF200AD187C /* Grid.swift */,
 				E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */,
-				E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */,
 				E0FDBFFF271E047400EC1D1B /* ProfileImage.swift */,
 			);
 			path = Views;
@@ -264,6 +263,7 @@
 				E09973B72716AFD600073785 /* CreateAccountViewController.swift */,
 				E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */,
 				5246D9E5271BBF1F0024500C /* ProfilePictureViewController.swift */,
+				E0A1AC3F2724C3D100848E50 /* TourViewController.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -600,7 +600,6 @@
 				E0F11196271937030062E190 /* FirebaseModel.swift in Sources */,
 				E0F111922719164B0062E190 /* NewPostSubjectsViewController.swift in Sources */,
 				E09973B22716A60200073785 /* LoginViewController.swift in Sources */,
-				E0FDBFEA271D205A00EC1D1B /* CollectionView.swift in Sources */,
 				E0EF3AC92714CACF00D5FDF8 /* TrendingViewController.swift in Sources */,
 				E0EF3AC52714CACF00D5FDF8 /* AppDelegate.swift in Sources */,
 				E09973B82716AFD600073785 /* CreateAccountViewController.swift in Sources */,
@@ -624,6 +623,7 @@
 				E0EF3AC72714CACF00D5FDF8 /* SceneDelegate.swift in Sources */,
 				E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */,
 				E09973BA2716B22600073785 /* BackButton.swift in Sources */,
+				E0A1AC402724C3D100848E50 /* TourViewController.swift in Sources */,
 				E0FDC000271E047400EC1D1B /* ProfileImage.swift in Sources */,
 				E09973B62716ADB400073785 /* AuthModel.swift in Sources */,
 				E0FDBFF7271D411900EC1D1B /* FileManagerModel.swift in Sources */,

@@ -13,6 +13,8 @@ class CustomScrollView: UIScrollView {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         delaysContentTouches = false
+        refreshControl = UIRefreshControl()
+        alwaysBounceVertical = true
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false        
     }
@@ -27,6 +29,5 @@ class CustomScrollView: UIScrollView {
         }
         return super.touchesShouldCancel(in: view)
     }
-    
 
 }

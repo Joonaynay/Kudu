@@ -62,6 +62,7 @@ class LoginViewController: UIViewController {
         
         //ScrollView
         view.addSubview(scrollView)
+        scrollView.refreshControl = nil
         
         //Stack View
         scrollView.addSubview(stackView)
