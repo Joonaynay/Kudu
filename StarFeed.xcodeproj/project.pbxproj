@@ -27,7 +27,6 @@
 		E09973BA2716B22600073785 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973B92716B22600073785 /* BackButton.swift */; };
 		E09973BC2716BA6700073785 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BB2716BA6700073785 /* CustomTextField.swift */; };
 		E09973C02717593600073785 /* CustomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09973BF2717593600073785 /* CustomScrollView.swift */; };
-		E0A1AC402724C3D100848E50 /* TourViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1AC3F2724C3D100848E50 /* TourViewController.swift */; };
 		E0A61F2D271A41FF00026CE1 /* EmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */; };
 		E0B6F48C271BDDA700DEDDC3 /* ProfileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */; };
 		E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48D271BDED500DEDDC3 /* UserModel.swift */; };
@@ -100,7 +99,6 @@
 		E09973B92716B22600073785 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		E09973BB2716BA6700073785 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		E09973BF2717593600073785 /* CustomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomScrollView.swift; sourceTree = "<group>"; };
-		E0A1AC3F2724C3D100848E50 /* TourViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourViewController.swift; sourceTree = "<group>"; };
 		E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
 		E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
 		E0B6F48D271BDED500DEDDC3 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
@@ -263,7 +261,6 @@
 				E09973B72716AFD600073785 /* CreateAccountViewController.swift */,
 				E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */,
 				5246D9E5271BBF1F0024500C /* ProfilePictureViewController.swift */,
-				E0A1AC3F2724C3D100848E50 /* TourViewController.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -623,7 +620,6 @@
 				E0EF3AC72714CACF00D5FDF8 /* SceneDelegate.swift in Sources */,
 				E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */,
 				E09973BA2716B22600073785 /* BackButton.swift in Sources */,
-				E0A1AC402724C3D100848E50 /* TourViewController.swift in Sources */,
 				E0FDC000271E047400EC1D1B /* ProfileImage.swift in Sources */,
 				E09973B62716ADB400073785 /* AuthModel.swift in Sources */,
 				E0FDBFF7271D411900EC1D1B /* FileManagerModel.swift in Sources */,
