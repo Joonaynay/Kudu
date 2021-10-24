@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
+class SearchViewController: UIViewController {
 
     private let titleBar = TitleBar(title: "Search", backButton: false)
     
@@ -18,7 +18,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     private let progressView = ProgressView()
     
     private var posts = [Post]()
-    private let collectionView = CollectionView()
+    private let scrollView = CustomScrollView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,14 +36,12 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     private func setupView() {
         view.addSubview(titleBar)
         
-        searchBar.delegate = self
         searchBar.returnKeyType = .search
         view.addSubview(searchBar)
         view.backgroundColor = .systemBackground
-        collectionView.alwaysBounceVertical = false
-        collectionView.refreshControl = nil
-        collectionView.dataSource = self
-        view.addSubview(collectionView)
+        scrollView.refreshControl = nil
+
+        view.addSubview(scrollView)
         view.addSubview(progressView)
     }
     
@@ -53,8 +51,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         titleBar.height(70)
         
-        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        collectionView.topToBottom(of: searchBar, offset: 10)
+        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        scrollView.topToBottom(of: searchBar, offset: 10)
         
         searchBar.topToBottom(of: titleBar, offset: 10)
         searchBar.height(50)
@@ -69,21 +67,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         self.progressView.start()
         fb.search(string: searchBar.text!) { loadedPosts in
             self.posts = loadedPosts
-            self.collectionView.reloadData()
             self.progressView.stop()
         }
         return true
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.posts.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.vc = self
-        cell.setPost(post: self.posts[indexPath.row])
-        return cell
     }
     
 }

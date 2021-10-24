@@ -7,11 +7,11 @@
 
 import UIKit
 
-class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
+class SubjectPostViewController: UIViewController {
 
     private var titleBar: TitleBar!
 
-    private let collectionView = CollectionView()
+    private let scrollView = CustomScrollView()
     
     private let fb = FirebaseModel.shared
 
@@ -45,8 +45,8 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
         titleBar = TitleBar(title: subject.name, backButton: true)
         view.addSubview(titleBar)
         view.backgroundColor = .systemBackground
-        collectionView.dataSource = self
-        view.addSubview(collectionView)
+        
+        view.addSubview(scrollView)
     }
     
     
@@ -55,31 +55,8 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
         titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         titleBar.height(70)
         
-        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        collectionView.topToBottom(of: titleBar)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var posts = [Post]()
-        for post in fb.posts {
-            if post.subjects.contains(subject.name) {
-               posts.append(post)
-            }
-        }
-        return posts.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        var posts = [Post]()
-        for post in fb.posts {
-            if post.subjects.contains(subject.name) {
-               posts.append(post)
-            }
-        }
-        cell.setPost(post: posts[indexPath.row])
-        cell.vc = self
-        return cell
+        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        scrollView.topToBottom(of: titleBar)
     }
     
 }

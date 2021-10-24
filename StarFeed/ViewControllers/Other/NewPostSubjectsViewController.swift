@@ -77,6 +77,7 @@ class NewPostSubjectsViewController: UIViewController {
         view.addSubview(titleLabel)
         
         scrollView.addSubview(stackView)
+        scrollView.refreshControl = nil
         
         var views = [UIView]()
         for subject in fb.subjects {

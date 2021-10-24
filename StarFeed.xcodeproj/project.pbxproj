@@ -45,7 +45,6 @@
 		E0F111922719164B0062E190 /* NewPostSubjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F111912719164B0062E190 /* NewPostSubjectsViewController.swift */; };
 		E0F11194271932E20062E190 /* SubjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F11193271932E20062E190 /* SubjectModel.swift */; };
 		E0F11196271937030062E190 /* FirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F11195271937030062E190 /* FirebaseModel.swift */; };
-		E0FDBFEA271D205A00EC1D1B /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */; };
 		E0FDBFEC271D3A5400EC1D1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */; };
 		E0FDBFEF271D3F0000EC1D1B /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFEE271D3F0000EC1D1B /* Persistence.swift */; };
 		E0FDBFF5271D40C300EC1D1B /* FreshModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E0FDBFF3271D40C300EC1D1B /* FreshModel.xcdatamodeld */; };
@@ -122,7 +121,6 @@
 		E0F111912719164B0062E190 /* NewPostSubjectsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostSubjectsViewController.swift; sourceTree = "<group>"; };
 		E0F11193271932E20062E190 /* SubjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectModel.swift; sourceTree = "<group>"; };
 		E0F11195271937030062E190 /* FirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseModel.swift; sourceTree = "<group>"; };
-		E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		E0FDBFEE271D3F0000EC1D1B /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E0FDBFF4271D40C300EC1D1B /* FreshModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FreshModel.xcdatamodel; sourceTree = "<group>"; };
@@ -196,7 +194,6 @@
 				E09973BF2717593600073785 /* CustomScrollView.swift */,
 				52DCF16227192DF200AD187C /* Grid.swift */,
 				E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */,
-				E0FDBFE9271D205A00EC1D1B /* CollectionView.swift */,
 				E0FDBFFF271E047400EC1D1B /* ProfileImage.swift */,
 			);
 			path = Views;
@@ -600,7 +597,6 @@
 				E0F11196271937030062E190 /* FirebaseModel.swift in Sources */,
 				E0F111922719164B0062E190 /* NewPostSubjectsViewController.swift in Sources */,
 				E09973B22716A60200073785 /* LoginViewController.swift in Sources */,
-				E0FDBFEA271D205A00EC1D1B /* CollectionView.swift in Sources */,
 				E0EF3AC92714CACF00D5FDF8 /* TrendingViewController.swift in Sources */,
 				E0EF3AC52714CACF00D5FDF8 /* AppDelegate.swift in Sources */,
 				E09973B82716AFD600073785 /* CreateAccountViewController.swift in Sources */,

@@ -48,7 +48,7 @@ class ProfileViewController: UIViewController {
         rect.backgroundColor = .blue
         return rect
     }
-    var items = [UIView]()
+    var posts = [UIView]()
     
     //Edit Profile || Follow Button
     let editProfileButton = CustomButton(text: "Edit Profile", color: UIColor.theme.blueColor)
@@ -102,7 +102,8 @@ class ProfileViewController: UIViewController {
             self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
         }, for: .touchUpInside)
         
-        scrollView.addSubview(profileImage)        
+        scrollView.addSubview(profileImage)
+        scrollView.refreshControl = nil
         
         //Username
         username.text = user.username
@@ -116,13 +117,12 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(editProfileButton)
         
         for post in fb.posts {
-            let pview = PostView()
+            let pview = PostView(post: post)
             pview.vc = self
-            pview.setPost(post: post)
-            items.append(pview)
+            posts.append(pview)
         }
         //Stack View
-        stackView.stack(items)
+        stackView.stack(posts)
         
         // ScrollView
         scrollView.addSubview(stackView)
@@ -159,8 +159,8 @@ class ProfileViewController: UIViewController {
         
         stackView.width(view.width)
         
-        for item in items {
-            item.heightToWidth(of: stackView)
+        for post in posts {
+            post.heightToWidth(of: stackView)
         }
     }
 }

@@ -104,6 +104,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         
         //Scroll View
         view.addSubview(scrollView)
+        scrollView.refreshControl = nil
         
         // Stack View
         scrollView.addSubview(stackView)

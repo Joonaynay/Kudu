@@ -86,8 +86,7 @@ class EmailViewController: UIViewController {
             self.auth.checkEmail { error in
                 if error == nil {
                     let profilePictureView = ProfilePictureViewController(showBackButton: false)
-                    profilePictureView.modalPresentationStyle = .fullScreen
-                    self.present(profilePictureView, animated: true)
+                    self.navigationController?.pushViewController(profilePictureView, animated: true)
                 } else {
                     let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "Ok", style: .default))
