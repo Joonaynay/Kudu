@@ -56,6 +56,7 @@ class TrendingViewController: UIViewController {
     
     private func reload() {
         posts = [PostView]()
+        
         for post in fb.posts {
             let pview = PostView(post: post)
             pview.vc = self
