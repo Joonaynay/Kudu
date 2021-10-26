@@ -16,7 +16,7 @@ class CommentsViewController: UIViewController {
     private let scrollView = CustomScrollView()
     private let textField = CustomTextField(text: "Add a comment.", image: nil)
     
-    private let addComment = CustomButton(text: "Post", color: UIColor.theme.blueColor)
+    private let addCommentButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
     private let fb = FirebaseModel.shared
         

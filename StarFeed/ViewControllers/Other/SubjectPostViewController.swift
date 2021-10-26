@@ -70,8 +70,10 @@ class SubjectPostViewController: UIViewController {
             view.removeFromSuperview()
         }
         for post in fb.posts {
+            if post.post.subjects.contains(subject.name) {
             post.vc = self
             stackView.addArrangedSubview(post)
+            }
         }
     }
         

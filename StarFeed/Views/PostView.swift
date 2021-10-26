@@ -181,7 +181,7 @@ class PostView: UIView {
         followButton.height(50)
         followButton.width(UIScreen.main.bounds.width / 4)
         
-        commentsButton.bottomToSuperview(offset: 2)
+        commentsButton.bottomToSuperview(offset: -5)
         commentsButton.leadingToSuperview(offset: 5)
         
     }
