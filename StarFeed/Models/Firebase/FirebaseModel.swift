@@ -38,6 +38,85 @@ class FirebaseModel: ObservableObject {
         }
     }
     
+    func commentOnPost(currentPost: Post, comment: String) {
+        
+        //Save comments when someone comments on a post
+        self.saveDeepCollection(collection: "posts", collection2: "comments", document: currentPost.id, document2: currentUser.id, field: "comments", data: [comment])
+        
+    }
+    
+    func loadComments(currentPost: Post, completion:@escaping ([Comment]?) -> Void) {
+        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { documents in
+            
+            
+            if let documents = documents {
+                var list: [Comment] = []
+                
+                if documents.documents.isEmpty {
+                    completion(nil)
+                }
+                for doc in documents.documents {
+                    let comments = doc.get("comments") as! [String]
+                    self.loadConservativeUser(uid: doc.documentID) { user in
+                        if let user = user {
+                            for comment in comments {
+                                list.append(Comment(text: comment, user: user))
+                                if comment == comments.last {
+                                    completion(list)
+                                }
+                            }
+                        } else {
+                            completion(nil)
+                        }
+                    }
+                }
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
+    func getDocsDeep(collection: String, document: String, collection2: String, completion:@escaping (QuerySnapshot?) -> Void) {
+        //Load Documents
+        Firestore.firestore().collection(collection).document(document).collection(collection2).getDocuments { docs, error in
+            
+            //Check for error
+            if error == nil {
+                
+                //Return documents
+                completion(docs)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
+    func saveDeepCollection(collection: String, collection2: String, document: String, document2: String, field: String, data: Any) {
+        
+        let document = Firestore.firestore().collection(collection).document(document).collection(collection2).document(document2)
+        
+        document.getDocument { doc, error in
+            if doc != nil && error == nil {
+                // Check if data is an array
+                if let array = data as? [String] {
+                    //Append data in firestore
+                    if doc?.get("comments") != nil {
+                        print("ooga booga")
+                        document.updateData([field: FieldValue.arrayUnion(array)])
+                    } else {
+                        document.setData([field: data])
+                    }
+                    
+                    
+                // Check if data is a string
+                } else if let string = data as? String {
+                    //Save data in firestore
+                    document.setValue(string, forKey: field)
+                }
+            }
+        }
+    }
+    
     func followUser(followUser: User, completion:@escaping () -> Void) {
         if !currentUser.following.contains(followUser.id) {
             //Follow the user

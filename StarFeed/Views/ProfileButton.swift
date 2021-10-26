@@ -40,7 +40,6 @@ class ProfileButton: UIButton {
         addSubview(profileImage)
         addSubview(usernameLabel)
         tintColor = .label
-        
         addConstraints()
     }
     

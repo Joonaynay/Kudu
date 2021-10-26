@@ -43,7 +43,7 @@ class SubjectsViewController: UIViewController {
         titleBar.height(70)
                 
         vGrid.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
-        vGrid.topToBottom(of: titleBar, offset: 5)
+        vGrid.topToBottom(of: titleBar, offset: 10)
     }
     
 }

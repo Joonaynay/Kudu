@@ -153,12 +153,19 @@ class PostView: UIView {
         
         titleLabel.text = post.title
         
+        commentsButton.addAction(UIAction() { _ in
+            let comments = CommentsViewController(post: post)
+            comments.hidesBottomBarWhenPushed = true
+            self.vc?.navigationController?.pushViewController(comments, animated: true)
+            
+        }, for: .touchUpInside)
+        
     }
     
     
     private func addConstraints() {
         
-        imageViewButton.edgesToSuperview(excluding: .bottom)
+        imageViewButton.edgesToSuperview(excluding: .bottom, insets: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0))
         imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
         imageViewButton.widthToSuperview()
         

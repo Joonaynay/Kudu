@@ -55,6 +55,16 @@ class ProfileViewController: UIViewController {
     
     private let user: User
     
+    private let rectangleLine = UIView()
+    
+    private let subTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Videos"
+        label.textAlignment = .center
+        label.tintColor = .label
+        return label
+    }()
+    
     init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
@@ -114,6 +124,7 @@ class ProfileViewController: UIViewController {
             self.present(EditProfileViewController(), animated: true)
         }, for: .touchUpInside)
         
+        // Scrollview
         scrollView.addSubview(editProfileButton)
         
         for post in fb.posts {
@@ -121,6 +132,14 @@ class ProfileViewController: UIViewController {
             pview.vc = self
             posts.append(pview)
         }
+        
+        // VIdeos Word
+        scrollView.addSubview(subTitleLabel)
+        
+        // Rectangle line
+        rectangleLine.backgroundColor = .secondarySystemBackground
+        scrollView.addSubview(rectangleLine)
+        
         //Stack View
         stackView.stack(posts)
         
@@ -152,11 +171,17 @@ class ProfileViewController: UIViewController {
         scrollView.trailingToSuperview()
         scrollView.bottomToSuperview()
         
-        stackView.topToBottom(of: editProfileButton, offset: 10)
+        subTitleLabel.topToBottom(of: editProfileButton, offset: 30)
+        subTitleLabel.centerXToSuperview()
+        
+        rectangleLine.topToBottom(of: subTitleLabel, offset: 5)
+        rectangleLine.height(1)
+        rectangleLine.horizontalToSuperview()
+        
+        stackView.topToBottom(of: rectangleLine)
         stackView.leading(to: scrollView)
         stackView.trailing(to: scrollView)
         stackView.bottom(to: scrollView)
-        
         stackView.width(view.width)
         
         for post in posts {
