@@ -36,7 +36,7 @@ class CommentView: UIView {
         addSubview(label)
         addSubview(profile)
         addSubview(rectLine)
-        height(to: label, offset: 50)
+        height(to: label, offset: 60)
         addConstraints()
     }
     
@@ -45,7 +45,7 @@ class CommentView: UIView {
     }
     
     func addConstraints() {
-        profile.topToSuperview(offset: 5)
+        profile.topToSuperview(offset: 10)
         profile.leadingToSuperview(offset: 15)
         profile.widthToSuperview()
         
@@ -54,7 +54,7 @@ class CommentView: UIView {
         
         rectLine.height(1)
         rectLine.widthToSuperview()
-        rectLine.bottom(to: label)
+        rectLine.bottomToSuperview()
         
     }
     
