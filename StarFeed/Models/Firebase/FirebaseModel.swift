@@ -46,28 +46,31 @@ class FirebaseModel: ObservableObject {
     }
     
     func loadComments(currentPost: Post, completion:@escaping ([Comment]?) -> Void) {
-        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { documents in
+        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { userDocs in
             
-            if let documents = documents {
+            if let userDocs = userDocs {
                 var list: [Comment] = []
                 
-                if !documents.documents.isEmpty {
+                if !userDocs.documents.isEmpty {
                     completion(nil)
                 }
-                for doc in documents.documents {
-                    let comments = doc.get("comments") as! [String]
+                let group = DispatchGroup()
+                for doc in userDocs.documents {
+                    group.enter()
                     self.loadConservativeUser(uid: doc.documentID) { user in
+                        let comments = doc.get("comments") as! [String]
                         if let user = user {
                             for comment in comments {
                                 list.append(Comment(text: comment, user: user))
-                                if comment == comments.last {
-                                    completion(list)
-                                }
                             }
+                            group.leave()
                         } else {
-                            completion(nil)
+                            group.leave()
                         }
                     }
+                }
+                group.notify(queue: .main) {
+                    completion(list)
                 }
             } else {
                 completion(nil)
