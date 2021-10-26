@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.makeKeyAndVisible()
         
         let fb = FirebaseModel.shared
-        if let uid = UserDefaults.standard.value(forKey: "uid") as? String {
+        if let uid = UserDefaults.standard.value(forKey: "uid") as? String, Auth.auth().currentUser?.email != nil {
             fb.loadUser(uid: uid) { user in
                 if let user = user {
                     if Auth.auth().currentUser?.isEmailVerified == true {

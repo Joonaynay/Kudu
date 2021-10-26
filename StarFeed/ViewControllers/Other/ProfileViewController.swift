@@ -57,13 +57,6 @@ class ProfileViewController: UIViewController {
     
     private let rectangleLine = UIView()
     
-    private let subTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Videos"
-        label.textAlignment = .center
-        label.tintColor = .label
-        return label
-    }()
     
     init(user: User) {
         self.user = user
@@ -127,19 +120,12 @@ class ProfileViewController: UIViewController {
         // Scrollview
         scrollView.addSubview(editProfileButton)
         
-        for post in fb.posts {
-            if post.post.user.id == self.user.id {
-                post.vc = self
-                posts.append(post)
+        for postView in fb.posts {
+            if postView.post.user.id == self.user.id {
+                postView.vc = self
+                posts.append(postView)
             }
         }
-        
-        // VIdeos Word
-        scrollView.addSubview(subTitleLabel)
-        
-        // Rectangle line
-        rectangleLine.backgroundColor = .secondarySystemBackground
-        scrollView.addSubview(rectangleLine)
         
         //Stack View
         stackView.stack(posts)
@@ -172,17 +158,9 @@ class ProfileViewController: UIViewController {
         scrollView.trailingToSuperview()
         scrollView.bottomToSuperview()
         
-        subTitleLabel.topToBottom(of: editProfileButton, offset: 30)
-        subTitleLabel.centerXToSuperview()
-        
-        rectangleLine.topToBottom(of: subTitleLabel, offset: 5)
-        rectangleLine.height(1)
-        rectangleLine.horizontalToSuperview()
-        
-        stackView.topToBottom(of: rectangleLine)
-        stackView.leading(to: scrollView)
-        stackView.trailing(to: scrollView)
-        stackView.bottom(to: scrollView)
+
+        stackView.edgesToSuperview(excluding: .top)
+        stackView.topToBottom(of: editProfileButton, offset: 40)
         stackView.width(view.width)
         
         for post in posts {

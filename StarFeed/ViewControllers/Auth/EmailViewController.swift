@@ -107,7 +107,8 @@ class EmailViewController: UIViewController {
                 }
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
-                    self.auth.signIn(email: Auth.auth().currentUser!.email!, password: alert.textFields!.first!.text!) { error in
+                    guard let email = Auth.auth().currentUser?.email! else { return }
+                    self.auth.signIn(email: email, password: alert.textFields!.first!.text!) { error in
                         if error == nil {
                             self.auth.deleteUser { error in
                                 if error == nil {

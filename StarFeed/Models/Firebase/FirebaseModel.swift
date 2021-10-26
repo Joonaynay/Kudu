@@ -135,6 +135,7 @@ class FirebaseModel: ObservableObject {
             //Save to core data
             let coreUser = cd.fetchUser(uid: currentUser.id)
             coreUser?.following?.append(followUser.id)
+            print(coreUser!.posts)
             cd.save()
             
             completion()
