@@ -16,7 +16,7 @@ class CommentsViewController: UIViewController {
     private let scrollView = CustomScrollView()
     private let textField = CustomTextField(text: "Add a comment.", image: nil)
     
-    private let addComment = CustomButton(text: "Post", color: UIColor.theme.blueColor)
+    private let addCommentButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
     private let fb = FirebaseModel.shared
         
@@ -90,7 +90,7 @@ class CommentsViewController: UIViewController {
         
         //Add Comment
         view.addSubview(textField)
-        view.addSubview(addComment)
+        view.addSubview(addCommentButton)
         
         //ScrollView
         view.addSubview(scrollView)
@@ -101,7 +101,7 @@ class CommentsViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 0
         
-        addComment.addAction(UIAction() { _ in
+        addCommentButton.addAction(UIAction() { _ in
             self.fb.commentOnPost(currentPost: self.post, comment: self.textField.text!)
         }, for: .touchUpInside)
     }
@@ -118,10 +118,10 @@ class CommentsViewController: UIViewController {
         textField.height(50)
         textField.width(view.width * (4/6))
         
-        addComment.topToBottom(of: rectangleLine, offset: 15)
-        addComment.trailingToSuperview(offset: 15)
-        addComment.height(50)
-        addComment.leadingToTrailing(of: textField, offset: 15)
+        addCommentButton.topToBottom(of: rectangleLine, offset: 15)
+        addCommentButton.trailingToSuperview(offset: 15)
+        addCommentButton.height(50)
+        addCommentButton.leadingToTrailing(of: textField, offset: 15)
         
         stackView.edgesToSuperview()
         stackView.width(view.width)
