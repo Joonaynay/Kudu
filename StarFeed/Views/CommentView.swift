@@ -11,6 +11,8 @@ class CommentView: UIView {
     
     var profile: ProfileButton
     
+    weak var vc: UIViewController?
+    
     var user: User
     
     var text: String
@@ -33,6 +35,9 @@ class CommentView: UIView {
         self.text = text
         self.label.text = text
         super.init(frame: .zero)
+        profile.addAction(UIAction() { _ in
+            self.vc?.navigationController?.pushViewController(ProfileViewController(user: user), animated: true)
+        }, for: .touchUpInside)
         addSubview(label)
         addSubview(profile)
         addSubview(rectLine)
