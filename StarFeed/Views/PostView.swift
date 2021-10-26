@@ -71,7 +71,7 @@ class PostView: UIView {
     
     private var first = true
     
-    private var post: Post
+    public var post: Post
     
     init(post: Post) {
         self.post = post
@@ -118,8 +118,7 @@ class PostView: UIView {
         
         likeButton.addAction(UIAction() { _ in
             self.fb.likePost(currentPost: post)
-            if self.likeButton.tintColor == UIColor.theme.blueColor {
-                guard let index = post.likes.firstIndex(of: self.fb.currentUser.id) else { return }
+            if let index = post.likes.firstIndex(of: self.fb.currentUser.id) {
                 post.likes.remove(at: index)
             } else {
                 post.likes.append(self.fb.currentUser.id)

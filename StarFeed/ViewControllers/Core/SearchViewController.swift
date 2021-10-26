@@ -16,10 +16,8 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
 
     private let progressView = ProgressView()
     private let scrollView = CustomScrollView()
-    private var stackView = UIView()
-    
-    private var posts = [PostView]()
-        
+    private var stackView = UIStackView()
+            
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -51,6 +49,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         view.addSubview(scrollView)
         
         //StackView
+        stackView.axis = .vertical
         scrollView.addSubview(stackView)
 
     }
@@ -62,11 +61,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         scrollView.topToBottom(of: searchBar, offset: 10)
         
-        stackView.top(to: scrollView)
-        stackView.leading(to: scrollView)
-        stackView.trailing(to: scrollView)
-        stackView.bottom(to: scrollView)
-        
+        stackView.edgesToSuperview()
         stackView.width(view.width)
         
         searchBar.topToBottom(of: titleBar, offset: 10)
@@ -78,18 +73,19 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let text = searchBar.text!.lowercased()
         searchBar.endEditing(true)
         self.progressView.start()
-        fb.search(string: searchBar.text!) { loadedPosts in
-            self.posts = [PostView]()
-            var posts = [PostView]()
-            for post in loadedPosts {
-                let pview = PostView(post: post)
-                pview.vc = self
-                posts.append(pview)
+        fb.search(string: text) {
+            for view in self.stackView.arrangedSubviews {
+                view.removeFromSuperview()
             }
-            self.posts = posts
-            self.stackView.stack(posts)
+            for post in self.fb.posts {
+                if post.post.title.lowercased().contains(text) {
+                    post.vc = self
+                    self.stackView.addArrangedSubview(post)
+                }
+            }
             self.progressView.stop()
         }
         return true

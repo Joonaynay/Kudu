@@ -12,14 +12,12 @@ import UIKit
 class FollowingViewController: UIViewController {
     
     private let fb = FirebaseModel.shared
-
-    private let titleBar = TitleBar(title: "Following", backButton: false)
-
-    private let scrollView = CustomScrollView()
-    private var stackView = UIView()
     
-    private var posts = [PostView]()
-        
+    private let titleBar = TitleBar(title: "Following", backButton: false)
+    
+    private let scrollView = CustomScrollView()
+    private var stackView = UIStackView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -42,29 +40,29 @@ class FollowingViewController: UIViewController {
         
         //Scroll View
         scrollView.refreshControl?.addAction(UIAction() { _ in
-            self.fb.loadPosts {
-                self.scrollView.refreshControl?.endRefreshing()
-                self.reload()
-            }
+            self.scrollView.refreshControl?.endRefreshing()
         }, for: .valueChanged)
         view.addSubview(scrollView)
         
         //StackView
+        stackView.axis = .vertical
         scrollView.addSubview(stackView)
-
+        
     }
     
     private func reload() {
-        posts = [PostView]()
-        for post in fb.posts {
-            let pview = PostView(post: post)
-            pview.vc = self
-            posts.append(pview)
+        for view in stackView.arrangedSubviews {
+            view.removeFromSuperview()
         }
-        stackView.stack(posts)
+        for post in fb.posts {
+            if fb.currentUser.following.contains(post.post.user.id) {
+                post.vc = self
+                stackView.addArrangedSubview(post)
+            }
+        }
     }
-        
- 
+    
+    
     private func setupConstraints() {
         titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         titleBar.height(70)
@@ -72,13 +70,11 @@ class FollowingViewController: UIViewController {
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         scrollView.topToBottom(of: titleBar)
         
-        stackView.top(to: scrollView)
-        stackView.leading(to: scrollView)
-        stackView.trailing(to: scrollView)
-        stackView.bottom(to: scrollView)
-        
+        stackView.edgesToSuperview()
         stackView.width(view.width)
-    }
         
+        
+    }
+    
     
 }
