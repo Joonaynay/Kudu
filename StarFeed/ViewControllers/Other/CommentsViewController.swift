@@ -11,17 +11,12 @@ class CommentsViewController: UIViewController {
     
     private var post: Post
     
-    private let stackView = UIView()
-    
-    private var comments = [CommentView]()
-    
+    private let stackView = UIStackView()
     private let backButton = BackButton()
-    
     private let scrollView = CustomScrollView()
-    
     private let textField = CustomTextField(text: "Add a comment.", image: nil)
     
-    private let addComment = CustomButton(text: "Add", color: UIColor.theme.blueColor)
+    private let addComment = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
     private let fb = FirebaseModel.shared
         
@@ -45,7 +40,7 @@ class CommentsViewController: UIViewController {
         let title = UILabel()
         title.text = "Comments"
         title.textAlignment = .center
-        title.font = UIFont.preferredFont(forTextStyle: .title1)
+        title.font = UIFont.preferredFont(forTextStyle: .title2)
         return title
     }()
     
@@ -61,14 +56,13 @@ class CommentsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         backButton.vc = self
         fb.loadComments(currentPost: post) { commentsArray in
-            self.post.comments = commentsArray
-            guard let postComment = self.post.comments else { return }
-            for comment in postComment {
-                self.comments.append(CommentView(user: comment.user, text: comment.text))
+            guard let commentsArray = commentsArray else { return }
+            self.noCommentsText.text = ""
+            for comment in commentsArray {
+                let commentView = CommentView(user: comment.user, text: comment.text)
+                self.stackView.addArrangedSubview(commentView)
             }
-            self.stackView.stack(self.comments)
         }
-        
     }
     
     override func viewDidLoad() {
@@ -78,42 +72,59 @@ class CommentsViewController: UIViewController {
     }
     
     func setupView() {
+        
+        // View
         view.backgroundColor = .systemBackground
+        
+        //Title Label
         view.addSubview(titleLabel)
+        
+        //Line
         view.addSubview(rectangleLine)
+        
+        //Back button
         view.addSubview(backButton)
+        
+        //No Comments Text
         view.addSubview(noCommentsText)
+        
+        //Add Comment
+        view.addSubview(textField)
+        view.addSubview(addComment)
+        
+        //ScrollView
         view.addSubview(scrollView)
-        scrollView.addSubview(textField)
-        scrollView.addSubview(addComment)
+        scrollView.refreshControl = nil
         scrollView.addSubview(stackView)
+        
+        //Stack View
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        
         addComment.addAction(UIAction() { _ in
             self.fb.commentOnPost(currentPost: self.post, comment: self.textField.text!)
         }, for: .touchUpInside)
     }
     
     func addConstraints() {
-        titleLabel.bottom(to: backButton, offset: 5)
+        titleLabel.bottom(to: backButton, offset: -5)
         titleLabel.horizontalToSuperview()
         
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        scrollView.topToBottom(of: rectangleLine)
+        scrollView.topToBottom(of: textField, offset: 15)
         
         textField.topToBottom(of: rectangleLine, offset: 15)
-        textField.leading(to: view, offset: view.width * (1/12))
+        textField.leadingToSuperview(offset: 15)
         textField.height(50)
         textField.width(view.width * (4/6))
         
         addComment.topToBottom(of: rectangleLine, offset: 15)
-        addComment.leftToRight(of: textField)
-        addComment.trailing(to: view, offset: -view.width * (1/12))
+        addComment.trailingToSuperview(offset: 15)
         addComment.height(50)
-        addComment.width(view.width * (1/6))
+        addComment.leadingToTrailing(of: textField, offset: 15)
         
-        stackView.topToBottom(of: textField, offset: 15)
-        stackView.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
-        stackView.bottom(to: scrollView)
-        stackView.width(to: view, offset: -30)
+        stackView.edgesToSuperview()
+        stackView.width(view.width)
         
         rectangleLine.horizontalToSuperview()
         rectangleLine.height(1)

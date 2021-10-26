@@ -48,11 +48,10 @@ class FirebaseModel: ObservableObject {
     func loadComments(currentPost: Post, completion:@escaping ([Comment]?) -> Void) {
         self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { documents in
             
-            
             if let documents = documents {
                 var list: [Comment] = []
                 
-                if documents.documents.isEmpty {
+                if !documents.documents.isEmpty {
                     completion(nil)
                 }
                 for doc in documents.documents {

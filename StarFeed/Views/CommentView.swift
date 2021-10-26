@@ -33,11 +33,10 @@ class CommentView: UIView {
         self.text = text
         self.label.text = text
         super.init(frame: .zero)
-        backgroundColor = .red
         addSubview(label)
         addSubview(profile)
         addSubview(rectLine)
-        height(75)
+        height(to: label, offset: 50)
         addConstraints()
     }
     
@@ -46,11 +45,11 @@ class CommentView: UIView {
     }
     
     func addConstraints() {
-        profile.topToSuperview()
-        profile.leadingToSuperview()
+        profile.topToSuperview(offset: 5)
+        profile.leadingToSuperview(offset: 15)
         profile.widthToSuperview()
         
-        label.topToBottom(of: profile)
+        label.topToBottom(of: profile, offset: 5)
         label.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         
         rectLine.height(1)

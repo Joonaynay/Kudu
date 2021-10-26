@@ -63,7 +63,7 @@ class ProfileButton: UIButton {
         profileImage.height(40)
         profileImage.width(40)
         
-        usernameLabel.leadingToTrailing(of: profileImage)
+        usernameLabel.leadingToTrailing(of: profileImage, offset: 5)
         usernameLabel.centerYToSuperview()
     }
     
