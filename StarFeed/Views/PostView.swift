@@ -57,13 +57,6 @@ class PostView: UIView {
         return button
     }()
     
-    //Line at bottom of post for separation
-    private let line: UIView = {
-        let line = UIView()
-        line.backgroundColor = .secondarySystemBackground
-        return line
-    }()
-    
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     
@@ -84,7 +77,6 @@ class PostView: UIView {
         addSubview(followButton)
         addSubview(profile)
         addSubview(likeCount)
-        addSubview(line)
         setupView()
         addConstraints()
     }
@@ -189,12 +181,8 @@ class PostView: UIView {
         followButton.height(50)
         followButton.width(UIScreen.main.bounds.width / 4)
         
-        commentsButton.bottomToTop(of: line, offset: -5)
+        commentsButton.bottomToSuperview(offset: 2)
         commentsButton.leadingToSuperview(offset: 5)
-        
-        line.horizontalToSuperview()
-        line.height(1)
-        line.bottomToSuperview()
         
     }
     
