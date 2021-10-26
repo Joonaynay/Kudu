@@ -41,7 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             loginNav.navigationBar.isHidden = true
             window.rootViewController = loginNav
         }
-        self.window = window
+        self.window = window        
+        
         return true
     }
     

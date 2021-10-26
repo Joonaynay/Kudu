@@ -31,7 +31,7 @@ class CommentsViewController: UIViewController {
         let noComment = UILabel()
         noComment.textAlignment = .center
         noComment.font = UIFont.preferredFont(forTextStyle: .body)
-        
+        noComment.text = ""
         return noComment
     }()
     
@@ -97,16 +97,8 @@ class CommentsViewController: UIViewController {
         
         addCommentButton.addAction(UIAction() { _ in
             self.textField.text = ""
-            self.fb.commentOnPost(currentPost: self.post, comment: self.textField.text!)
-            self.fb.loadComments(currentPost: self.post) { comment in
-                for view in self.stackView.arrangedSubviews {
-                    view.removeFromSuperview()
-                }
-                guard let comment = comment else { return }
-                for comment in comment {
-                    let commentView = CommentView(user: comment.user, text: comment.text)
-                    self.stackView.addArrangedSubview(commentView)
-                }
+            self.fb.commentOnPost(currentPost: self.post, comment: self.textField.text!) {
+                self.loadCommentsViews()
             }
         }, for: .touchUpInside)
     }
@@ -146,19 +138,21 @@ class CommentsViewController: UIViewController {
     
     func loadCommentsViews() {
         self.fb.loadComments(currentPost: self.post) { comments in
-            for view in self.stackView.arrangedSubviews {
-                view.removeFromSuperview()
-            }
-            guard let comments = comments else {
+
+            if let comments = comments {
+                for view in self.stackView.arrangedSubviews {
+                    view.removeFromSuperview()
+                }
+                self.noCommentsText.text = ""
+                for comment in comments {
+                    let cview = CommentView(user: comment.user, text: comment.text)
+                    cview.vc = self
+                    self.stackView.addArrangedSubview(cview)
+                }
+            } else {
                 self.noCommentsText.text = "Be the first to comment!"
-                return
             }
-            self.noCommentsText.text = ""
-            for comment in comments {
-                let cview = CommentView(user: comment.user, text: comment.text)
-                cview.vc = self
-                self.stackView.addArrangedSubview(cview)
-            }
+
         }
     }
     
