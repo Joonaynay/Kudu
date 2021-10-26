@@ -156,7 +156,7 @@ class PostView: UIView {
     
     private func addConstraints() {
         
-        imageViewButton.edgesToSuperview(excluding: .bottom, insets: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0))
+        imageViewButton.edgesToSuperview(excluding: .bottom)
         imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
         imageViewButton.widthToSuperview()
         
