@@ -317,15 +317,13 @@ class FirebaseModel: ObservableObject {
                 let name = doc?.get("name") as! String
                 let following = doc?.get("following") as! [String]
                 let followers = doc?.get("followers") as! [String]
+                let posts = doc?.get("posts") as! [String]
                 
                 //Load Profile Image
                 self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-                    
-                    //Core Data
-                    
-                    
+
                     //Create User
-                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: [])
+                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: posts)
                     self.users.append(user)
                     
                     //Return User
