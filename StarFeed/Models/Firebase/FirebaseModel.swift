@@ -384,9 +384,9 @@ class FirebaseModel: ObservableObject {
             
             
             if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: []))
+                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: user.posts!))
             } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: []))
+                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: user.posts!))
             }
             
         } else {
