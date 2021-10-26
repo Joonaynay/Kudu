@@ -15,7 +15,11 @@ class CommentView: UIView {
     
     var text: String
     
-    var label = UILabel()
+    var label: UILabel = {
+       let label = UILabel()
+        label.numberOfLines = 0
+        return label
+    }()
     
     var rectLine: UIView = {
        let line = UIView()
@@ -33,8 +37,8 @@ class CommentView: UIView {
         addSubview(label)
         addSubview(profile)
         addSubview(rectLine)
+        height(75)
         addConstraints()
-        sizeToFit()
     }
     
     required init?(coder: NSCoder) {
@@ -51,7 +55,7 @@ class CommentView: UIView {
         
         rectLine.height(1)
         rectLine.widthToSuperview()
-        rectLine.bottomToSuperview()
+        rectLine.bottom(to: label)
         
     }
     
