@@ -30,6 +30,7 @@ class ProfileViewController: UIViewController {
         let button = UIButton()
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
+        button.isEnabled = false
         return button
     }()
     
@@ -59,20 +60,10 @@ class ProfileViewController: UIViewController {
     var posts = [UIView]()
     
     //Edit Profile || Follow Button
-    let editProfileButton = CustomButton(text: "Edit Profile", color: UIColor.theme.blueColor)
+    let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     
     private let user: User
-    
-    private let rectangleLine = UIView()
-    
-    private let subTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Videos"
-        label.textAlignment = .center
-        label.tintColor = .label
-        return label
-    }()
-    
+        
     init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
@@ -89,10 +80,15 @@ class ProfileViewController: UIViewController {
     }
     
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         backButton.vc = self
         if let image = self.user.profileImage {
             self.profileImage.setImage(image, for: .normal)
+            self.profileImage.setImage(image, for: .disabled)
+
+        }
+        if fb.currentUser.id != user.id {
+            self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
         }
     }
     
@@ -126,9 +122,12 @@ class ProfileViewController: UIViewController {
         profileImage.imageView!.layer.cornerRadius = 75
         profileImage.imageView!.clipsToBounds = true
         
-        profileImage.addAction(UIAction() { _ in
-            self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
-        }, for: .touchUpInside)
+        if fb.currentUser.id == user.id {
+            profileImage.isEnabled = true
+            profileImage.addAction(UIAction() { _ in
+                self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
+            }, for: .touchUpInside)
+        }
         
         scrollView.addSubview(profileImage)
         scrollView.refreshControl = nil
@@ -138,9 +137,18 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(username)
         
         //Button
-        editProfileButton.addAction(UIAction(title: "") { _ in
-            self.present(EditProfileViewController(), animated: true)
-        }, for: .touchUpInside)
+        if fb.currentUser.id == user.id {
+            editProfileButton.label.text = "Edit Profile"
+            editProfileButton.addAction(UIAction() { _ in
+                self.present(EditProfileViewController(), animated: true)
+            }, for: .touchUpInside)
+        } else {
+            editProfileButton.addAction(UIAction() { _ in
+                self.fb.followUser(followUser: self.user) {
+                    self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
+                }
+            }, for: .touchUpInside)
+        }
         
         // Scrollview
         scrollView.addSubview(editProfileButton)
@@ -151,13 +159,6 @@ class ProfileViewController: UIViewController {
                 posts.append(post)
             }
         }
-        
-        // VIdeos Word
-        scrollView.addSubview(subTitleLabel)
-        
-        // Rectangle line
-        rectangleLine.backgroundColor = .secondarySystemBackground
-        scrollView.addSubview(rectangleLine)
         
         //Stack View
         stackView.stack(posts)
@@ -195,14 +196,7 @@ class ProfileViewController: UIViewController {
         scrollView.trailingToSuperview()
         scrollView.bottomToSuperview()
         
-        subTitleLabel.topToBottom(of: editProfileButton, offset: 30)
-        subTitleLabel.centerXToSuperview()
-        
-        rectangleLine.topToBottom(of: subTitleLabel, offset: 5)
-        rectangleLine.height(1)
-        rectangleLine.horizontalToSuperview()
-        
-        stackView.topToBottom(of: rectangleLine)
+        stackView.topToBottom(of: editProfileButton, offset: 40)
         stackView.leading(to: scrollView)
         stackView.trailing(to: scrollView)
         stackView.bottom(to: scrollView)

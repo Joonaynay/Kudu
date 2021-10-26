@@ -17,6 +17,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     
     init(text: String, image: String?) {
         super.init(frame: .zero)
+        clearButtonMode = .whileEditing
         addAction(UIAction() { _ in
             self.textChanged()
         }, for: .allEditingEvents)
@@ -61,6 +62,10 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: insets)
+    }
+    
+    override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.offsetBy(dx: UIScreen.main.bounds.width / 2.6, dy: 0)
     }
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
