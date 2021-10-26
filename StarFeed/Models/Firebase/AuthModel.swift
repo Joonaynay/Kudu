@@ -166,12 +166,11 @@ class AuthModel: ObservableObject {
                 guard let uid = UserDefaults.standard.value(forKey: "uid") as? String else { return }
                 self.db.deleteDoc(collection: "users", document: uid)
                 self.storage.delete(path: "Profile Images", file: uid)
-                if self.fb.currentUser.posts != nil {
-                    for post in self.fb.currentUser.posts! {
-                        self.db.deleteDoc(collection: "posts", document: post)
-                        self.storage.delete(path: "images", file: post)
-                        self.storage.delete(path: "videos", file: post)
-                    }
+                for post in self.fb.currentUser.posts {
+                    self.db.deleteDoc(collection: "posts", document: post)
+                    self.storage.delete(path: "images", file: post)
+                    self.storage.delete(path: "videos", file: post)
+                    
                 }
                 self.file.deleteAllImages()
                 self.cd.deleteAll()
@@ -207,7 +206,7 @@ class AuthModel: ObservableObject {
             }
         }
         self.cd.context = self.cd.container.viewContext
-
+        
         completion(nil)
         
     }

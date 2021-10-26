@@ -17,7 +17,7 @@ class FirebaseModel: ObservableObject {
     private let cd = Persistence()
     private let db = FirestoreModel.shared
     
-    @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
+    @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
     @Published public var posts = [PostView]()
 
@@ -325,7 +325,7 @@ class FirebaseModel: ObservableObject {
                     
                     
                     //Create User
-                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: nil)
+                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: [])
                     self.users.append(user)
                     
                     //Return User
@@ -375,9 +375,9 @@ class FirebaseModel: ObservableObject {
             
             
             if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: nil))
+                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: []))
             } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: nil))
+                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: []))
             }
             
         } else {
@@ -394,7 +394,7 @@ class FirebaseModel: ObservableObject {
                     
                     
                     //Create User
-                    let user = User(id: uid, username: username, name: nil, profileImage: profileImage, following: [], followers: [], posts: nil)
+                    let user = User(id: uid, username: username, name: nil, profileImage: profileImage, following: [], followers: [], posts: [])
                     self.users.append(user)
                     
                     //Return User

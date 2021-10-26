@@ -16,6 +16,14 @@ class ProfileViewController: UIViewController {
     private var backButton = BackButton()
     let stackView = UIView()
     
+    private let infoButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        button.tintColor = UIColor.theme.accentColor
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        return button
+    }()
     
     //Profile Image
     private let profileImage: UIButton = {
@@ -98,6 +106,16 @@ class ProfileViewController: UIViewController {
         view.addSubview(backButton)
         backButton.setupBackButton()
         
+        // Info Button
+        let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
+            UIAction(title: "Followers: \(user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
+            UIAction(title: "Posts: \(user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
+        ])
+        infoButton.menu = menu
+        infoButton.showsMenuAsPrimaryAction = true
+        
+        view.addSubview(infoButton)
+        
         //Profile Image
         if let image = user.profileImage {
             profileImage.setImage(image, for: .normal)
@@ -152,6 +170,11 @@ class ProfileViewController: UIViewController {
     
     
     private func setupConstraints() {
+        
+        infoButton.topToSuperview(offset: 21, usingSafeArea: true)
+        infoButton.trailingToSuperview(offset: 12)
+        infoButton.height(23)
+        infoButton.width(23)
         
         profileImage.height(150)
         profileImage.width(150)

@@ -24,7 +24,7 @@ class BackButton: UIButton {
     func setupBackButton() {
         height(45)
         width(45)
-        leadingToSuperview(offset: 10)
+        leadingToSuperview()
         topToSuperview(offset: 10, usingSafeArea: true)
     }
     
