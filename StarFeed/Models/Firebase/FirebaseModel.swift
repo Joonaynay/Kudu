@@ -38,10 +38,12 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func commentOnPost(currentPost: Post, comment: String) {
+    func commentOnPost(currentPost: Post, comment: String, completion: @escaping () -> Void) {
         
         //Save comments when someone comments on a post
-        self.saveDeepCollection(collection: "posts", collection2: "comments", document: currentPost.id, document2: currentUser.id, field: "comments", data: [comment])
+        self.saveDeepCollection(collection: "posts", collection2: "comments", document: currentPost.id, document2: currentUser.id, field: "comments", data: [comment]) {
+            completion()
+        }
         
     }
     
@@ -70,7 +72,11 @@ class FirebaseModel: ObservableObject {
                     }
                 }
                 group.notify(queue: .main) {
-                    completion(list)
+                    if list.isEmpty {
+                        completion(nil)
+                    } else {
+                        completion(list)
+                    }
                 }
             } else {
                 completion(nil)
@@ -93,7 +99,7 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func saveDeepCollection(collection: String, collection2: String, document: String, document2: String, field: String, data: Any) {
+    func saveDeepCollection(collection: String, collection2: String, document: String, document2: String, field: String, data: Any, completion:@escaping () -> Void) {
         
         let document = Firestore.firestore().collection(collection).document(document).collection(collection2).document(document2)
         
@@ -103,10 +109,11 @@ class FirebaseModel: ObservableObject {
                 if let array = data as? [String] {
                     //Append data in firestore
                     if doc?.get("comments") != nil {
-                        print("ooga booga")
                         document.updateData([field: FieldValue.arrayUnion(array)])
+                        completion()
                     } else {
                         document.setData([field: data])
+                        completion()
                     }
                     
                     
@@ -114,7 +121,11 @@ class FirebaseModel: ObservableObject {
                 } else if let string = data as? String {
                     //Save data in firestore
                     document.setValue(string, forKey: field)
+                    
+                    completion()
                 }
+            } else {
+                completion()
             }
         }
     }
@@ -317,15 +328,13 @@ class FirebaseModel: ObservableObject {
                 let name = doc?.get("name") as! String
                 let following = doc?.get("following") as! [String]
                 let followers = doc?.get("followers") as! [String]
+                let posts = doc?.get("posts") as! [String]
                 
                 //Load Profile Image
                 self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-                    
-                    //Core Data
-                    
-                    
+
                     //Create User
-                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: [])
+                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: posts)
                     self.users.append(user)
                     
                     //Return User

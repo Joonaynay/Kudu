@@ -153,10 +153,10 @@ class ProfileViewController: UIViewController {
         // Scrollview
         scrollView.addSubview(editProfileButton)
         
-        for post in fb.posts {
-            if post.post.user.id == self.user.id {
-                post.vc = self
-                posts.append(post)
+        for postView in fb.posts {
+            if postView.post.user.id == self.user.id {
+                postView.vc = self
+                posts.append(postView)
             }
         }
         
@@ -196,6 +196,8 @@ class ProfileViewController: UIViewController {
         scrollView.trailingToSuperview()
         scrollView.bottomToSuperview()
         
+
+        stackView.edgesToSuperview(excluding: .top)
         stackView.topToBottom(of: editProfileButton, offset: 40)
         stackView.leading(to: scrollView)
         stackView.trailing(to: scrollView)

@@ -87,13 +87,7 @@ class PostView: UIView {
     
     private func setupView() {
         var post = post
-        
-        if fb.currentUser.following.contains(post.user.id) {
-            followButton.label.text = "Unfollow"
-        } else {
-            followButton.label.text = "Follow"
-        }
-        
+                
         let db = Firestore.firestore()
         db.collection("posts").document(post.id).addSnapshotListener { doc, error in
             guard let likes = doc?.get("likes") as? [String] else { return }
@@ -152,6 +146,15 @@ class PostView: UIView {
         }, for: .touchUpInside)
         
     }
+    
+    override func willMove(toSuperview newSuperview: UIView?) {
+        if fb.currentUser.following.contains(post.user.id) {
+            followButton.label.text = "Unfollow"
+        } else {
+            followButton.label.text = "Follow"
+        }
+    }
+        
     
     
     private func addConstraints() {

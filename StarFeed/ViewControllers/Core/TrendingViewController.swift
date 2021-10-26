@@ -48,6 +48,7 @@ class TrendingViewController: UIViewController {
         view.addSubview(scrollView)
         
         //StackView
+        stackView.clipsToBounds = false
         stackView.axis = .vertical
         scrollView.addSubview(stackView)
 

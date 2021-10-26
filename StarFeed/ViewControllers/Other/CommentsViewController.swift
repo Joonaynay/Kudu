@@ -16,10 +16,10 @@ class CommentsViewController: UIViewController {
     private let scrollView = CustomScrollView()
     private let textField = CustomTextField(text: "Add a comment.", image: nil)
     
-    private let addCommentButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
+    public let addCommentButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
     private let fb = FirebaseModel.shared
-        
+    
     private let rectangleLine: UIView = {
         let line = UIView()
         line.backgroundColor = .secondarySystemBackground
@@ -28,8 +28,7 @@ class CommentsViewController: UIViewController {
     }()
     
     private let noCommentsText: UILabel = {
-       let noComment = UILabel()
-        noComment.text = "Be the first one to comment!"
+        let noComment = UILabel()
         noComment.textAlignment = .center
         noComment.font = UIFont.preferredFont(forTextStyle: .body)
         
@@ -55,14 +54,7 @@ class CommentsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         backButton.vc = self
-        fb.loadComments(currentPost: post) { commentsArray in
-            guard let commentsArray = commentsArray else { return }
-            self.noCommentsText.text = ""
-            for comment in commentsArray {
-                let commentView = CommentView(user: comment.user, text: comment.text)
-                self.stackView.addArrangedSubview(commentView)
-            }
-        }
+        loadCommentsViews()
     }
     
     override func viewDidLoad() {
@@ -90,6 +82,8 @@ class CommentsViewController: UIViewController {
         
         //Add Comment
         view.addSubview(textField)
+        textField.vc = self
+        addCommentButton.isEnabled = false
         view.addSubview(addCommentButton)
         
         //ScrollView
@@ -147,6 +141,24 @@ class CommentsViewController: UIViewController {
             noCommentsText.edgesToSuperview(excluding: .top)
             noCommentsText.centerXToSuperview()
             noCommentsText.centerYToSuperview()
+        }
+    }
+    
+    func loadCommentsViews() {
+        self.fb.loadComments(currentPost: self.post) { comments in
+            for view in self.stackView.arrangedSubviews {
+                view.removeFromSuperview()
+            }
+            guard let comments = comments else {
+                self.noCommentsText.text = "Be the first to comment!"
+                return
+            }
+            self.noCommentsText.text = ""
+            for comment in comments {
+                let cview = CommentView(user: comment.user, text: comment.text)
+                cview.vc = self
+                self.stackView.addArrangedSubview(cview)
+            }
         }
     }
     

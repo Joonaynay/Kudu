@@ -52,6 +52,12 @@ class CustomTextField: UITextField, UITextFieldDelegate {
             } else {
                 vc.createAccountButton.isEnabled = false
             }
+        } else if let vc = vc as? CommentsViewController {
+            if self.text != "" {
+                vc.addCommentButton.isEnabled = true
+            } else {
+                vc.addCommentButton.isEnabled = false
+            }
         }
     }
         
