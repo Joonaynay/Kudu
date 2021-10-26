@@ -102,7 +102,18 @@ class CommentsViewController: UIViewController {
         stackView.spacing = 0
         
         addCommentButton.addAction(UIAction() { _ in
+            self.textField.text = ""
             self.fb.commentOnPost(currentPost: self.post, comment: self.textField.text!)
+            self.fb.loadComments(currentPost: self.post) { comment in
+                for view in self.stackView.arrangedSubviews {
+                    view.removeFromSuperview()
+                }
+                guard let comment = comment else { return }
+                for comment in comment {
+                    let commentView = CommentView(user: comment.user, text: comment.text)
+                    self.stackView.addArrangedSubview(commentView)
+                }
+            }
         }, for: .touchUpInside)
     }
     
