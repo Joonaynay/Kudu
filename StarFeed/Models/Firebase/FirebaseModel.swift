@@ -19,7 +19,7 @@ class FirebaseModel: ObservableObject {
     
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: nil)
     @Published public var users = [User]()
-    @Published public var posts = [Post]()
+    @Published public var posts = [PostView]()
 
     
     @Published public var subjects = [Subject]()
@@ -158,7 +158,7 @@ class FirebaseModel: ObservableObject {
         
     }
     
-    func search(string: String, completion:@escaping ([Post]) -> Void) {
+    func search(string: String, completion:@escaping () -> Void) {
         
         DispatchQueue.main.async {
 
@@ -166,7 +166,7 @@ class FirebaseModel: ObservableObject {
             //Load all documents
             self.db.getDocs(collection: "posts") { query in
                 
-                var postsArray = [Post]()
+                var postsArray = [PostView]()
                 
                 for doc in query!.documents {
                     
@@ -179,7 +179,8 @@ class FirebaseModel: ObservableObject {
                     
                     self.loadPost(postId: postId, completion: { post in
                         if let p = post {
-                            postsArray.append(p)
+                            let pview = PostView(post: p)
+                            postsArray.append(pview)
                         }
                         
                         
@@ -188,7 +189,13 @@ class FirebaseModel: ObservableObject {
                 }
                 
                 group.notify(queue: .main, execute: {
-                    completion(postsArray)
+                    for post in postsArray {
+                        if !self.posts.contains(where: { pview in
+                            pview.post.id == post.post.id }) {
+                            self.posts.append(post)
+                        }
+                    }
+                    completion()
                 })
             }
         }
@@ -245,7 +252,7 @@ class FirebaseModel: ObservableObject {
                 
                 let group = DispatchGroup()
                 //Loop through each document and get data
-                var posts = [Post]()
+                var posts = [PostView]()
                 for post in query!.documents {
                     group.enter()
                     let title = post.get("title") as! String
@@ -266,7 +273,8 @@ class FirebaseModel: ObservableObject {
                                 //Add to view model
                                 
                                 if let image = image, let url = url {
-                                    posts.append(Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
+                                    posts.append(PostView(post: post))
                                 }
                                 group.leave()
                             }

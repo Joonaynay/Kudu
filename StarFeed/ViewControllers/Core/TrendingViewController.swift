@@ -16,10 +16,8 @@ class TrendingViewController: UIViewController {
     private let titleBar = TitleBar(title: "Trending", backButton: false)
 
     private let scrollView = CustomScrollView()
-    private var stackView = UIView()
-    
-    private var posts = [PostView]()
-        
+    private var stackView = UIStackView()
+            
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -50,18 +48,19 @@ class TrendingViewController: UIViewController {
         view.addSubview(scrollView)
         
         //StackView
+        stackView.axis = .vertical
         scrollView.addSubview(stackView)
 
     }
     
     private func reload() {
-        posts = [PostView]()
-        for post in fb.posts {
-            let pview = PostView(post: post)
-            pview.vc = self
-            posts.append(pview)
+        for view in stackView.arrangedSubviews {
+            view.removeFromSuperview()
         }
-        stackView.stack(posts)
+        for post in fb.posts {
+            post.vc = self
+            stackView.addArrangedSubview(post)
+        }
     }
         
  
@@ -72,17 +71,12 @@ class TrendingViewController: UIViewController {
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         scrollView.topToBottom(of: titleBar)
         
-        stackView.top(to: scrollView)
-        stackView.leading(to: scrollView)
-        stackView.trailing(to: scrollView)
-        stackView.bottom(to: scrollView)
-        
+
+        stackView.edgesToSuperview()
         stackView.width(view.width)
         
 
 
     }
-        
-    
 }
 

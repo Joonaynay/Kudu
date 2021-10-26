@@ -128,9 +128,10 @@ class ProfileViewController: UIViewController {
         scrollView.addSubview(editProfileButton)
         
         for post in fb.posts {
-            let pview = PostView(post: post)
-            pview.vc = self
-            posts.append(pview)
+            if post.post.user.id == self.user.id {
+                post.vc = self
+                posts.append(post)
+            }
         }
         
         // VIdeos Word
