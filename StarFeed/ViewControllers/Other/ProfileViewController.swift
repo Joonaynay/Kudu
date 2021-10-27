@@ -153,10 +153,10 @@ class ProfileViewController: UIViewController {
         // Scrollview
         scrollView.addSubview(editProfileButton)
         
-        for postView in fb.posts {
-            if postView.post.user.id == self.user.id {
-                postView.vc = self
-                posts.append(postView)
+        for pview in fb.posts {
+            if pview.post.uid == self.user.id {
+                pview.vc = self
+                posts.append(pview)
             }
         }
         

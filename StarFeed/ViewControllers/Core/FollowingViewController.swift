@@ -54,10 +54,10 @@ class FollowingViewController: UIViewController {
         for view in stackView.arrangedSubviews {
             view.removeFromSuperview()
         }
-        for post in fb.posts {
-            if fb.currentUser.following.contains(post.post.user.id) {
-                post.vc = self
-                stackView.addArrangedSubview(post)
+        for pview in fb.posts {
+            if fb.currentUser.following.contains(pview.post.uid) {
+                pview.vc = self
+                stackView.addArrangedSubview(pview)
             }
         }
     }

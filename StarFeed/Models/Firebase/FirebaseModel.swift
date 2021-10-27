@@ -190,9 +190,12 @@ class FirebaseModel: ObservableObject {
                     }
                     
                     self.loadPost(postId: postId, completion: { post in
-                        if let p = post {
-                            let pview = PostView(post: p)
-                            postsArray.append(pview)
+
+                        if let index = self.posts.firstIndex(where: { pview in
+                            pview.post.id == post?.id
+                            
+                        }) {
+                            postsArray.append(self.posts[index])
                         }
                         
                         
@@ -239,8 +242,9 @@ class FirebaseModel: ObservableObject {
                         self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
                             //Add to view model
                             
-                            if let image = image, let url = url {
-                                let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
+                            if let image = image, let url = url, let user = user {
+                                let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, uid: user.id, likes: likes, movie: url))
+                                self.posts.append(PostView(post: post))
                                 completion(post)
                             } else {
                                 completion(nil)
@@ -284,8 +288,8 @@ class FirebaseModel: ObservableObject {
                             self.storage.loadMovie(path: "videos", file: "\(post.documentID).m4v") { url in
                                 //Add to view model
                                 
-                                if let image = image, let url = url {
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
+                                if let image = image, let url = url, let user = user {
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, uid: user.id, likes: likes, movie: url))
                                     posts.append(PostView(post: post))
                                 }
                                 group.leave()
@@ -310,9 +314,13 @@ class FirebaseModel: ObservableObject {
             print("Loaded User From Core Data")
             
             if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!))
+                let user = User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!)
+                completion(user)
+                self.users.append(user)
             } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: user.posts!))
+                let user = User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: user.posts!)
+                completion(user)
+                self.users.append(user)
             }
             
         } else {

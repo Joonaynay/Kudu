@@ -87,7 +87,10 @@ class PostView: UIView {
     
     private func setupView() {
         var post = post
-                
+        guard let user = fb.users.first(where: { user in
+            user.id == post.uid
+        }) else { return }
+        
         let db = Firestore.firestore()
         db.collection("posts").document(post.id).addSnapshotListener { doc, error in
             guard let likes = doc?.get("likes") as? [String] else { return }
@@ -112,8 +115,8 @@ class PostView: UIView {
         }, for: .touchUpInside)
         
         followButton.addAction(UIAction() { _ in
-            self.fb.followUser(followUser: post.user) {
-                if self.fb.currentUser.following.contains(post.user.id) {
+            self.fb.followUser(followUser: user) {
+                if self.fb.currentUser.following.contains(user.id) {
                     self.followButton.label.text = "Unfollow"
                 } else {
                     self.followButton.label.text = "Follow"
@@ -126,15 +129,22 @@ class PostView: UIView {
         }, for: .touchUpInside)
         
         profile.addAction(UIAction() { _ in
-            let profileView = ProfileViewController(user: post.user)
-            profileView.hidesBottomBarWhenPushed = true
-            self.vc?.navigationController?.pushViewController(profileView, animated: true)
+            if let index = self.fb.users.firstIndex(where: { user in
+                user.id == post.uid
+            }) {
+                self.fb.users[index].username = "Ligma"
+                let profileView = ProfileViewController(user: self.fb.users[index])
+                profileView.hidesBottomBarWhenPushed = true
+                self.vc?.navigationController?.pushViewController(profileView, animated: true)
+            }
+            
+
         }, for: .touchUpInside)
         
         imageViewButton.setBackgroundImage(post.image, for: .normal)
         
-        profile.usernameLabel.text = post.user.username
-        profile.profileImage.image = post.user.profileImage
+        
+        profile.profileImage.image = user.profileImage
         
         titleLabel.text = post.title
         
@@ -148,11 +158,16 @@ class PostView: UIView {
     }
     
     override func willMove(toSuperview newSuperview: UIView?) {
-        if fb.currentUser.following.contains(post.user.id) {
+        guard let user = fb.users.first(where: { user in
+            user.id == post.uid
+        }) else { return }
+
+        if fb.currentUser.following.contains(user.id) {
             followButton.label.text = "Unfollow"
         } else {
             followButton.label.text = "Follow"
         }
+        profile.usernameLabel.text = user.username
     }
         
     

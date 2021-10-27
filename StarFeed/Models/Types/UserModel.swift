@@ -9,7 +9,7 @@ import UIKit
 
 struct User: Identifiable {
     let id: String
-    let username: String
+    var username: String
     let name: String?
     var profileImage: UIImage?
     var following: [String]
