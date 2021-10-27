@@ -12,12 +12,12 @@ class VideoPlayer: AVPlayerViewController {
     init(url: URL) {
         super.init(nibName: nil, bundle: nil)
         player = AVPlayer(url: url)
-        let audio = AVAudioSession()
-        do {
-            try audio.setCategory(.playback, mode: .moviePlayback)
-        } catch {
-            
-        }
+//        let audio = AVAudioSession()
+//        do {
+//            try audio.setCategory(.playback, mode: .moviePlayback)
+//        } catch {
+//            
+//        }
     }
     
     required init?(coder: NSCoder) {
