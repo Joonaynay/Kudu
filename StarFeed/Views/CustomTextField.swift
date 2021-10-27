@@ -53,7 +53,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
                 vc.createAccountButton.isEnabled = false
             }
         } else if let vc = vc as? CommentsViewController {
-            if self.text != "" {
+            if self.text != "" && self.text!.count <= 500 {
                 vc.addCommentButton.isEnabled = true
             } else {
                 vc.addCommentButton.isEnabled = false

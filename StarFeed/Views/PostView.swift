@@ -28,7 +28,7 @@ class PostView: UIView {
         let button = UIButton()
         return button
     }()
-    
+        
     //Button to move to comments
     private let commentsButton: UIButton = {
         let button = UIButton()
