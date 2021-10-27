@@ -132,7 +132,6 @@ class PostView: UIView {
             if let index = self.fb.users.firstIndex(where: { user in
                 user.id == post.uid
             }) {
-                self.fb.users[index].username = "Ligma"
                 let profileView = ProfileViewController(user: self.fb.users[index])
                 profileView.hidesBottomBarWhenPushed = true
                 self.vc?.navigationController?.pushViewController(profileView, animated: true)

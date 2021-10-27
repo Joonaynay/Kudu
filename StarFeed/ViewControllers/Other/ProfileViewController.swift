@@ -62,8 +62,8 @@ class ProfileViewController: UIViewController {
     //Edit Profile || Follow Button
     let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     
-    private let user: User
-        
+    private var user: User
+    
     init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
@@ -85,10 +85,24 @@ class ProfileViewController: UIViewController {
         if let image = self.user.profileImage {
             self.profileImage.setImage(image, for: .normal)
             self.profileImage.setImage(image, for: .disabled)
-
         }
         if fb.currentUser.id != user.id {
             self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
+            fb.loadUser(uid: user.id) { user in
+                if let user = user {
+                    if let index = self.fb.users.firstIndex(where: { users in
+                        users.id == user.id
+                    }) {
+                        self.fb.users[index] = user
+                        self.user = user
+                        let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
+                            UIAction(title: "Followers: \(user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
+                            UIAction(title: "Posts: \(user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
+                        ])
+                        self.infoButton.menu = menu
+                    }
+                }
+            }
         }
     }
     
@@ -196,7 +210,7 @@ class ProfileViewController: UIViewController {
         scrollView.trailingToSuperview()
         scrollView.bottomToSuperview()
         
-
+        
         stackView.edgesToSuperview(excluding: .top)
         stackView.topToBottom(of: editProfileButton, offset: 40)
         stackView.leading(to: scrollView)
