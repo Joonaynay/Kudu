@@ -143,7 +143,7 @@ class CommentsViewController: UIViewController {
                 for view in self.stackView.arrangedSubviews {
                     view.removeFromSuperview()
                 }
-                self.noCommentsText.text = ""
+                self.noCommentsText.text = ""                
                 for comment in comments {
                     let cview = CommentView(user: comment.user, text: comment.text)
                     cview.vc = self

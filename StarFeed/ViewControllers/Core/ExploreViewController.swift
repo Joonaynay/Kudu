@@ -9,11 +9,11 @@ import UIKit
 
 
 
-class TrendingViewController: UIViewController {
+class ExploreViewController: UIViewController {
     
     private let fb = FirebaseModel.shared
 
-    private let titleBar = TitleBar(title: "Trending", backButton: false)
+    private let titleBar = TitleBar(title: "Explore", backButton: false)
 
     private let scrollView = CustomScrollView()
     private var stackView = UIStackView()
@@ -75,9 +75,6 @@ class TrendingViewController: UIViewController {
 
         stackView.edgesToSuperview()
         stackView.width(view.width)
-        
-
-
     }
 }
 

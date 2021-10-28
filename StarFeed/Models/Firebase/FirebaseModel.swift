@@ -15,11 +15,12 @@ class FirebaseModel: ObservableObject {
     private let file = FileManagerModel.shared
     private let storage = StorageModel.shared
     private let cd = Persistence()
-    private let db = FirestoreModel.shared
+    public let db = FirestoreModel.shared
     
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
     @Published public var posts = [PostView]()
+
     
     @Published public var subjects = [Subject]()
     
@@ -189,10 +190,10 @@ class FirebaseModel: ObservableObject {
                         postId = doc.documentID
                     }
                     
-                    self.loadPost(postId: postId, completion: { post in
+                    self.loadPost(postId: postId, completion: {
                         
                         if let index = self.posts.firstIndex(where: { pview in
-                            pview.post.id == post?.id
+                            pview.post.id == postId
                             
                         }) {
                             postsArray.append(self.posts[index])
@@ -208,6 +209,9 @@ class FirebaseModel: ObservableObject {
                         if !self.posts.contains(where: { pview in
                             pview.post.id == post.post.id }) {
                             self.posts.append(post)
+                            self.posts.sort { p1, p2 in
+                                p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
+                            }
                         }
                     }
                     completion()
@@ -216,44 +220,76 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func loadPost(postId: String, completion:@escaping (Post?) -> Void) {
+    func loadPost(postId: String, completion:@escaping () -> Void) {
         
-        //Load Post Firestore Document
-        self.db.getDoc(collection: "posts", id: postId) { document in
+        if self.posts.contains(where: { pview in
+            pview.post.id == postId
+        }) {
+            completion()
+        } else {
             
             
-            if let doc = document {
-                //Check if local loaded posts is equal to firebase docs
-                //Loop through each document and get data
-                let title = doc.get("title") as! String
-                let postId = doc.documentID
-                let subjects = doc.get("subjects") as! [String]
-                let date = doc.get("date") as! String
-                let uid = doc.get("uid") as! String
-                let likes = doc.get("likes") as! [String]
+            
+            //Load Post Firestore Document
+            self.db.getDoc(collection: "posts", id: postId) { document in
                 
-                //Load user for post
-                self.loadConservativeUser(uid: uid) { user in
+                
+                if let doc = document {
+                    //Check if local loaded posts is equal to firebase docs
+                    //Loop through each document and get data
+                    guard let title = doc.get("title") as? String else {
+                        completion()
+                        return
+                    }
+                    let postId = doc.documentID
+                    guard let subjects = doc.get("subjects") as? [String] else {
+                        completion()
+                        return
+                    }
+                    guard let date = doc.get("date") as? String else {
+                        completion()
+                        return
+                    }
+                    guard let uid = doc.get("uid") as? String else {
+                        completion()
+                        return
+                    }
+                    guard let likes = doc.get("likes") as? [String] else {
+                        completion()
+                        return
+                    }
                     
-                    //Load image
-                    self.storage.loadImage(path: "images", id: doc.documentID) { image in
+                    //Load user for post
+                    self.loadConservativeUser(uid: uid) { user in
                         
-                        //Load Movie
-                        self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
-                            //Add to view model
+                        //Load image
+                        self.storage.loadImage(path: "images", id: doc.documentID) { image in
                             
-                            if let image = image, let url = url, let user = user {
-                                let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, uid: user.id, likes: likes, movie: url))
-                                self.posts.append(PostView(post: post))
-                                completion(post)
-                            } else {
-                                completion(nil)
+                            //Load Movie
+                            self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
+                                //Add to view model
+                                
+                                if let image = image, let url = url, let user = user {
+                                    let dateFormat = DateFormatter()
+                                    dateFormat.dateStyle = .long
+                                    dateFormat.timeStyle = .none
+                                    guard let dateFormatted = dateFormat.date(from: date) else { return }
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
+                                    self.posts.append(PostView(post: post))
+                                    self.posts.sort { p1, p2 in
+                                        p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
+                                    }
+                                    
+                                    completion()
+                                } else {
+                                    completion()
+                                }
                             }
                         }
                     }
+                } else {
+                    completion()
                 }
-            } else {
-                completion(nil)
             }
         }
     }
@@ -289,7 +325,14 @@ class FirebaseModel: ObservableObject {
                                 //Add to view model
                                 
                                 if let image = image, let url = url, let user = user {
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, uid: user.id, likes: likes, movie: url))
+                                    let dateFormat = DateFormatter()
+                                    dateFormat.dateStyle = .full
+                                    dateFormat.timeStyle = .full
+                                    guard let dateFormatted = dateFormat.date(from: date) else {
+                                        group.leave()
+                                        return
+                                    }
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
                                     posts.append(PostView(post: post))
                                 }
                                 group.leave()
@@ -377,8 +420,8 @@ class FirebaseModel: ObservableObject {
         
         //Find Date
         let dateFormat = DateFormatter()
-        dateFormat.dateStyle = .long
-        dateFormat.timeStyle = .none
+        dateFormat.dateStyle = .full
+        dateFormat.timeStyle = .full
         let dateString = dateFormat.string(from: Date())
         
         //Save Post to Firestore
@@ -443,7 +486,6 @@ class FirebaseModel: ObservableObject {
                         completion(self.users.last)
                     }
                 }
-                
             }
         }
     }

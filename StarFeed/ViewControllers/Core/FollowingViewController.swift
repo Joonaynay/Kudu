@@ -40,6 +40,7 @@ class FollowingViewController: UIViewController {
         
         //Scroll View
         scrollView.refreshControl?.addAction(UIAction() { _ in
+            self.reload()
             self.scrollView.refreshControl?.endRefreshing()
         }, for: .valueChanged)
         view.addSubview(scrollView)

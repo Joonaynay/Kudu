@@ -57,6 +57,15 @@ class PostView: UIView {
         return button
     }()
     
+    private let date: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.theme.lineColor
+        label.textAlignment = .right
+        label.adjustsFontSizeToFitWidth = true
+        label.font = UIFont.preferredFont(forTextStyle: .caption1)
+        return label
+    }()
+    
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     
@@ -77,6 +86,7 @@ class PostView: UIView {
         addSubview(followButton)
         addSubview(profile)
         addSubview(likeCount)
+        addSubview(date)
         setupView()
         addConstraints()
     }
@@ -113,6 +123,12 @@ class PostView: UIView {
                 post.likes.append(self.fb.currentUser.id)
             }
         }, for: .touchUpInside)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .long
+        let dateString = dateFormatter.string(from: post.date)
+        date.text = dateString
         
         followButton.addAction(UIAction() { _ in
             self.fb.followUser(followUser: user) {
@@ -197,6 +213,9 @@ class PostView: UIView {
         followButton.trailingToLeading(of: likeCount, offset: -10)
         followButton.height(50)
         followButton.width(UIScreen.main.bounds.width / 4)
+        
+        date.bottomToSuperview(offset: -15)
+        date.trailingToSuperview(offset: 5)
         
         commentsButton.bottomToSuperview(offset: -5)
         commentsButton.leadingToSuperview(offset: 5)

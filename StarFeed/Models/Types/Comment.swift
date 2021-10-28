@@ -9,6 +9,6 @@ import Foundation
 
 struct Comment {
     let id = UUID()
-    let text: String
+    let text: String    
     let user: User
 }
