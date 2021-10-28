@@ -112,16 +112,6 @@ class AuthModel: ObservableObject {
                                 //Check for success
                                 if result != nil && error == nil {
                                     
-                                    //Save to Core Data
-                                    let currentUser = CurrentUser(context: self.cd.context)
-                                    currentUser.username = username
-                                    currentUser.id = self.auth.currentUser?.uid
-                                    currentUser.name = name
-                                    currentUser.followers = []
-                                    currentUser.following = []
-                                    currentUser.posts = []
-                                    self.cd.save()
-                                    
                                     //Save uid to userdefaults
                                     UserDefaults.standard.setValue(self.auth.currentUser?.uid, forKeyPath: "uid")
                                     
@@ -136,8 +126,23 @@ class AuthModel: ObservableObject {
                                             completion(error?.localizedDescription)
                                         } else {
                                             self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
-                                                self.fb.currentUser = user!
-                                                completion(nil)
+                                                if let user = user {
+                                                    
+                                                    //Save to model
+                                                    self.fb.currentUser = user
+                                                    
+                                                    //Save to coredata
+                                                    let currentUser = CurrentUser(context: self.cd.context)
+                                                    currentUser.username = user.username
+                                                    currentUser.id = self.auth.currentUser?.uid
+                                                    currentUser.name = user.name
+                                                    currentUser.followers = user.followers
+                                                    currentUser.following = user.following
+                                                    currentUser.posts = user.posts
+                                                    self.cd.save()
+                                                    
+                                                    completion(nil)
+                                                }
                                             }
                                         }
                                     })
@@ -169,8 +174,7 @@ class AuthModel: ObservableObject {
                 for post in self.fb.currentUser.posts {
                     self.db.deleteDoc(collection: "posts", document: post)
                     self.storage.delete(path: "images", file: post)
-                    self.storage.delete(path: "videos", file: post)
-                    
+                    self.storage.delete(path: "videos", file: "\(post).m4v")                    
                 }
                 self.file.deleteAllImages()
                 self.cd.deleteAll()

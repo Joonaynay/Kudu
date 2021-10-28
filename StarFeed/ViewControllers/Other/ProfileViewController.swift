@@ -91,43 +91,44 @@ class ProfileViewController: UIViewController {
         if fb.currentUser.id != user.id {
             //Add the follow button
             self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
-            if self.user.followers == [] {
+        }
+        if self.user.followers == [] {
+            
+            //Get index of user
+            guard let index = self.fb.users.firstIndex(where: { users in
+                users.id == user.id
+            }) else { return }
+            
+            fb.db.getDoc(collection: "users", id: user.id) { doc in
+                let followers = doc?.get("followers") as! [String]
+                let posts = doc?.get("posts") as! [String]
                 
-                //Get index of user
-                guard let index = self.fb.users.firstIndex(where: { users in
-                    users.id == user.id
-                }) else { return }
-                
-                fb.db.getDoc(collection: "users", id: user.id) { doc in
-                    let followers = doc?.get("followers") as! [String]
-                    let posts = doc?.get("posts") as! [String]
-                    
-                    self.fb.users[index].followers = followers
-                    self.fb.users[index].posts = posts
-                    self.user = self.fb.users[index]
-                    let group = DispatchGroup()
-                    for post in posts {
-                        group.enter()
-                        self.fb.loadPost(postId: post) { group.leave() }
+                self.fb.users[index].followers = followers
+                self.fb.users[index].posts = posts
+                self.user = self.fb.users[index]
+                let group = DispatchGroup()
+                for post in posts {
+                    group.enter()
+                    self.fb.loadPost(postId: post) { group.leave() }
+                }
+                group.notify(queue: .main) {
+                    for view in self.stackView.arrangedSubviews {
+                        view.removeFromSuperview()
                     }
-                    group.notify(queue: .main) {
-                        for view in self.stackView.arrangedSubviews {
-                            view.removeFromSuperview()
+                    for pview in self.fb.posts {
+                        if pview.post.uid == self.user.id {
+                            pview.vc = self
+                            self.stackView.addArrangedSubview(pview)
                         }
-                        for pview in self.fb.posts {
-                            if pview.post.uid == self.user.id {
-                                pview.vc = self
-                                self.stackView.addArrangedSubview(pview)
-                            }
-                        }
-                        let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
-                            UIAction(title: "Followers: \(self.user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
-                            UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
-                        ])
-                        self.infoButton.menu = menu
                     }
+                    let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
+                        UIAction(title: "Followers: \(self.user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
+                        UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
+                    ])
+                    self.infoButton.menu = menu
                 }
             }
+            
         } else {
             let group = DispatchGroup()
             for post in self.fb.currentUser.posts {

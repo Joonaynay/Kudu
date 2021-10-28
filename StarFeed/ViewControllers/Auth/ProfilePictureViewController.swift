@@ -98,7 +98,11 @@ class ProfilePictureViewController: UIViewController, UIImagePickerControllerDel
                 self.storage.saveImage(path: "Profile Images", file: self.fb.currentUser.id, image: image)
                 self.file.saveImage(image: image, name: self.fb.currentUser.id)
                 self.fb.currentUser.profileImage = image
-                
+                if let index = self.fb.users.firstIndex(where: { users in
+                    users.id == self.fb.currentUser.id
+                }) {
+                    self.fb.users[index].profileImage = image
+                }
                 if self.showBackButton {
                     self.navigationController?.popViewController(animated: true)
                 } else {

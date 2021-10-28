@@ -194,6 +194,7 @@ class PostView: UIView {
         } else {
             followButton.label.text = "Follow"
         }
+        profile.profileImage.image = user.profileImage
         profile.usernameLabel.text = user.username
     }
         
