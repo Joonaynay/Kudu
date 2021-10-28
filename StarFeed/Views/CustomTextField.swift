@@ -21,7 +21,9 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         addAction(UIAction() { _ in
             self.textChanged()
         }, for: .allEditingEvents)
-        placeholder = text
+        attributedPlaceholder = NSAttributedString(string: text, attributes: [
+            NSAttributedString.Key.foregroundColor : UIColor.systemGray2
+        ])
         backgroundColor = .secondarySystemBackground
         returnKeyType = .done
         delegate = self
@@ -41,7 +43,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     
     func textChanged() {
         if let vc = vc as? NewPostViewController {
-            if vc.imageView.image != nil && vc.movieURL != nil && self.text != "" {
+            if vc.imageView.image != nil && vc.movieURL != nil && self.text != "" && self.text!.count <= 40 {
                 vc.nextButton.isEnabled = true
             } else {
                 vc.nextButton.isEnabled = false
@@ -51,12 +53,6 @@ class CustomTextField: UITextField, UITextFieldDelegate {
                 vc.createAccountButton.isEnabled = true
             } else {
                 vc.createAccountButton.isEnabled = false
-            }
-        } else if let vc = vc as? CommentsViewController {
-            if self.text != "" && self.text!.count <= 500 {
-                vc.addCommentButton.isEnabled = true
-            } else {
-                vc.addCommentButton.isEnabled = false
             }
         }
     }

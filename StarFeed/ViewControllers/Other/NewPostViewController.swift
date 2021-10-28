@@ -10,7 +10,7 @@ import PhotosUI
 import AVKit
 import TinyConstraints
 
-class NewPostViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
         
     var imageView = UIImageView()
     
@@ -23,9 +23,24 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     private let videoButton = CustomButton(text: "Select a video...", color: UIColor.theme.blueColor)
     private let videoView = UIButton()
     let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
-    private let desc = CustomTextField(text: "Add a description", image: nil)
     
-
+    private let desc: UITextView = {
+        let textView = UITextView()
+        textView.isEditable = true
+        textView.backgroundColor = .secondarySystemBackground
+        textView.sizeToFit()
+        textView.isScrollEnabled = false
+        textView.textColor = .systemGray2
+        textView.text = "Description"
+        return textView
+    }()
+    
+    private var header: UILabel {
+        let label = UILabel()
+        label.textColor = .label
+        label.font = UIFont.systemFont(ofSize: 8, weight: .heavy)
+        return label
+    }
     
     var movieURL: URL!
     
@@ -73,6 +88,11 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         view.addSubview(backButton)
         backButton.setupBackButton()
         
+        // Description
+        desc.font = titleText.font
+        desc.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 9)
+        desc.delegate = self
+        
         // Image Button
         imageButton.addAction(UIAction(title: "") { _ in
             self.presentImagePicker(type: ["public.image"])
@@ -109,7 +129,12 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         
         // Stack View
         scrollView.addSubview(stackView)
-        stackView.stack([titleText, desc, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
+        let titleHeader = header
+        titleHeader.text = "Title"
+        
+        let descHeader = header
+        descHeader.text = "Description"
+        stackView.stack([titleHeader, titleText, descHeader, desc, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
         
 
         
@@ -128,7 +153,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
 
         
         titleText.height(50)
-        desc.height(50)
+        desc.height(min: 50, max: 1000, priority: .required, isActive: true)
         imageButton.height(50)
         videoButton.height(50)
         nextButton.height(50)
@@ -167,6 +192,18 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
             videoView.layer.addSublayer(videoPlayer)
             
         }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if desc.text.isEmpty {
+            desc.text = "Description"
+            desc.textColor = .systemGray2
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        desc.text = ""
+        desc.textColor = .label
     }
     
     
