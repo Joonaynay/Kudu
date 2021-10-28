@@ -17,6 +17,14 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     private let progressView = ProgressView()
     private let scrollView = CustomScrollView()
     private var stackView = UIStackView()
+    
+    private let noSearchResults: UILabel = {
+        
+       let label = UILabel()
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        label.textAlignment = .center
+        return label
+    }()
             
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +59,9 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         //StackView
         stackView.axis = .vertical
         scrollView.addSubview(stackView)
+        
+        // No results label.
+        view.addSubview(noSearchResults)
 
     }
  
@@ -63,6 +74,11 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         
         stackView.edgesToSuperview()
         stackView.width(view.width)
+        
+        noSearchResults.centerXToSuperview()
+        noSearchResults.centerYToSuperview()
+        noSearchResults.horizontalToSuperview()
+        noSearchResults.height(50)
         
         searchBar.topToBottom(of: titleBar, offset: 10)
         searchBar.height(50)
@@ -85,6 +101,11 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
                     post.vc = self
                     self.stackView.addArrangedSubview(post)
                 }
+            }
+            if self.stackView.arrangedSubviews == [] {
+                self.noSearchResults.text = "No results found."
+            } else {
+                self.noSearchResults.text = ""
             }
             self.progressView.stop()
         }

@@ -258,6 +258,10 @@ class FirebaseModel: ObservableObject {
                         completion()
                         return
                     }
+                    guard let description = doc.get("description") as? String else {
+                        completion()
+                        return
+                    }
                     
                     //Load user for post
                     self.loadConservativeUser(uid: uid) { user in
@@ -274,7 +278,7 @@ class FirebaseModel: ObservableObject {
                                     dateFormat.dateStyle = .full
                                     dateFormat.timeStyle = .full
                                     guard let dateFormatted = dateFormat.date(from: date) else { return }
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
                                     self.posts.append(PostView(post: post))
                                     self.posts.sort { p1, p2 in
                                         p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
@@ -313,6 +317,7 @@ class FirebaseModel: ObservableObject {
                     let date = post.get("date") as! String
                     let uid = post.get("uid") as! String
                     let likes = post.get("likes") as! [String]
+                    let description = post.get("description") as! String
                     
                     //Load user for post
                     self.loadConservativeUser(uid: uid) { user in
@@ -332,7 +337,7 @@ class FirebaseModel: ObservableObject {
                                         group.leave()
                                         return
                                     }
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
                                     posts.append(PostView(post: post))
                                 }
                                 group.leave()
@@ -416,7 +421,13 @@ class FirebaseModel: ObservableObject {
         
     }
     
-    func addPost(image: UIImage, title: String, subjects: [String], movie: URL) {
+    func addPost(image: UIImage, title: String, subjects: [String], movie: URL, description: String?) {
+        
+        // Make sure they have a description
+        var desc = ""
+        if description != nil {
+            desc = description!
+        }
         
         //Find Date
         let dateFormat = DateFormatter()
@@ -425,7 +436,7 @@ class FirebaseModel: ObservableObject {
         let dateString = dateFormat.string(from: Date())
         
         //Save Post to Firestore
-        let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": dateString, "likes": []] as [String : Any]
+        let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": dateString, "likes": [], "description": desc] as [String : Any]
         self.db.newDoc(collection: "posts", document: nil, data: dict) { postId in
             
             //Save postId to User
