@@ -227,16 +227,12 @@ class FirebaseModel: ObservableObject {
         }) {
             completion()
         } else {
-            
-            
-            
+
             //Load Post Firestore Document
             self.db.getDoc(collection: "posts", id: postId) { document in
                 
                 
                 if let doc = document {
-                    //Check if local loaded posts is equal to firebase docs
-                    //Loop through each document and get data
                     guard let title = doc.get("title") as? String else {
                         completion()
                         return
