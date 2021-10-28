@@ -65,6 +65,9 @@ class PostView: UIView {
         button.contentHorizontalAlignment = .fill
         button.tintColor = UIColor.theme.blueColor
         return button
+    }()
+    
+    // Date of post
     private let date: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.theme.lineColor
@@ -203,7 +206,7 @@ class PostView: UIView {
         imageViewButton.widthToSuperview()
         
         infoButton.leftToRight(of: titleLabel, offset: 5)
-        infoButton.topToBottom(of: imageViewButton, offset: 20)
+        infoButton.topToBottom(of: imageViewButton, offset: 15)
         infoButton.width(25)
         infoButton.height(25)
         
