@@ -45,7 +45,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         view.addSubview(progressView)
         
         //Scroll View
-        scrollView.refreshControl = nil        
+        scrollView.refreshControl = nil
         view.addSubview(scrollView)
         
         //StackView
