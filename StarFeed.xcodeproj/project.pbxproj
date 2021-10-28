@@ -35,7 +35,7 @@
 		E0B6F48E271BDED500DEDDC3 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6F48D271BDED500DEDDC3 /* UserModel.swift */; };
 		E0EF3AC52714CACF00D5FDF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EF3AC42714CACF00D5FDF8 /* AppDelegate.swift */; };
 		E0EF3AC72714CACF00D5FDF8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EF3AC62714CACF00D5FDF8 /* SceneDelegate.swift */; };
-		E0EF3AC92714CACF00D5FDF8 /* TrendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EF3AC82714CACF00D5FDF8 /* TrendingViewController.swift */; };
+		E0EF3AC92714CACF00D5FDF8 /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EF3AC82714CACF00D5FDF8 /* ExploreViewController.swift */; };
 		E0EF3ACE2714CAD400D5FDF8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0EF3ACD2714CAD400D5FDF8 /* Assets.xcassets */; };
 		E0EF3AD12714CAD400D5FDF8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0EF3ACF2714CAD400D5FDF8 /* LaunchScreen.storyboard */; };
 		E0EF3AF62714CB4F00D5FDF8 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EF3AF52714CB4F00D5FDF8 /* TabBarController.swift */; };
@@ -111,7 +111,7 @@
 		E0EF3AC12714CACF00D5FDF8 /* StarFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StarFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0EF3AC42714CACF00D5FDF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0EF3AC62714CACF00D5FDF8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		E0EF3AC82714CACF00D5FDF8 /* TrendingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingViewController.swift; sourceTree = "<group>"; };
+		E0EF3AC82714CACF00D5FDF8 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
 		E0EF3ACD2714CAD400D5FDF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0EF3AD02714CAD400D5FDF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E0EF3AD22714CAD400D5FDF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				E0EF3AF52714CB4F00D5FDF8 /* TabBarController.swift */,
-				E0EF3AC82714CACF00D5FDF8 /* TrendingViewController.swift */,
+				E0EF3AC82714CACF00D5FDF8 /* ExploreViewController.swift */,
 				E0EF3AF92714CE2400D5FDF8 /* SubjectsViewController.swift */,
 				E0EF3AFB2714CE2F00D5FDF8 /* FollowingViewController.swift */,
 				E0EF3AF72714CD1A00D5FDF8 /* SearchViewController.swift */,
@@ -606,7 +606,7 @@
 				E0F11196271937030062E190 /* FirebaseModel.swift in Sources */,
 				E0F111922719164B0062E190 /* NewPostSubjectsViewController.swift in Sources */,
 				E09973B22716A60200073785 /* LoginViewController.swift in Sources */,
-				E0EF3AC92714CACF00D5FDF8 /* TrendingViewController.swift in Sources */,
+				E0EF3AC92714CACF00D5FDF8 /* ExploreViewController.swift in Sources */,
 				E0EF3AC52714CACF00D5FDF8 /* AppDelegate.swift in Sources */,
 				52E5BA172724ED67007B05C4 /* CommentView.swift in Sources */,
 				E09973B82716AFD600073785 /* CreateAccountViewController.swift in Sources */,

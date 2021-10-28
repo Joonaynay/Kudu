@@ -12,11 +12,11 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let trending = TrendingViewController()
-        trending.title = "Trending"
-        let trendingNav = UINavigationController(rootViewController: trending)        
-        trendingNav.tabBarItem = UITabBarItem(title: "Trending", image: UIImage(systemName: "network"), tag: 0)
-        trendingNav.navigationBar.isHidden = true
+        let explore = ExploreViewController()
+        explore.title = "Explore"
+        let exploreNav = UINavigationController(rootViewController: explore)        
+        exploreNav.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "network"), tag: 0)
+        exploreNav.navigationBar.isHidden = true
         
         let subjects = SubjectsViewController()
         subjects.title = "Subjects"
@@ -37,7 +37,7 @@ class TabBarController: UITabBarController {
         followingNav.tabBarItem = UITabBarItem(title: "Following", image: UIImage(systemName: "person.2"), selectedImage: UIImage(systemName: "person.2.fill"))
         followingNav.navigationBar.isHidden = true
         
-        setViewControllers([trendingNav, subjectsNav , followingNav, searchNav], animated: true)
+        setViewControllers([exploreNav, subjectsNav , followingNav, searchNav], animated: true)
     }
     
 }

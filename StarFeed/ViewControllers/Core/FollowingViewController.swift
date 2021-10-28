@@ -40,6 +40,7 @@ class FollowingViewController: UIViewController {
         
         //Scroll View
         scrollView.refreshControl?.addAction(UIAction() { _ in
+            self.reload()
             self.scrollView.refreshControl?.endRefreshing()
         }, for: .valueChanged)
         view.addSubview(scrollView)
@@ -54,10 +55,10 @@ class FollowingViewController: UIViewController {
         for view in stackView.arrangedSubviews {
             view.removeFromSuperview()
         }
-        for post in fb.posts {
-            if fb.currentUser.following.contains(post.post.user.id) {
-                post.vc = self
-                stackView.addArrangedSubview(post)
+        for pview in fb.posts {
+            if fb.currentUser.following.contains(pview.post.uid) {
+                pview.vc = self
+                stackView.addArrangedSubview(pview)
             }
         }
     }

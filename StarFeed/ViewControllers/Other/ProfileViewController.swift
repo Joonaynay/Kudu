@@ -7,6 +7,7 @@
 
 import UIKit
 import TinyConstraints
+import FirebaseFirestore
 
 class ProfileViewController: UIViewController {
     
@@ -14,7 +15,7 @@ class ProfileViewController: UIViewController {
     
     private let scrollView = CustomScrollView()
     private var backButton = BackButton()
-    let stackView = UIView()
+    let stackView = UIStackView()
     
     private let infoButton: UIButton = {
         let button = UIButton()
@@ -57,13 +58,12 @@ class ProfileViewController: UIViewController {
         rect.backgroundColor = .blue
         return rect
     }
-    var posts = [UIView]()
     
     //Edit Profile || Follow Button
     let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     
-    private let user: User
-        
+    private var user: User
+    
     init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
@@ -85,10 +85,68 @@ class ProfileViewController: UIViewController {
         if let image = self.user.profileImage {
             self.profileImage.setImage(image, for: .normal)
             self.profileImage.setImage(image, for: .disabled)
-
         }
+        
+        //Check if it needs to be loaded
         if fb.currentUser.id != user.id {
+            //Add the follow button
             self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
+            if self.user.followers == [] {
+                
+                //Get index of user
+                guard let index = self.fb.users.firstIndex(where: { users in
+                    users.id == user.id
+                }) else { return }
+                
+                fb.db.getDoc(collection: "users", id: user.id) { doc in
+                    let followers = doc?.get("followers") as! [String]
+                    let posts = doc?.get("posts") as! [String]
+                    
+                    self.fb.users[index].followers = followers
+                    self.fb.users[index].posts = posts
+                    self.user = self.fb.users[index]
+                    let group = DispatchGroup()
+                    for post in posts {
+                        group.enter()
+                        self.fb.loadPost(postId: post) { group.leave() }
+                    }
+                    group.notify(queue: .main) {
+                        for view in self.stackView.arrangedSubviews {
+                            view.removeFromSuperview()
+                        }
+                        for pview in self.fb.posts {
+                            if pview.post.uid == self.user.id {
+                                pview.vc = self
+                                self.stackView.addArrangedSubview(pview)
+                            }
+                        }
+                        let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
+                            UIAction(title: "Followers: \(self.user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
+                            UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
+                        ])
+                        self.infoButton.menu = menu
+                    }
+                }
+            }
+        } else {
+            let group = DispatchGroup()
+            for post in self.fb.currentUser.posts {
+                group.enter()
+                self.fb.loadPost(postId: post) {
+                    group.leave()
+                }
+            }
+            group.notify(queue: .main) {
+                for view in self.stackView.arrangedSubviews {
+                    view.removeFromSuperview()
+                }
+                for pview in self.fb.posts {
+                    if pview.post.uid == self.user.id {
+                        pview.vc = self
+                        self.stackView.addArrangedSubview(pview)
+                    }
+                }
+            }
         }
     }
     
@@ -150,20 +208,18 @@ class ProfileViewController: UIViewController {
             }, for: .touchUpInside)
         }
         
-        // Scrollview
-        scrollView.addSubview(editProfileButton)
-        
-        for postView in fb.posts {
-            if postView.post.user.id == self.user.id {
-                postView.vc = self
-                posts.append(postView)
+        //Stackview
+        for pview in self.fb.posts {
+            if pview.post.uid == self.user.id {
+                pview.vc = self
+                self.stackView.addArrangedSubview(pview)
             }
         }
+        stackView.axis = .vertical
+        stackView.spacing = 0
         
-        //Stack View
-        stackView.stack(posts)
-        
-        // ScrollView
+        // Scrollview
+        scrollView.addSubview(editProfileButton)
         scrollView.addSubview(stackView)
         view.addSubview(scrollView)
         
@@ -196,7 +252,7 @@ class ProfileViewController: UIViewController {
         scrollView.trailingToSuperview()
         scrollView.bottomToSuperview()
         
-
+        
         stackView.edgesToSuperview(excluding: .top)
         stackView.topToBottom(of: editProfileButton, offset: 40)
         stackView.leading(to: scrollView)
@@ -204,8 +260,5 @@ class ProfileViewController: UIViewController {
         stackView.bottom(to: scrollView)
         stackView.width(view.width)
         
-        for post in posts {
-            post.heightToWidth(of: stackView)
-        }
     }
 }

@@ -15,14 +15,15 @@ class FirebaseModel: ObservableObject {
     private let file = FileManagerModel.shared
     private let storage = StorageModel.shared
     private let cd = Persistence()
-    private let db = FirestoreModel.shared
+    public let db = FirestoreModel.shared
     
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
     @Published public var posts = [PostView]()
 
+    
     @Published public var subjects = [Subject]()
-        
+    
     init() {
         self.subjects = [Subject(name: "Entrepreneurship", image: "person"), Subject(name: "Career", image: "building.2"), Subject(name: "Workout", image: "heart"), Subject(name: "Confidence", image: "crown"), Subject(name: "Communication", image: "bubble.left"), Subject(name: "Motivation", image: "lightbulb"), Subject(name: "Spirituality", image: "leaf"), Subject(name: "Financial", image: "dollarsign.square"), Subject(name: "Focus", image: "scope"), Subject(name: "Happiness", image: "face.smiling"), Subject(name: "Habits", image: "infinity"), Subject(name: "Success", image: "hands.sparkles"), Subject(name: "Books/Audiobooks", image: "book"), Subject(name: "Failure", image: "cloud.heavyrain"), Subject(name: "Leadership", image: "person.3"), Subject(name: "Relationships", image: "figure.wave"), Subject(name: "Will Power", image: "battery.100.bolt"), Subject(name: "Mindfulness", image: "rays"), Subject(name: "Purpose", image: "sunrise"), Subject(name: "Time Management", image: "clock"), Subject(name: "Goals", image: "target")].sorted { $0.name < $1.name }
     }
@@ -116,7 +117,7 @@ class FirebaseModel: ObservableObject {
                     }
                     
                     
-                // Check if data is a string
+                    // Check if data is a string
                 } else if let string = data as? String {
                     //Save data in firestore
                     document.setValue(string, forKey: field)
@@ -139,7 +140,7 @@ class FirebaseModel: ObservableObject {
             //Save that the followed user got followed
             db.save(collection: "users", document: followUser.id, field: "followers", data: [currentUser.id])
             
-            //Add to UserModel            
+            //Add to UserModel
             self.currentUser.following.append(followUser.id)
             
             //Save to core data
@@ -173,7 +174,7 @@ class FirebaseModel: ObservableObject {
     func search(string: String, completion:@escaping () -> Void) {
         
         DispatchQueue.main.async {
-
+            
             let group = DispatchGroup()
             //Load all documents
             self.db.getDocs(collection: "posts") { query in
@@ -189,10 +190,13 @@ class FirebaseModel: ObservableObject {
                         postId = doc.documentID
                     }
                     
-                    self.loadPost(postId: postId, completion: { post in
-                        if let p = post {
-                            let pview = PostView(post: p)
-                            postsArray.append(pview)
+                    self.loadPost(postId: postId, completion: {
+                        
+                        if let index = self.posts.firstIndex(where: { pview in
+                            pview.post.id == postId
+                            
+                        }) {
+                            postsArray.append(self.posts[index])
                         }
                         
                         
@@ -205,6 +209,9 @@ class FirebaseModel: ObservableObject {
                         if !self.posts.contains(where: { pview in
                             pview.post.id == post.post.id }) {
                             self.posts.append(post)
+                            self.posts.sort { p1, p2 in
+                                p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
+                            }
                         }
                     }
                     completion()
@@ -213,49 +220,82 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func loadPost(postId: String, completion:@escaping (Post?) -> Void) {
+    func loadPost(postId: String, completion:@escaping () -> Void) {
         
-        //Load Post Firestore Document
-        self.db.getDoc(collection: "posts", id: postId) { document in
+        if self.posts.contains(where: { pview in
+            pview.post.id == postId
+        }) {
+            completion()
+        } else {
             
             
-            if let doc = document {
-                //Check if local loaded posts is equal to firebase docs
-                //Loop through each document and get data
-                let title = doc.get("title") as! String
-                let postId = doc.documentID
-                let subjects = doc.get("subjects") as! [String]
-                let date = doc.get("date") as! String
-                let uid = doc.get("uid") as! String
-                let likes = doc.get("likes") as! [String]
+            
+            //Load Post Firestore Document
+            self.db.getDoc(collection: "posts", id: postId) { document in
                 
-                //Load user for post
-                self.loadConservativeUser(uid: uid) { user in
+                
+                if let doc = document {
+                    //Check if local loaded posts is equal to firebase docs
+                    //Loop through each document and get data
+                    guard let title = doc.get("title") as? String else {
+                        completion()
+                        return
+                    }
+                    let postId = doc.documentID
+                    guard let subjects = doc.get("subjects") as? [String] else {
+                        completion()
+                        return
+                    }
+                    guard let date = doc.get("date") as? String else {
+                        completion()
+                        return
+                    }
+                    guard let uid = doc.get("uid") as? String else {
+                        completion()
+                        return
+                    }
+                    guard let likes = doc.get("likes") as? [String] else {
+                        completion()
+                        return
+                    }
                     
-                    //Load image
-                    self.storage.loadImage(path: "images", id: doc.documentID) { image in
+                    //Load user for post
+                    self.loadConservativeUser(uid: uid) { user in
                         
-                        //Load Movie
-                        self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
-                            //Add to view model
+                        //Load image
+                        self.storage.loadImage(path: "images", id: doc.documentID) { image in
                             
-                            if let image = image, let url = url {
-                                let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
-                                completion(post)
-                            } else {
-                                completion(nil)
+                            //Load Movie
+                            self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
+                                //Add to view model
+                                
+                                if let image = image, let url = url, let user = user {
+                                    let dateFormat = DateFormatter()
+                                    dateFormat.dateStyle = .long
+                                    dateFormat.timeStyle = .none
+                                    guard let dateFormatted = dateFormat.date(from: date) else { return }
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
+                                    self.posts.append(PostView(post: post))
+                                    self.posts.sort { p1, p2 in
+                                        p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
+                                    }
+                                    
+                                    completion()
+                                } else {
+                                    completion()
+                                }
                             }
                         }
                     }
+                } else {
+                    completion()
                 }
-            } else {
-                completion(nil)
             }
         }
     }
     
     func loadPosts(completion:@escaping () -> Void) {
-                
+        
         //Load all Post Firestore Documents
         self.db.getDocs(collection: "posts") { query in
             
@@ -284,8 +324,15 @@ class FirebaseModel: ObservableObject {
                             self.storage.loadMovie(path: "videos", file: "\(post.documentID).m4v") { url in
                                 //Add to view model
                                 
-                                if let image = image, let url = url {
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: date, user: user!, likes: likes, movie: url))
+                                if let image = image, let url = url, let user = user {
+                                    let dateFormat = DateFormatter()
+                                    dateFormat.dateStyle = .full
+                                    dateFormat.timeStyle = .full
+                                    guard let dateFormatted = dateFormat.date(from: date) else {
+                                        group.leave()
+                                        return
+                                    }
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
                                     posts.append(PostView(post: post))
                                 }
                                 group.leave()
@@ -304,51 +351,77 @@ class FirebaseModel: ObservableObject {
     }
     
     func loadUser(uid: String, completion:@escaping (User?) -> Void) {
-        
-        //Check if can load from Core Data
-        if let user = cd.fetchUser(uid: uid) {
-            print("Loaded User From Core Data")
-            
-            if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!))
-            } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: user.posts!))
-            }
-            
+        if let user = self.users.first(where: { users in
+            users.id == uid
+        }) {
+            print("Loaded User From Model")
+            completion(user)
         } else {
             
-            //Load Firestore doc
-            db.getDoc(collection: "users", id: uid) { doc in
+            //Check if can load from Core Data
+            if let user = cd.fetchUser(uid: uid) {
+                print("Loaded User From Core Data")
                 
-                print("Loaded User From Firebase")
-                
-                
-                let username = doc?.get("username") as! String
-                let name = doc?.get("name") as! String
-                let following = doc?.get("following") as! [String]
-                let followers = doc?.get("followers") as! [String]
-                let posts = doc?.get("posts") as! [String]
-                
-                //Load Profile Image
-                self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-
-                    //Create User
-                    let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: posts)
-                    self.users.append(user)
-                    
-                    //Return User
+                if let profileImage = self.file.getFromFileManager(name: uid) {
+                    let user = User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!)
                     completion(user)
+                    if !self.users.contains(where: { users in
+                        user.id == users.id
+                    }) {
+                        self.users.append(user)
+                    }
+                } else {
+                    let user = User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: user.posts!)
+                    completion(user)
+                    if !self.users.contains(where: { users in
+                        user.id == users.id
+                    }) {
+                        self.users.append(user)
+                    }
+                }
+                
+            } else {
+                
+                //Load Firestore doc
+                db.getDoc(collection: "users", id: uid) { doc in
+                    
+                    print("Loaded User From Firebase")
+                    
+                    
+                    let username = doc?.get("username") as! String
+                    let name = doc?.get("name") as! String
+                    let following = doc?.get("following") as! [String]
+                    let followers = doc?.get("followers") as! [String]
+                    let posts = doc?.get("posts") as! [String]
+                    
+                    //Load Profile Image
+                    self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
+                        
+                        //Create User
+                        let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: posts)
+                        if !self.users.contains(where: { users in
+                            user.id == users.id
+                        }) {
+                            self.users.append(user)
+                        }
+                        
+                        //Return User
+                        completion(user)
+                    }
                 }
             }
+            
         }
+        
+        
     }
     
     func addPost(image: UIImage, title: String, subjects: [String], movie: URL) {
         
         //Find Date
         let dateFormat = DateFormatter()
-        dateFormat.dateStyle = .long
-        dateFormat.timeStyle = .none
+        dateFormat.dateStyle = .full
+        dateFormat.timeStyle = .full
         let dateString = dateFormat.string(from: Date())
         
         //Save Post to Firestore
@@ -376,40 +449,42 @@ class FirebaseModel: ObservableObject {
     
     func loadConservativeUser(uid: String, completion:@escaping (User?) -> Void) {
         
-        //Check if can load from Core Data
-        if let user = cd.fetchUser(uid: uid) {
-        
-            print("Loaded User From Core Data")
-            
-            
-            if let profileImage = self.file.getFromFileManager(name: uid) {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: user.posts!))
-            } else {
-                completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: user.posts!))
-            }
-            
+        if let user = self.users.first(where: { users in users.id == uid }) {
+            print("Loaded User From Model")
+            completion(user)
         } else {
-            
-            //Load Firestore doc
-            self.db.getDoc(collection: "users", id: uid) { doc in
-                                
-                print("Loaded User From Firebase")
+            //Check if can load from Core Data
+            if let user = cd.fetchUser(uid: uid) {
                 
-                guard let username = doc?.get("username") as? String else {
-                    completion(nil)
-                    return
+                print("Loaded User From Core Data")
+                
+                
+                if let profileImage = self.file.getFromFileManager(name: uid) {
+                    completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: user.posts!))
+                } else {
+                    completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: user.posts!))
                 }
                 
-                //Load Profile Image
-                self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
+            } else {
+                
+                //Load Firestore doc
+                self.db.getDoc(collection: "users", id: uid) { doc in
                     
+                    print("Loaded User From Firebase")
                     
-                    //Create User
-                    let user = User(id: uid, username: username, name: nil, profileImage: profileImage, following: [], followers: [], posts: [])
-                    self.users.append(user)
+                    guard let username = doc?.get("username") as? String else { return }
                     
-                    //Return User
-                    completion(user)
+                    //Load Profile Image
+                    self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
+                        
+                        
+                        //Create User
+                        let user = User(id: uid, username: username, name: nil, profileImage: profileImage, following: [], followers: [], posts: [])
+                        self.users.append(user)
+                        
+                        //Return User
+                        completion(self.users.last)
+                    }
                 }
             }
         }

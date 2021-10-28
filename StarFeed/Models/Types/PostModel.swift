@@ -12,8 +12,8 @@ struct Post: Identifiable {
     var image: UIImage
     var title: String
     var subjects: [String]
-    var date: String
-    var user: User
+    var date: Date
+    var uid: String
     var likes: [String]
     var comments: [Comment]?
     var movie: URL?

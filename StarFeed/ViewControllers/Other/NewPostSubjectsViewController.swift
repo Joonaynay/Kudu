@@ -97,12 +97,18 @@ class NewPostSubjectsViewController: UIViewController {
                     self.subjects.remove(at: index!)
                     checked = false
                 }
+                if self.subjects.count > 3 || self.subjects.count < 1 {
+                    self.postButton.isEnabled = false
+                } else if self.subjects.count > 0 {
+                    self.postButton.isEnabled = true
+                }
             }, for: .touchUpInside)
             views.append(checkRow)
         }
         stackView.stack(views, axis: .vertical, width: nil, height: nil, spacing: 10)
         
         //Post button
+        postButton.isEnabled = false
         postButton.addAction(UIAction(title: "") { _ in
             if let image = self.image, let movieURL = self.movieURL {
                 self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: movieURL)

@@ -65,6 +65,13 @@ class PostView: UIView {
         button.contentHorizontalAlignment = .fill
         button.tintColor = UIColor.theme.blueColor
         return button
+    private let date: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.theme.lineColor
+        label.textAlignment = .right
+        label.adjustsFontSizeToFitWidth = true
+        label.font = UIFont.preferredFont(forTextStyle: .caption1)
+        return label
     }()
     
     //Has Profile Image and username
@@ -88,6 +95,7 @@ class PostView: UIView {
         addSubview(followButton)
         addSubview(profile)
         addSubview(likeCount)
+        addSubview(date)
         setupView()
         addConstraints()
     }
@@ -98,7 +106,10 @@ class PostView: UIView {
     
     private func setupView() {
         var post = post
-                
+        guard let user = fb.users.first(where: { user in
+            user.id == post.uid
+        }) else { return }
+        
         let db = Firestore.firestore()
         db.collection("posts").document(post.id).addSnapshotListener { doc, error in
             guard let likes = doc?.get("likes") as? [String] else { return }
@@ -122,9 +133,15 @@ class PostView: UIView {
             }
         }, for: .touchUpInside)
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .long
+        let dateString = dateFormatter.string(from: post.date)
+        date.text = dateString
+        
         followButton.addAction(UIAction() { _ in
-            self.fb.followUser(followUser: post.user) {
-                if self.fb.currentUser.following.contains(post.user.id) {
+            self.fb.followUser(followUser: user) {
+                if self.fb.currentUser.following.contains(user.id) {
                     self.followButton.label.text = "Unfollow"
                 } else {
                     self.followButton.label.text = "Follow"
@@ -137,15 +154,21 @@ class PostView: UIView {
         }, for: .touchUpInside)
         
         profile.addAction(UIAction() { _ in
-            let profileView = ProfileViewController(user: post.user)
-            profileView.hidesBottomBarWhenPushed = true
-            self.vc?.navigationController?.pushViewController(profileView, animated: true)
+            if let index = self.fb.users.firstIndex(where: { user in
+                user.id == post.uid
+            }) {
+                let profileView = ProfileViewController(user: self.fb.users[index])
+                profileView.hidesBottomBarWhenPushed = true
+                self.vc?.navigationController?.pushViewController(profileView, animated: true)
+            }
+            
+
         }, for: .touchUpInside)
         
         imageViewButton.setBackgroundImage(post.image, for: .normal)
         
-        profile.usernameLabel.text = post.user.username
-        profile.profileImage.image = post.user.profileImage
+        
+        profile.profileImage.image = user.profileImage
         
         titleLabel.text = post.title
         
@@ -159,11 +182,16 @@ class PostView: UIView {
     }
     
     override func willMove(toSuperview newSuperview: UIView?) {
-        if fb.currentUser.following.contains(post.user.id) {
+        guard let user = fb.users.first(where: { user in
+            user.id == post.uid
+        }) else { return }
+
+        if fb.currentUser.following.contains(user.id) {
             followButton.label.text = "Unfollow"
         } else {
             followButton.label.text = "Follow"
         }
+        profile.usernameLabel.text = user.username
     }
         
     
@@ -199,6 +227,9 @@ class PostView: UIView {
         followButton.trailingToLeading(of: likeCount, offset: -10)
         followButton.height(50)
         followButton.width(UIScreen.main.bounds.width / 4)
+        
+        date.bottomToSuperview(offset: -15)
+        date.trailingToSuperview(offset: 5)
         
         commentsButton.bottomToSuperview(offset: -5)
         commentsButton.leadingToSuperview(offset: 5)

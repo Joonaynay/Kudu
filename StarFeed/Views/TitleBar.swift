@@ -20,6 +20,7 @@ class TitleBar: UIView {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 35)
         label.textColor = .label
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -126,7 +127,7 @@ class TitleBar: UIView {
         }
         
         titleLabel.height(50)
-        titleLabel.widthToSuperview(multiplier: 0.5)
+        titleLabel.trailingToLeading(of: menuButton, offset: -50)
         titleLabel.bottomToSuperview(offset: -10)
         
         menuButton.trailingToSuperview(offset: 10)

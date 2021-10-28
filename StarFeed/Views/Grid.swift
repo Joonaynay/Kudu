@@ -55,7 +55,6 @@ class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func didPressCell(subject: Subject) {
-        
         vc?.navigationController?.pushViewController(SubjectPostViewController(subject: subject), animated: true)
     }
 }
@@ -70,6 +69,17 @@ class CustomCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: CustomCellectionViewCellDelegate?
     
+    private var subject: Subject?
+    
+    private lazy var buttonAction: UIAction = {
+        let action = UIAction() { _ in
+            if let subject = self.subject {
+                self.delegate!.didPressCell(subject: subject)
+            }
+        }
+        return action
+    }()
+    
     private let subjectLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -78,6 +88,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
     
     private let subjectImage: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = .label
         return imageView
     }()
     
@@ -107,18 +118,19 @@ class CustomCollectionViewCell: UICollectionViewCell {
     }
     
     func setSubject(subject: Subject) {
+        self.subject = subject
         subjectImage.image = UIImage(systemName: subject.image)
-        subjectImage.tintColor = .label
         subjectLabel.text = subject.name
         
-        button.addAction(UIAction(title: "") { _ in
-            self.delegate!.didPressCell(subject: subject)            
-        }, for: .touchUpInside)
+        button.addAction(self.buttonAction, for: .touchUpInside)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         subjectLabel.text = nil
+        button.removeAction(self.buttonAction, for: .touchUpInside)
+        subjectImage.image = nil
+        
     }
     
 }
