@@ -271,8 +271,8 @@ class FirebaseModel: ObservableObject {
                                 
                                 if let image = image, let url = url, let user = user {
                                     let dateFormat = DateFormatter()
-                                    dateFormat.dateStyle = .long
-                                    dateFormat.timeStyle = .none
+                                    dateFormat.dateStyle = .full
+                                    dateFormat.timeStyle = .full
                                     guard let dateFormatted = dateFormat.date(from: date) else { return }
                                     let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url))
                                     self.posts.append(PostView(post: post))
