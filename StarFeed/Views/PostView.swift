@@ -127,6 +127,12 @@ class PostView: UIView {
             self.likeCount.text = result
         }
         
+        infoButton.addAction(UIAction() { _ in
+            let details = VideoDetailsViewController(post: post)
+            details.modalPresentationStyle = .pageSheet
+            self.vc?.present(details, animated: true)
+        }, for: .touchUpInside)
+        
         likeButton.addAction(UIAction() { _ in
             self.fb.likePost(currentPost: post)
             if let index = post.likes.firstIndex(of: self.fb.currentUser.id) {
@@ -206,7 +212,7 @@ class PostView: UIView {
         imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
         imageViewButton.widthToSuperview()
         
-        infoButton.leftToRight(of: titleLabel, offset: 5)
+        infoButton.leftToRight(of: titleLabel, offset: 8)
         infoButton.topToBottom(of: imageViewButton, offset: 15)
         infoButton.width(25)
         infoButton.height(25)

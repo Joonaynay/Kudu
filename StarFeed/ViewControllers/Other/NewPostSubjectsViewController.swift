@@ -44,10 +44,13 @@ class NewPostSubjectsViewController: UIViewController {
     
     private let postButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
-    init(movieURL: URL?, image: UIImage?, titleString: String) {
+    var desc: String
+    
+    init(movieURL: URL?, image: UIImage?, titleString: String, desc: String) {
         self.movieURL = movieURL
         self.image = image
         self.titleString = titleString
+        self.desc = desc
         super.init(nibName: nil, bundle: nil)
         
     }
@@ -111,7 +114,7 @@ class NewPostSubjectsViewController: UIViewController {
         postButton.isEnabled = false
         postButton.addAction(UIAction(title: "") { _ in
             if let image = self.image, let movieURL = self.movieURL {
-                self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: movieURL)
+                self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: movieURL, description: self.desc)
                 self.navigationController?.popToRootViewController(animated: true)
             }
             

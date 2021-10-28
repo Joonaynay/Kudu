@@ -23,6 +23,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
     private let videoButton = CustomButton(text: "Select a video...", color: UIColor.theme.blueColor)
     private let videoView = UIButton()
     let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
+    private let desc = CustomTextField(text: "Add a description", image: nil)
     
 
     
@@ -97,7 +98,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         
         // Next Button
         nextButton.addAction(UIAction(title: "") { _ in
-            self.navigationController?.pushViewController(NewPostSubjectsViewController(movieURL: self.movieURL, image: self.imageView.image, titleString: self.titleText.text!), animated: true)
+            self.navigationController?.pushViewController(NewPostSubjectsViewController(movieURL: self.movieURL, image: self.imageView.image, titleString: self.titleText.text!, desc: self.desc.text!), animated: true)
         }, for: .touchUpInside)
         nextButton.isEnabled = false
 
@@ -108,7 +109,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
         
         // Stack View
         scrollView.addSubview(stackView)
-        stackView.stack([titleText, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
+        stackView.stack([titleText, desc, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
         
 
         
@@ -127,6 +128,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate &
 
         
         titleText.height(50)
+        desc.height(50)
         imageButton.height(50)
         videoButton.height(50)
         nextButton.height(50)
