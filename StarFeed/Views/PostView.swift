@@ -57,6 +57,16 @@ class PostView: UIView {
         return button
     }()
     
+    // Info Button
+    private let infoButton: UIButton = {
+       let button = UIButton()
+        button.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        button.tintColor = UIColor.theme.blueColor
+        return button
+    }()
+    
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     
@@ -72,6 +82,7 @@ class PostView: UIView {
         height(UIScreen.main.bounds.width)
         addSubview(commentsButton)
         addSubview(titleLabel)
+        addSubview(infoButton)
         addSubview(imageViewButton)
         addSubview(likeButton)
         addSubview(followButton)
@@ -163,7 +174,12 @@ class PostView: UIView {
         imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
         imageViewButton.widthToSuperview()
         
-        titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
+        infoButton.leftToRight(of: titleLabel, offset: 5)
+        infoButton.topToBottom(of: imageViewButton, offset: 20)
+        infoButton.width(25)
+        infoButton.height(25)
+        
+        titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 40))
         titleLabel.topToBottom(of: imageViewButton, offset: 5)
         titleLabel.height(60)
         
