@@ -71,7 +71,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     }
     
     override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.offsetBy(dx: UIScreen.main.bounds.width / 2.6, dy: 0)
+        return bounds.offsetBy(dx: self.bounds.width / 2.4, dy: 0)
     }
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {

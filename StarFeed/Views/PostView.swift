@@ -22,6 +22,7 @@ class PostView: UIView {
         titleLabel.numberOfLines = 2
         return titleLabel
     }()
+        
     
     //Main Image/Thumbnail
     private let imageViewButton: UIButton = {
@@ -77,6 +78,12 @@ class PostView: UIView {
         return label
     }()
     
+    private let line: UIView = {
+        let view = UIView()
+        view.backgroundColor = .secondarySystemBackground
+        return view
+    }()
+    
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     
@@ -99,6 +106,7 @@ class PostView: UIView {
         addSubview(profile)
         addSubview(likeCount)
         addSubview(date)
+        addSubview(line)
         setupView()
         addConstraints()
     }
@@ -243,6 +251,10 @@ class PostView: UIView {
         
         commentsButton.bottomToSuperview(offset: -5)
         commentsButton.leadingToSuperview(offset: 5)
+        
+        line.horizontalToSuperview()
+        line.bottomToSuperview()
+        line.height(1)
         
     }
     
