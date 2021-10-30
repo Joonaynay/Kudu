@@ -181,15 +181,22 @@ class CommentsViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        textView.text = ""
+        if textView.text == "Comment" {
+            textView.text = ""
+        }
         textView.textColor = .label
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        if self.textView.text != "" && self.textView.text!.count <= 500 {
+        if self.textView.text != "" && self.textView.text!.count <= 600 {
                 self.addCommentButton.isEnabled = true
             } else {
                 self.addCommentButton.isEnabled = false
+        }
+        if self.textView.text.count > 600 {
+            let alert = UIAlertController(title: "Comment must be 600 characters or less.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            present(alert, animated: true)
         }
     }
     

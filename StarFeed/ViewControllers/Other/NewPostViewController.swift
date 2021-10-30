@@ -11,7 +11,7 @@ import AVKit
 import TinyConstraints
 
 class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
-        
+    
     var imageView = UIImageView()
     
     private let scrollView = CustomScrollView()
@@ -46,8 +46,9 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
         if !UserDefaults.standard.bool(forKey: "isFirstTime") {
-            let alert = UIAlertController(title: "Important!", message: "", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Important!!!", message: "", preferredStyle: .alert)
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .left
             let messageText = NSAttributedString(
@@ -58,7 +59,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
                     NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)
                 ]
             )
-
+            
             alert.setValue(messageText, forKey: "attributedMessage")
             
             let action = UIAlertAction(title: "I understand", style: .default) { _ in
@@ -68,7 +69,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
             present(alert, animated: true)
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -108,7 +109,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // Video View
         videoView.backgroundColor = .secondarySystemBackground
-
+        
         videoView.addAction(UIAction(title: "") { _ in
             if let url = self.movieURL {
                 let player = VideoPlayer(url: url)
@@ -118,10 +119,29 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // Next Button
         nextButton.addAction(UIAction(title: "") { _ in
-            self.navigationController?.pushViewController(NewPostSubjectsViewController(movieURL: self.movieURL, image: self.imageView.image, titleString: self.titleText.text!, desc: self.desc.text!), animated: true)
+            if self.desc.text.count <= 1000 && self.titleText.text!.count <= 100 && self.imageView.image != nil && self.videoView.layer.sublayers?.first != nil {
+                if self.desc.text == "Description" {
+                    self.desc.text = ""
+                    self.navigationController?.pushViewController(NewPostSubjectsViewController(movieURL: self.movieURL, image: self.imageView.image, titleString: self.titleText.text!, desc: self.desc.text!), animated: true)
+                } else {
+                    self.navigationController?.pushViewController(NewPostSubjectsViewController(movieURL: self.movieURL, image: self.imageView.image, titleString: self.titleText.text!, desc: self.desc.text!), animated: true)
+                }
+            } else {
+                let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.alignment = .left
+                let messageText = NSAttributedString(string: "Please make sure you have the following:\n\n- A title (100 characters) or less\n\n- A description (1,000 words or less)\n\n- A thumbnail selected\n\n- A video selected", attributes: [
+                    NSAttributedString.Key.paragraphStyle: paragraphStyle,
+                    NSAttributedString.Key.foregroundColor : UIColor.label,
+                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)
+                ])
+                alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                alert.setValue(messageText, forKey: "attributedMessage")
+                self.present(alert, animated: true)
+            }
         }, for: .touchUpInside)
         nextButton.isEnabled = false
-
+        
         
         //Scroll View
         view.addSubview(scrollView)
@@ -136,28 +156,28 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         descHeader.text = "Description"
         stackView.stack([titleHeader, titleText, descHeader, desc, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
         
-
+        
         
     }
     
-
+    
     private func setupConstraints() {
         scrollView.edgesToSuperview(excluding: .top)
         scrollView.topToBottom(of: backButton)
         
         stackView.edgesToSuperview(insets: TinyEdgeInsets(top: 15, left: 15, bottom: 15, right: 15))
         stackView.width(view.width - 30)
-                
+        
         imageView.heightToWidth(of: stackView, multiplier: 9/16)
         videoView.heightToWidth(of: stackView, multiplier: 9/16)
-
+        
         
         titleText.height(50)
         desc.height(min: 50, max: 1000, priority: .required, isActive: true)
         imageButton.height(50)
         videoButton.height(50)
         nextButton.height(50)
-
+        
     }        
     
     
@@ -167,7 +187,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         picker.delegate = self
         present(picker, animated: true)
     }
-                        
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         dismiss(animated: true)
         if imageView.image != nil && videoView.layer.sublayers?.first != nil && titleText.text != "" {
@@ -194,6 +214,17 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     }
     
+    func textViewDidChange(_ textView: UITextView) {
+        if desc.text.count >= 1000 {
+            nextButton.isEnabled = false
+            let alert = UIAlertController(title: "Description must be 1000 characters or less.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            present(alert, animated: true)
+        } else {
+            nextButton.isEnabled = true
+        }
+    }
+    
     func textViewDidEndEditing(_ textView: UITextView) {
         if desc.text.isEmpty {
             desc.text = "Description"
@@ -202,7 +233,9 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        desc.text = ""
+        if desc.text == "Description" {
+            desc.text = ""
+        }
         desc.textColor = .label
     }
     

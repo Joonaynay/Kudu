@@ -37,7 +37,7 @@ class TitleBar: UIView {
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         return button
-    }()            
+    }()
     
     init(title: String, backButton: Bool) {
         if backButton {
@@ -49,9 +49,9 @@ class TitleBar: UIView {
         } else {
             self.backButton = nil
         }
-        super.init(frame: .zero)        
-        titleLabel.text = title
-        menuButton.menu = createMenu()
+        super.init(frame: .zero)
+        self.titleLabel.text = title
+        self.menuButton.menu = createMenu()
         if let profileImage = fb.currentUser.profileImage {
             menuButton.setImage(profileImage, for: .normal)
             menuButton.imageView!.layer.masksToBounds = false

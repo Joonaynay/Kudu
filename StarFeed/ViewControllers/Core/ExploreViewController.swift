@@ -14,10 +14,10 @@ class ExploreViewController: UIViewController {
     private let fb = FirebaseModel.shared
 
     private let titleBar = TitleBar(title: "Explore", backButton: false)
-
+    
     private let scrollView = CustomScrollView()
     private var stackView = UIStackView()
-            
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -26,6 +26,14 @@ class ExploreViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // Alert user to allow 24 hours if they just uploaded their post.
+        if UserDefaults.standard.bool(forKey: "24HrsAlert") {
+            let alert = UIAlertController(title: "Please allow up to 24 hours for your post to be uploaded.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+            present(alert, animated: true)
+            UserDefaults.standard.set(false, forKey: "24HrsAlert")
+        }
+        // TitleBar
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
