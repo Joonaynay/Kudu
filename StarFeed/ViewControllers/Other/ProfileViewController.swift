@@ -81,6 +81,7 @@ class ProfileViewController: UIViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
+        self.username.text = self.user.username
         backButton.vc = self
         if let image = self.user.profileImage {
             self.profileImage.setImage(image, for: .normal)
@@ -199,7 +200,9 @@ class ProfileViewController: UIViewController {
         if fb.currentUser.id == user.id {
             editProfileButton.label.text = "Edit Profile"
             editProfileButton.addAction(UIAction() { _ in
-                self.present(EditProfileViewController(), animated: true)
+                let editProfile = EditProfileViewController()
+                editProfile.vc = self
+                self.present(editProfile, animated: true)
             }, for: .touchUpInside)
         } else {
             editProfileButton.addAction(UIAction() { _ in

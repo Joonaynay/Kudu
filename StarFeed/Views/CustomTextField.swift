@@ -59,6 +59,12 @@ class CustomTextField: UITextField, UITextFieldDelegate {
             } else {
                 vc.createAccountButton.isEnabled = false
             }
+        } else if let vc = vc as? ChangePasswordViewController {
+            if !vc.oldPassword.text!.isEmpty && !vc.newPassword.text!.isEmpty && !vc.confirmPassword.text!.isEmpty {
+                vc.doneButton.isEnabled = true
+            } else {
+                vc.doneButton.isEnabled = false
+            }
         }
     }
     

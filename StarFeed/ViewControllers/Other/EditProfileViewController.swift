@@ -13,6 +13,8 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     private let auth = AuthModel.shared
     let tableView = UITableView(frame: .zero, style: .grouped)
     
+    weak var vc: UIViewController?
+    
     let label: UILabel = {
         
         let label = UILabel()
@@ -22,11 +24,24 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         return label
     }()
     
+    private let xButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        button.tintColor = UIColor.theme.accentColor
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
         view.backgroundColor = .systemBackground
         view.addSubview(label)
+        xButton.addAction(UIAction() { _ in
+            self.dismiss(animated: true)
+        }, for: .touchUpInside)
+        view.addSubview(xButton)
         setupView()
         addConstraints()
     }
@@ -46,11 +61,16 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         label.topToSuperview(offset: 10)
         label.centerXToSuperview()
         
+        xButton.topToSuperview(offset: 15, usingSafeArea: true)
+        xButton.trailingToSuperview(offset: 15)
+        xButton.height(25)
+        xButton.width(25)
+        
         
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,6 +80,10 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
             cell.setupCell(title: "Delete Account", image: true)
         case 1:
             cell.setupCell(title: "Sign Out", image: true)
+        case 2:
+            cell.setupCell(title: "Change Password", image: true)
+        case 3:
+            cell.setupCell(title: "Change Username", image: true)
         default:
             cell.setupCell(title: "Title", image: false)
         }
@@ -114,6 +138,32 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
                 }
             }))
             self.present(alert, animated: true)
+        case 2:
+            self.dismiss(animated: false)
+            vc?.navigationController?.pushViewController(ChangePasswordViewController(), animated: true)
+        case 3:
+            let alert = UIAlertController(title: "Change Username", message: "Please type in your new username.", preferredStyle: .alert)
+            alert.addTextField { textField in
+                textField.placeholder = "New Username"
+            }
+            alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+                self.auth.changeUsername(newUsername: alert.textFields!.first!.text!) { error in
+                    if let error = error {
+                        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                        self.present(alert, animated: true)
+                    } else {
+                        if let vc = self.vc as? ProfileViewController {
+                            vc.username.text = alert.textFields?.first?.text
+                        }
+                        let alert = UIAlertController(title: "Success", message: "Username has successfully been changed.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                        self.present(alert, animated: true)
+                    }
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            present(alert, animated: true)
         default:
             return
         }
@@ -166,4 +216,86 @@ class TableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+class ChangePasswordViewController: UIViewController {
+    
+    private let auth = AuthModel.shared
+    
+    private let backButton = BackButton()
+    
+    public let oldPassword = CustomTextField(text: "Old Password", image: nil)
+    
+    public let newPassword = CustomTextField(text: "New Password", image: nil)
+    
+    public let confirmPassword = CustomTextField(text: "Confirm Password", image: nil)
+    
+    private let stackView = UIView()
+    
+    public let doneButton = CustomButton(text: "Done", color: UIColor.theme.blueColor)
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupView()
+        addConstraints()
+        
+    }
+    
+    private func setupView() {
+        view.backgroundColor = .systemBackground
+        view.addSubview(stackView)
+        
+        backButton.vc = self
+        
+        oldPassword.vc = self
+        oldPassword.isSecureTextEntry = true
+        newPassword.vc = self
+        newPassword.isSecureTextEntry = true
+        confirmPassword.vc = self
+        confirmPassword.isSecureTextEntry = true
+        
+        stackView.stack([
+            oldPassword, newPassword, confirmPassword
+        ], spacing: 10)
+        view.addSubview(backButton)
+        
+        doneButton.isEnabled = false
+        
+        doneButton.addAction(UIAction() { _ in
+            if self.newPassword.text! == self.confirmPassword.text! {
+                self.auth.changePassword(oldPassword: self.oldPassword.text!, newPassword: self.newPassword.text!) { error in
+                    if error != nil {
+                        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                        self.present(alert, animated: true)
+                    } else {
+                        let alert = UIAlertController(title: "Success", message: "Password was successfully changed.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                        self.present(alert, animated: true)
+                    }
+                }
+            } else {
+                let alert = UIAlertController(title: "Error", message: "Password and confirm password do not match", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                self.present(alert, animated: true)
+            }
+        }, for: .touchUpInside)
+        
+        view.addSubview(doneButton)
+    }
+    
+    private func addConstraints() {
+        backButton.setupBackButton()
+        
+        stackView.topToBottom(of: backButton, offset: 20)
+        stackView.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+        
+        oldPassword.height(50)
+        newPassword.height(50)
+        confirmPassword.height(50)
+        
+        doneButton.bottomToSuperview(offset: -15)
+        doneButton.height(50)
+        doneButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+    }
 }
