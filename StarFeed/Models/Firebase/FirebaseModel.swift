@@ -44,7 +44,6 @@ class FirebaseModel: ObservableObject {
         self.saveDeepCollection(collection: "posts", collection2: "comments", document: currentPost.id, document2: currentUser.id, field: "comments", data: [comment]) {
             completion()
         }
-        
     }
     
     func loadComments(currentPost: Post, completion:@escaping ([Comment]?) -> Void) {
@@ -276,10 +275,6 @@ class FirebaseModel: ObservableObject {
                                     guard let dateFormatted = dateFormat.date(from: date) else { return }
                                     let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
                                     self.posts.append(PostView(post: post))
-                                    self.posts.sort { p1, p2 in
-                                        p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
-                                    }
-                                    
                                     completion()
                                 } else {
                                     completion()
@@ -343,6 +338,9 @@ class FirebaseModel: ObservableObject {
                 }
                 group.notify(queue: .main) {
                     self.posts = posts
+                    self.posts.sort { p1, p2 in
+                        p1.post.date.timeIntervalSince1970 > p2.post.date.timeIntervalSince1970
+                    }
                     completion()
                 }
             } else {
@@ -411,10 +409,7 @@ class FirebaseModel: ObservableObject {
                     }
                 }
             }
-            
         }
-        
-        
     }
     
     func addPost(image: UIImage, title: String, subjects: [String], movie: URL, description: String?) {

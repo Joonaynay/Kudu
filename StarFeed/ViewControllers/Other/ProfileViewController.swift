@@ -92,7 +92,7 @@ class ProfileViewController: UIViewController {
             //Add the follow button
             self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
         }
-        if self.user.followers == [] {
+        if self.user.followers == [] && self.user.posts == [] {
             
             //Get index of user
             guard let index = self.fb.users.firstIndex(where: { users in
@@ -129,7 +129,7 @@ class ProfileViewController: UIViewController {
                 }
             }
             
-        } else {
+        } else if user.id == fb.currentUser.id {
             let group = DispatchGroup()
             for post in self.fb.currentUser.posts {
                 group.enter()
@@ -249,10 +249,7 @@ class ProfileViewController: UIViewController {
         editProfileButton.topToBottom(of: username, offset: 30)
         
         scrollView.topToBottom(of: backButton)
-        scrollView.leadingToSuperview()
-        scrollView.trailingToSuperview()
-        scrollView.bottomToSuperview()
-        
+        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         
         stackView.edgesToSuperview(excluding: .top)
         stackView.topToBottom(of: editProfileButton, offset: 40)

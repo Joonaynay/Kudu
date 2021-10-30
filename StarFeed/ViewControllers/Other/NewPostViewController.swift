@@ -162,7 +162,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     
     private func setupConstraints() {
-        scrollView.edgesToSuperview(excluding: .top)
+        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         scrollView.topToBottom(of: backButton)
         
         stackView.edgesToSuperview(insets: TinyEdgeInsets(top: 15, left: 15, bottom: 15, right: 15))
