@@ -81,7 +81,11 @@ class AuthModel: ObservableObject {
                     
                 }
             } else if let error = error {
-                completion(error.localizedDescription)
+                if error.localizedDescription == "The password is invalid or the user does not have a password." {
+                    completion("Invalid password.")
+                } else {
+                    completion(error.localizedDescription)
+                }
             }
         }
     }
@@ -191,6 +195,57 @@ class AuthModel: ObservableObject {
                 completion(error?.localizedDescription)
             }
         })
+    }
+    
+    func changePassword(oldPassword: String, newPassword: String, completion: @escaping (String?) -> Void) {
+        signIn(email: auth.currentUser!.email!, password: oldPassword) { error in
+            if error == nil {
+                self.auth.currentUser?.updatePassword(to: newPassword, completion: { error in
+                    if error != nil {
+                        print(error!.localizedDescription)
+                        completion(error!.localizedDescription)
+                    }
+                })
+                completion(nil)
+            } else {
+                completion(error)
+            }
+        }
+    }
+    
+    func changeUsername(newUsername: String, completion: @escaping (String?) -> Void) {
+        if newUsername.count < 20 {
+            db.getDocs(collection: "users") { query in
+                let group = DispatchGroup()
+                for doc in query!.documents {
+                    group.enter()
+                    if let otherUsername = doc.get("username") as? String {
+                        if otherUsername == newUsername {
+                            completion("That username is already taken.")
+                            break
+                        } else {
+                            group.leave()
+                        }
+                    } else {
+                        group.leave()
+                    }
+                }
+                group.notify(queue: .main) {
+                    completion(nil)
+                    self.db.save(collection: "users", document: self.fb.currentUser.id, field: "username", data: newUsername)
+                    let coreUser = self.cd.fetchUser(uid: self.fb.currentUser.id)
+                    coreUser?.username = newUsername
+                    self.cd.save()
+                    if let index = self.fb.users.firstIndex(where: { users in
+                        users.id == self.fb.currentUser.id
+                    }) {
+                        self.fb.users[index].username = newUsername
+                    }
+                }
+            }
+        } else {
+            completion("Username must be 20 characters or less.")
+        }
     }
     
     

@@ -53,7 +53,7 @@ class FirestoreModel: ObservableObject {
         // Check if data is a string
         } else if let string = data as? String {
             //Save data in firestore
-            db.collection(collection).document(document).setValue(string, forKey: field)
+            db.collection(collection).document(document).updateData([field: string])
         }
     }
     

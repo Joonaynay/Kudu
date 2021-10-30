@@ -23,7 +23,14 @@ class SubjectsViewController: UIViewController {
         setupConstraints()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        if UserDefaults.standard.bool(forKey: "24HrsAlert") {
+            let alert = UIAlertController(title: "Please allow up to 24 hours for your post to be uploaded.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+            present(alert, animated: true)
+            UserDefaults.standard.set(false, forKey: "24HrsAlert")
+        }
+        
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
