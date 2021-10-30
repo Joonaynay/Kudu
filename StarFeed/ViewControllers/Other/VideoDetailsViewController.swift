@@ -91,6 +91,9 @@ class VideoDetailsViewController: UIViewController {
         
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(descHeader)
+        if desc.text == "" {
+            desc.text = "No description was provided."
+        }
         stackView.addArrangedSubview(desc)
         stackView.axis = .vertical
         stackView.spacing = 10

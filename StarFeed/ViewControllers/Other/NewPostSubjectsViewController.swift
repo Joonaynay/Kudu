@@ -43,7 +43,7 @@ class NewPostSubjectsViewController: UIViewController {
     }
     
     private let postButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
-    
+        
     var desc: String
     
     init(movieURL: URL?, image: UIImage?, titleString: String, desc: String) {
@@ -114,6 +114,7 @@ class NewPostSubjectsViewController: UIViewController {
         postButton.isEnabled = false
         postButton.addAction(UIAction(title: "") { _ in
             if let image = self.image, let movieURL = self.movieURL {
+                UserDefaults.standard.set(true, forKey: "24HrsAlert")
                 self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: movieURL, description: self.desc)
                 self.navigationController?.popToRootViewController(animated: true)
             }

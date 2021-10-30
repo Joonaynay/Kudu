@@ -7,14 +7,13 @@
 
 import UIKit
 
-class CommentsViewController: UIViewController {
+class CommentsViewController: UIViewController, UITextViewDelegate {
     
     private var post: Post
     
     private let stackView = UIStackView()
     private let backButton = BackButton()
     private let scrollView = CustomScrollView()
-    private let textField = CustomTextField(text: "Add a comment.", image: nil)
     
     public let addCommentButton = CustomButton(text: "Post", color: UIColor.theme.blueColor)
     
@@ -25,6 +24,17 @@ class CommentsViewController: UIViewController {
         line.backgroundColor = .secondarySystemBackground
         return line
         
+    }()
+    
+    private let textView: UITextView = {
+        let textView = UITextView()
+        textView.isEditable = true
+        textView.backgroundColor = .secondarySystemBackground
+        textView.sizeToFit()
+        textView.isScrollEnabled = false
+        textView.textColor = .systemGray2
+        textView.text = "Comment"
+        return textView
     }()
     
     private let noCommentsText: UILabel = {
@@ -67,6 +77,8 @@ class CommentsViewController: UIViewController {
         
         // View
         view.backgroundColor = .systemBackground
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+
         
         //Title Label
         view.addSubview(titleLabel)
@@ -81,23 +93,28 @@ class CommentsViewController: UIViewController {
         view.addSubview(noCommentsText)
         
         //Add Comment
-        view.addSubview(textField)
-        textField.vc = self
+        view.addSubview(textView)
+        textView.delegate = self
         addCommentButton.isEnabled = false
         view.addSubview(addCommentButton)
+        
+        textView.font = CustomTextField(text: "", image: nil).font
+        textView.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 9)
         
         //ScrollView
         view.addSubview(scrollView)
         scrollView.refreshControl = nil
         scrollView.addSubview(stackView)
+        scrollView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         //Stack View
         stackView.axis = .vertical
         stackView.spacing = 0
         
         addCommentButton.addAction(UIAction() { _ in
-            self.fb.commentOnPost(currentPost: self.post, comment: self.textField.text!) {
-                self.textField.text = ""
+            self.textView.endEditing(true)
+            self.fb.commentOnPost(currentPost: self.post, comment: self.textView.text!) {
+                self.textView.text = ""
                 self.loadCommentsViews()
             }
         }, for: .touchUpInside)
@@ -108,17 +125,17 @@ class CommentsViewController: UIViewController {
         titleLabel.horizontalToSuperview()
         
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        scrollView.topToBottom(of: textField, offset: 15)
+        scrollView.topToBottom(of: textView, offset: 15)
         
-        textField.topToBottom(of: rectangleLine, offset: 15)
-        textField.leadingToSuperview(offset: 15)
-        textField.height(50)
-        textField.width(view.width * (4/6))
+        textView.topToBottom(of: rectangleLine, offset: 15)
+        textView.leadingToSuperview(offset: 15)
+        textView.height(min: 50, max: 1000, priority: .required, isActive: true)
+        textView.width(view.width * (4/6))
         
         addCommentButton.topToBottom(of: rectangleLine, offset: 15)
         addCommentButton.trailingToSuperview(offset: 15)
         addCommentButton.height(50)
-        addCommentButton.leadingToTrailing(of: textField, offset: 15)
+        addCommentButton.leadingToTrailing(of: textView, offset: 15)
         
         stackView.edgesToSuperview()
         stackView.width(view.width)
@@ -154,6 +171,37 @@ class CommentsViewController: UIViewController {
             }
 
         }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "Comment"
+            textView.textColor = .systemGray2
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "Comment" {
+            textView.text = ""
+        }
+        textView.textColor = .label
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if self.textView.text != "" && self.textView.text!.count <= 600 {
+                self.addCommentButton.isEnabled = true
+            } else {
+                self.addCommentButton.isEnabled = false
+        }
+        if self.textView.text.count > 600 {
+            let alert = UIAlertController(title: "Comment must be 600 characters or less.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            present(alert, animated: true)
+        }
+    }
+    
+    @objc func dismissKeyboard() {
+        self.textView.endEditing(true)
     }
     
 }
