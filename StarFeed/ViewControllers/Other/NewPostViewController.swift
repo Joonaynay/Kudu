@@ -38,7 +38,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
     private var header: UILabel {
         let label = UILabel()
         label.textColor = .label
-        label.font = UIFont.systemFont(ofSize: 8, weight: .heavy)
+        label.font = UIFont.systemFont(ofSize: 10, weight: .heavy)
         return label
     }
     
@@ -101,6 +101,9 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         //Image View
         imageView.backgroundColor = .secondarySystemBackground
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.masksToBounds = true
         
         // Video Button
         videoButton.addAction(UIAction(title: "") { _ in
@@ -155,8 +158,6 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         let descHeader = header
         descHeader.text = "Description"
         stackView.stack([titleHeader, titleText, descHeader, desc, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
-        
-        
         
     }
     

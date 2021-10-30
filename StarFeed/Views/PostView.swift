@@ -64,7 +64,7 @@ class PostView: UIView {
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
-        button.tintColor = UIColor.theme.blueColor
+        button.tintColor = UIColor.theme.accentColor
         return button
     }()
     
@@ -182,8 +182,8 @@ class PostView: UIView {
 
         }, for: .touchUpInside)
         
-        imageViewButton.setBackgroundImage(post.image, for: .normal)
-        
+        imageViewButton.setImage(post.image, for: .normal)
+        imageViewButton.imageView!.contentMode = .scaleAspectFill
         
         profile.profileImage.image = user.profileImage
         

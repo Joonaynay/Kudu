@@ -126,6 +126,9 @@ class ProfileViewController: UIViewController {
                         UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
                     ])
                     self.infoButton.menu = menu
+                    self.fb.posts.sort { p1, p2 in
+                        p1.post.date.timeIntervalSince1970 > p2.post.date.timeIntervalSince1970
+                    }
                 }
             }
             

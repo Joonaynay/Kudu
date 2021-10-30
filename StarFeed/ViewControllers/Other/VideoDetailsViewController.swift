@@ -30,7 +30,7 @@ class VideoDetailsViewController: UIViewController {
     private var header: UILabel {
         let label = UILabel()
         label.textColor = .label
-        label.font = UIFont.systemFont(ofSize: 8, weight: .heavy)
+        label.font = UIFont.systemFont(ofSize: 10, weight: .heavy)
         return label
     }
     
