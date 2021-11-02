@@ -46,10 +46,10 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         //CollectionView
         collectionView.dataSource = self
         collectionView.refreshControl?.addAction(UIAction() { _ in
-            self.fb.loadPosts {
+            
                 self.collectionView.refreshControl?.endRefreshing()
                 self.collectionView.reloadData()
-            }
+            
         }, for: .valueChanged)
         view.addSubview(collectionView)
     }

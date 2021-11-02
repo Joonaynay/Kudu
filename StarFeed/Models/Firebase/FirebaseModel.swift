@@ -20,13 +20,14 @@ class FirebaseModel: ObservableObject {
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
     @Published public var posts = [Post]()
-
     
     @Published public var subjects = [Subject]()
     
     init() {
-        self.subjects = [Subject(name: "Entrepreneurship", image: "person"), Subject(name: "Career", image: "building.2"), Subject(name: "Workout", image: "heart"), Subject(name: "Confidence", image: "crown"), Subject(name: "Communication", image: "bubble.left"), Subject(name: "Motivation", image: "lightbulb"), Subject(name: "Spirituality", image: "leaf"), Subject(name: "Financial", image: "dollarsign.square"), Subject(name: "Focus", image: "scope"), Subject(name: "Happiness", image: "face.smiling"), Subject(name: "Habits", image: "infinity"), Subject(name: "Success", image: "hands.sparkles"), Subject(name: "Books/Audiobooks", image: "book"), Subject(name: "Failure", image: "cloud.heavyrain"), Subject(name: "Leadership", image: "person.3"), Subject(name: "Relationships", image: "figure.wave"), Subject(name: "Will Power", image: "battery.100.bolt"), Subject(name: "Mindfulness", image: "rays"), Subject(name: "Purpose", image: "sunrise"), Subject(name: "Time Management", image: "clock"), Subject(name: "Goals", image: "target")].sorted { $0.name < $1.name }
+        self.subjects = [Subject(name: "Art", image: "paintbrush"), Subject(name: "Entrepreneurship", image: "person"), Subject(name: "Career", image: "building.2"), Subject(name: "Workout", image: "heart"), Subject(name: "Confidence", image: "crown"), Subject(name: "Communication", image: "bubble.left"), Subject(name: "Motivation", image: "lightbulb"), Subject(name: "Spirituality", image: "leaf"), Subject(name: "Financial", image: "dollarsign.square"), Subject(name: "Focus", image: "scope"), Subject(name: "Happiness", image: "face.smiling"), Subject(name: "Habits", image: "infinity"), Subject(name: "Success", image: "hands.sparkles"), Subject(name: "Books/Audiobooks", image: "book"), Subject(name: "Failure", image: "cloud.heavyrain"), Subject(name: "Leadership", image: "person.3"), Subject(name: "Relationships", image: "figure.wave"), Subject(name: "Will Power", image: "battery.100.bolt"), Subject(name: "Mindfulness", image: "rays"), Subject(name: "Purpose", image: "sunrise"), Subject(name: "Time Management", image: "clock"), Subject(name: "Goals", image: "target")].sorted { $0.name < $1.name }
     }
+    
+
     
     func likePost(post: Int) {
         
@@ -150,6 +151,9 @@ class FirebaseModel: ObservableObject {
             
             //Add to UserModel
             self.currentUser.following.append(followUser.id)
+            if let index = self.users.firstIndex(where: { users in users.id == followUser.id }) {
+                self.users[index].followers.append(self.currentUser.id)
+            }
             
             //Save to core data
             let coreUser = cd.fetchUser(uid: currentUser.id)
@@ -166,6 +170,11 @@ class FirebaseModel: ObservableObject {
             // Delete from UserModel
             let index = currentUser.following.firstIndex(of: followUser.id)
             currentUser.following.remove(at: index!)
+            if let index = self.users.firstIndex(where: { users in users.id == followUser.id }) {
+                self.users[index].followers.removeAll { follower in
+                    follower == self.currentUser.id
+                }
+            }
             
             //Save to core data
             let deleteCoreUser = cd.fetchUser(uid: currentUser.id)
@@ -235,7 +244,7 @@ class FirebaseModel: ObservableObject {
         }) {
             completion()
         } else {
-
+            
             //Load Post Firestore Document
             self.db.getDoc(collection: "posts", id: postId) { document in
                 
@@ -298,65 +307,6 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func loadPosts(completion:@escaping () -> Void) {
-        
-        //Load all Post Firestore Documents
-        self.db.getDocs(collection: "posts") { query in
-            
-            //Check if local loaded posts is equal to firebase docs
-            if self.posts.count != query?.count {
-                
-                let group = DispatchGroup()
-                //Loop through each document and get data
-                var posts = [Post]()
-                for post in query!.documents {
-                    group.enter()
-                    let title = post.get("title") as! String
-                    let postId = post.documentID
-                    let subjects = post.get("subjects") as! [String]
-                    let date = post.get("date") as! String
-                    let uid = post.get("uid") as! String
-                    let likes = post.get("likes") as! [String]
-                    let description = post.get("description") as! String
-                    
-                    //Load user for post
-                    self.loadConservativeUser(uid: uid) { user in
-                        
-                        //Load image
-                        self.storage.loadImage(path: "images", id: post.documentID) { image in
-                            
-                            //Load Movie
-                            self.storage.loadMovie(path: "videos", file: "\(post.documentID).m4v") { url in
-                                //Add to view model
-                                
-                                if let image = image, let url = url, let user = user {
-                                    let dateFormat = DateFormatter()
-                                    dateFormat.dateStyle = .full
-                                    dateFormat.timeStyle = .full
-                                    guard let dateFormatted = dateFormat.date(from: date) else {
-                                        group.leave()
-                                        return
-                                    }
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
-                                    posts.append(post)
-                                }
-                                group.leave()
-                            }
-                        }
-                    }
-                }
-                group.notify(queue: .main) {
-                    self.posts = posts
-                    self.posts.sort { p1, p2 in
-                        p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
-                    }
-                    completion()
-                }
-            } else {
-                completion()
-            }
-        }
-    }
     
     func loadUser(uid: String, completion:@escaping (User?) -> Void) {
         if let user = self.users.first(where: { users in

@@ -189,7 +189,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         } else {
             editProfileButton.addAction(UIAction() { _ in
                 self.fb.followUser(followUser: self.user) {
-                    self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
+                    self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"                
                 }
             }, for: .touchUpInside)
         }
