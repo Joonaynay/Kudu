@@ -7,37 +7,26 @@
 
 import UIKit
 
+class FollowingViewController: UIViewController, UICollectionViewDataSource {
 
-
-class FollowingViewController: UIViewController {
-    
     private let fb = FirebaseModel.shared
-    
+
     private let titleBar = TitleBar(title: "Following", backButton: false)
-    
-    private let scrollView = CustomScrollView()
-    private var stackView = UIStackView()
+    private let collectionView = CustomCollectionView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        reload()
         setupConstraints()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if UserDefaults.standard.bool(forKey: "24HrsAlert") {
-            let alert = UIAlertController(title: "Please allow up to 24 hours for your post to be uploaded.", message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .cancel))
-            present(alert, animated: true)
-            UserDefaults.standard.set(false, forKey: "24HrsAlert")
-        }
-        
+        // TitleBar
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
         }
-        reload()
+        collectionView.reloadData()
     }
     
     private func setupView() {
@@ -45,44 +34,36 @@ class FollowingViewController: UIViewController {
         view.addSubview(titleBar)
         view.backgroundColor = .systemBackground
         
-        //Scroll View
-        scrollView.refreshControl?.addAction(UIAction() { _ in
-            self.reload()
-            self.scrollView.refreshControl?.endRefreshing()
-        }, for: .valueChanged)
-        view.addSubview(scrollView)
-        
-        //StackView
-        stackView.axis = .vertical
-        scrollView.addSubview(stackView)
-        
-    }
-    
-    private func reload() {
-        for view in stackView.arrangedSubviews {
-            view.removeFromSuperview()
-        }
-        for pview in fb.posts {
-            if fb.currentUser.following.contains(pview.post.uid) {
-                pview.vc = self
-                stackView.addArrangedSubview(pview)
+        //CollectionView
+        collectionView.dataSource = self
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            self.fb.loadPosts {
+                self.collectionView.refreshControl?.endRefreshing()
+                self.collectionView.reloadData()
             }
-        }
+        }, for: .valueChanged)
+        view.addSubview(collectionView)
     }
-    
-    
+ 
     private func setupConstraints() {
-        titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
-        titleBar.height(70)
-        
-        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        scrollView.topToBottom(of: titleBar)
-        
-        stackView.edgesToSuperview()
-        stackView.width(view.width)
-        
-        
+        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.topToBottom(of: titleBar)
     }
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        var posts = [Post]()
+        for post in fb.posts { if self.fb.currentUser.following.contains(post.uid) { posts.append(post) } }
+        return posts.count
+    }
     
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var posts = [Post]()
+        for post in fb.posts { if self.fb.currentUser.following.contains(post.uid) { posts.append(post) } }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+        cell.vc = self
+        cell.setupView(post: posts[indexPath.row])
+        return cell
+    }
 }
+
+

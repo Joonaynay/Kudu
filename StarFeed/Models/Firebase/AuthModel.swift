@@ -245,6 +245,7 @@ class AuthModel: ObservableObject {
                     let coreUser = self.cd.fetchUser(uid: self.fb.currentUser.id)
                     coreUser?.username = newUsername
                     self.cd.save()
+                    self.fb.currentUser.username = newUsername
                     if let index = self.fb.users.firstIndex(where: { users in
                         users.id == self.fb.currentUser.id
                     }) {

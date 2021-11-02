@@ -9,13 +9,13 @@ import UIKit
 import TinyConstraints
 import FirebaseFirestore
 
-class ProfileViewController: UIViewController {
-    
+class ProfileViewController: UIViewController, UICollectionViewDataSource {
+
     private let fb = FirebaseModel.shared
     
     private let scrollView = CustomScrollView()
     private var backButton = BackButton()
-    let stackView = UIStackView()
+    private let collectionView = CustomCollectionView()
     
     private let infoButton: UIButton = {
         let button = UIButton()
@@ -36,31 +36,26 @@ class ProfileViewController: UIViewController {
     }()
     
     // Username Label
-    let username: UILabel = {
-        
+    public let username: UILabel = {
         let username = UILabel()
         username.textAlignment = .center
         return username
-        
     }()
     
-    var postTitle: UILabel {
-        
+    private var postTitle: UILabel {
         let title = UILabel()
         title.text = "This is my title."
         return title
-        
     }
     
-    var rectangle: UIView {
-        
+    private var rectangle: UIView {
         let rect = UIView()
         rect.backgroundColor = .blue
         return rect
     }
     
     //Edit Profile || Follow Button
-    let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
+    private let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     
     private var user: User
     
@@ -113,22 +108,14 @@ class ProfileViewController: UIViewController {
                     self.fb.loadPost(postId: post) { group.leave() }
                 }
                 group.notify(queue: .main) {
-                    for view in self.stackView.arrangedSubviews {
-                        view.removeFromSuperview()
-                    }
-                    for pview in self.fb.posts {
-                        if pview.post.uid == self.user.id {
-                            pview.vc = self
-                            self.stackView.addArrangedSubview(pview)
-                        }
-                    }
+                    self.collectionView.reloadData()
                     let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
                         UIAction(title: "Followers: \(self.user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
                         UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
                     ])
                     self.infoButton.menu = menu
                     self.fb.posts.sort { p1, p2 in
-                        p1.post.date.timeIntervalSince1970 > p2.post.date.timeIntervalSince1970
+                        p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
                     }
                 }
             }
@@ -142,15 +129,7 @@ class ProfileViewController: UIViewController {
                 }
             }
             group.notify(queue: .main) {
-                for view in self.stackView.arrangedSubviews {
-                    view.removeFromSuperview()
-                }
-                for pview in self.fb.posts {
-                    if pview.post.uid == self.user.id {
-                        pview.vc = self
-                        self.stackView.addArrangedSubview(pview)
-                    }
-                }
+                self.collectionView.reloadData()
             }
         }
     }
@@ -215,19 +194,14 @@ class ProfileViewController: UIViewController {
             }, for: .touchUpInside)
         }
         
-        //Stackview
-        for pview in self.fb.posts {
-            if pview.post.uid == self.user.id {
-                pview.vc = self
-                self.stackView.addArrangedSubview(pview)
-            }
-        }
-        stackView.axis = .vertical
-        stackView.spacing = 0
+        //CollectionView
+        scrollView.addSubview(collectionView)
+        collectionView.isScrollEnabled = false
+        collectionView.dataSource = self
         
         // Scrollview
         scrollView.addSubview(editProfileButton)
-        scrollView.addSubview(stackView)
+        scrollView.addSubview(collectionView)
         view.addSubview(scrollView)
         
     }
@@ -257,12 +231,26 @@ class ProfileViewController: UIViewController {
         scrollView.topToBottom(of: backButton)
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         
-        stackView.edgesToSuperview(excluding: .top)
-        stackView.topToBottom(of: editProfileButton, offset: 40)
-        stackView.leading(to: scrollView)
-        stackView.trailing(to: scrollView)
-        stackView.bottom(to: scrollView)
-        stackView.width(view.width)
+        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.topToBottom(of: editProfileButton, offset: 50)
+        collectionView.width(to: view)
         
     }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        var posts = [Post]()
+        for post in fb.posts { if post.uid == self.user.id { posts.append(post) } }
+        return posts.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var posts = [Post]()
+        for post in fb.posts { if post.uid == self.user.id { posts.append(post) } }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+        cell.vc = self
+        cell.setupView(post: posts[indexPath.row])
+        return cell
+    }
+    
+    
 }

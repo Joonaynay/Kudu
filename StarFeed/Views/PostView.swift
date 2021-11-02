@@ -8,10 +8,9 @@
 import UIKit
 import FirebaseFirestore
 
-class PostView: UIView {
+class PostView: UICollectionViewCell {
     
     let fb = FirebaseModel.shared
-    
     weak var vc: UIViewController?
     
     //Post Title
@@ -23,11 +22,17 @@ class PostView: UIView {
         return titleLabel
     }()
     
-    
     //Main Image/Thumbnail
     private let imageViewButton: UIButton = {
         let button = UIButton()
         return button
+    }()
+    
+    private lazy var imageViewButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            self.vc?.present(VideoPlayer(url: self.fb.posts[self.post!].movie!), animated: true)
+        }
+        return action
     }()
     
     //Button to move to comments
@@ -38,6 +43,14 @@ class PostView: UIView {
         button.setTitleColor(UIColor.theme.secondaryText, for: .highlighted)
         return button
     }()
+    private lazy var commentsButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            let comments = CommentsViewController(post: self.fb.posts[self.post!])
+            comments.hidesBottomBarWhenPushed = true
+            self.vc?.navigationController?.pushViewController(comments, animated: true)
+        }
+        return action
+    }()
     
     //Like Count Label
     private let likeCount: UILabel = {
@@ -47,7 +60,6 @@ class PostView: UIView {
         label.sizeToFit()
         return label
     }()
-    
     //Button to like
     private let likeButton: UIButton = {
         let button = UIButton()
@@ -57,7 +69,14 @@ class PostView: UIView {
         button.contentHorizontalAlignment = .fill
         return button
     }()
-    
+    private lazy var infoButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            let details = VideoDetailsViewController(post: self.fb.posts[self.post!])
+            details.modalPresentationStyle = .pageSheet
+            self.vc?.present(details, animated: true)
+        }
+        return action
+    }()
     // Info Button
     private let infoButton: UIButton = {
         let button = UIButton()
@@ -67,7 +86,21 @@ class PostView: UIView {
         button.tintColor = UIColor.theme.accentColor
         return button
     }()
-    
+    private lazy var likeButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            self.fb.likePost(post: self.post!)
+            if self.fb.posts[self.post!].likes.contains(self.fb.currentUser.id) {
+                    self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
+                    self.likeButton.tintColor = UIColor.theme.blueColor
+                } else {
+                    self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+                    self.likeButton.tintColor = .label
+                }
+            let result = String(format: "%ld %@", locale: Locale.current, self.fb.posts[self.post!].likes.count, "")
+            self.likeCount.text = result
+        }
+        return action
+    }()
     // Date of post
     private let date: UILabel = {
         let label = UILabel()
@@ -77,37 +110,58 @@ class PostView: UIView {
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
         return label
     }()
-    
     private let line: UIView = {
         let view = UIView()
         view.backgroundColor = .secondarySystemBackground
         return view
     }()
-    
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
+    private lazy var profileAction: UIAction = {
+        let action = UIAction() { _ in
+            if let index = self.fb.users.firstIndex(where: { user in
+                user.id == self.fb.posts[self.post!].uid
+            }) {
+                let profileView = ProfileViewController(user: self.fb.users[index])
+                profileView.hidesBottomBarWhenPushed = true
+                self.vc?.navigationController?.pushViewController(profileView, animated: true)
+            }
+        }
+        return action
+    }()
     
     private let followButton = CustomButton(text: "", color: UIColor.theme.blueColor)
+    private lazy var followButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            self.fb.followUser(followUser: self.fb.users[self.user!]) {
+                if self.fb.currentUser.following.contains(self.fb.users[self.user!].id) {
+                    self.followButton.label.text = "Unfollow"
+                } else {
+                    self.followButton.label.text = "Follow"
+                }
+                if let superview = self.superview as? CustomCollectionView {
+                    superview.reloadData()
+                }
+            }
+        }
+        return action
+    }()
     
-    private var first = true
+    public var post: Int?
+    private var user: Int?
     
-    public var post: Post
-    
-    init(post: Post) {
-        self.post = post
-        super.init(frame: .zero)
-        height(UIScreen.main.bounds.width)
-        addSubview(commentsButton)
-        addSubview(titleLabel)
-        addSubview(infoButton)
-        addSubview(imageViewButton)
-        addSubview(likeButton)
-        addSubview(followButton)
-        addSubview(profile)
-        addSubview(likeCount)
-        addSubview(date)
-        addSubview(line)
-        setupView()
+    override init(frame: CGRect) {
+        super.init(frame: frame)        
+        contentView.addSubview(commentsButton)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(infoButton)
+        contentView.addSubview(imageViewButton)
+        contentView.addSubview(likeButton)
+        contentView.addSubview(followButton)
+        contentView.addSubview(profile)
+        contentView.addSubview(likeCount)
+        contentView.addSubview(date)
+        contentView.addSubview(line)
         addConstraints()
     }
     
@@ -115,116 +169,77 @@ class PostView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupView() {
-        var post = post
-        guard let user = fb.users.first(where: { user in
-            user.id == post.uid
-        }) else { return }
+    public func setupView(post: Post) {
+        guard let post = fb.posts.firstIndex(where: { p in p.id == post.id }) else { return }
+        self.post = post
+        guard let user = fb.users.firstIndex(where: { user in user.id == fb.posts[post].uid }) else { return }
+        self.user = user
         
-        let db = Firestore.firestore()
-        db.collection("posts").document(post.id).addSnapshotListener { doc, error in
-            guard let likes = doc?.get("likes") as? [String] else { return }
-            if likes.contains(self.fb.currentUser.id) {
+        
+        if fb.posts[post].likes.contains(self.fb.currentUser.id) {
                 self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
                 self.likeButton.tintColor = UIColor.theme.blueColor
             } else {
                 self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
                 self.likeButton.tintColor = .label
             }
-            let result = String(format: "%ld %@", locale: Locale.current, likes.count, "")
-            self.likeCount.text = result
-        }
+        let result = String(format: "%ld %@", locale: Locale.current, fb.posts[post].likes.count, "")
+        likeCount.text = result
+            
         
-        infoButton.addAction(UIAction() { _ in
-            let details = VideoDetailsViewController(post: post)
-            details.modalPresentationStyle = .pageSheet
-            self.vc?.present(details, animated: true)
-        }, for: .touchUpInside)
+        //Button Actions
+        infoButton.addAction(infoButtonAction, for: .touchUpInside)
+        likeButton.addAction(likeButtonAction, for: .touchUpInside)
+        followButton.addAction(followButtonAction, for: .touchUpInside)
+        imageViewButton.addAction(imageViewButtonAction, for: .touchUpInside)
+        profile.addAction(profileAction, for: .touchUpInside)
+        commentsButton.addAction(commentsButtonAction, for: .touchUpInside)
         
-        likeButton.addAction(UIAction() { _ in
-            self.fb.likePost(currentPost: post)
-            if let index = post.likes.firstIndex(of: self.fb.currentUser.id) {
-                post.likes.remove(at: index)
-            } else {
-                post.likes.append(self.fb.currentUser.id)
-            }
-        }, for: .touchUpInside)
-        
+        //Date
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
         dateFormatter.dateStyle = .long
-        let dateString = dateFormatter.string(from: post.date)
+        let dateString = dateFormatter.string(from: fb.posts[post].date)
         date.text = dateString
         
-        
-        
-        
-        if self.fb.currentUser.following.contains(user.id) {
+        //Set follow button text
+        if self.fb.currentUser.following.contains(fb.users[user].id) {
             self.followButton.label.text = "Unfollow"
         } else {
             self.followButton.label.text = "Follow"
         }
         
-        
-        followButton.addAction(UIAction() { _ in
-            
-            self.fb.followUser(followUser: user) {
-                if self.fb.currentUser.following.contains(user.id) {
-                    self.followButton.label.text = "Unfollow"
-                } else {
-                    self.followButton.label.text = "Follow"
-                }
-            }
-            
-        }, for: .touchUpInside)
-        
-        imageViewButton.addAction(UIAction() { _ in
-            self.vc?.present(VideoPlayer(url: post.movie!), animated: true)
-        }, for: .touchUpInside)
-        
-        profile.addAction(UIAction() { _ in
-            if let index = self.fb.users.firstIndex(where: { user in
-                user.id == post.uid
-            }) {
-                let profileView = ProfileViewController(user: self.fb.users[index])
-                profileView.hidesBottomBarWhenPushed = true
-                self.vc?.navigationController?.pushViewController(profileView, animated: true)
-            }
-            
-            
-        }, for: .touchUpInside)
-        
-        imageViewButton.setImage(post.image, for: .normal)
+        //Set imageview image
+        imageViewButton.setImage(fb.posts[post].image, for: .normal)
         imageViewButton.imageView!.contentMode = .scaleAspectFill
         
-        profile.profileImage.image = user.profileImage
+        //Set user image
+        profile.usernameLabel.text = fb.users[user].username
+        profile.profileImage.image = fb.users[user].profileImage
         
-        titleLabel.text = post.title
+        //Set post title
+        titleLabel.text = fb.posts[post].title
         
-        commentsButton.addAction(UIAction() { _ in
-            let comments = CommentsViewController(post: post)
-            comments.hidesBottomBarWhenPushed = true
-            self.vc?.navigationController?.pushViewController(comments, animated: true)
-            
-        }, for: .touchUpInside)
+        
         
     }
     
-    override func willMove(toSuperview newSuperview: UIView?) {
-        guard let user = fb.users.first(where: { user in
-            user.id == post.uid
-        }) else { return }
+    override func prepareForReuse() {
+        //Remove all actions
+        infoButton.removeAction(infoButtonAction, for: .touchUpInside)
+        likeButton.removeAction(likeButtonAction, for: .touchUpInside)
+        imageViewButton.removeAction(imageViewButtonAction, for: .touchUpInside)
+        profile.removeAction(profileAction, for: .touchUpInside)
+        commentsButton.removeAction(commentsButtonAction, for: .touchUpInside)
+        followButton.removeAction(followButtonAction, for: .touchUpInside)
         
-        if self.fb.currentUser.following.contains(user.id) {
-            self.followButton.label.text = "Unfollow"
-        } else {
-            self.followButton.label.text = "Follow"
-        }
-        
-        profile.profileImage.image = user.profileImage
-        profile.usernameLabel.text = user.username
+        //Remove any other text or images
+        imageViewButton.setImage(nil, for: .normal)
+        profile.profileImage.image = nil
+        titleLabel.text = nil
+        date.text = nil
+        self.followButton.label.text = nil
     }
-    
     
     
     private func addConstraints() {

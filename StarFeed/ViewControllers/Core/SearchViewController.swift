@@ -7,25 +7,16 @@
 
 import UIKit
 
-class SearchViewController: UIViewController, UITextFieldDelegate {
-    
+class SearchViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
+
     private let fb = FirebaseModel.shared
 
     private let titleBar = TitleBar(title: "Search", backButton: false)
-    private let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
-
-    private let progressView = ProgressView()
-    private let scrollView = CustomScrollView()
-    private var stackView = UIStackView()
+    private let collectionView = CustomCollectionView()
     
-    private let noSearchResults: UILabel = {
-        
-       let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .title3)
-        label.textAlignment = .center
-        return label
-    }()
-            
+    private let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
+    private let progress = ProgressView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -33,17 +24,12 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if UserDefaults.standard.bool(forKey: "24HrsAlert") {
-            let alert = UIAlertController(title: "Please allow up to 24 hours for your post to be uploaded.", message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .cancel))
-            present(alert, animated: true)
-            UserDefaults.standard.set(false, forKey: "24HrsAlert")
-        }
-        
+        // TitleBar
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
             titleBar.menuButton.setImage(image, for: .normal)
         }
+        collectionView.reloadData()
     }
     
     private func setupView() {
@@ -51,73 +37,61 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         view.addSubview(titleBar)
         view.backgroundColor = .systemBackground
         
-        //Search Bar
+        //Search bar
+        view.addSubview(searchBar)
         searchBar.returnKeyType = .search
         searchBar.delegate = self
-        view.addSubview(searchBar)
+        view.addSubview(progress)
         
-        //Progress View
-        view.addSubview(progressView)
-        
-        //Scroll View
-        scrollView.refreshControl = nil
-        view.addSubview(scrollView)
-        
-        //StackView
-        stackView.axis = .vertical
-        scrollView.addSubview(stackView)
-        
-        // No results label.
-        view.addSubview(noSearchResults)
-
+        //CollectionView
+        collectionView.dataSource = self
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            self.fb.loadPosts {
+                self.collectionView.refreshControl?.endRefreshing()
+                self.collectionView.reloadData()
+            }
+        }, for: .valueChanged)
+        view.addSubview(collectionView)
     }
  
     private func setupConstraints() {
-        titleBar.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
-        titleBar.height(70)
-        
-        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        scrollView.topToBottom(of: searchBar, offset: 10)
-        
-        stackView.edgesToSuperview()
-        stackView.width(view.width)
-        
-        noSearchResults.centerXToSuperview()
-        noSearchResults.centerYToSuperview()
-        noSearchResults.horizontalToSuperview()
-        noSearchResults.height(50)
-        
         searchBar.topToBottom(of: titleBar, offset: 10)
-        searchBar.height(50)
         searchBar.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+        searchBar.height(50)
         
-        view.bringSubviewToFront(progressView)
-        progressView.edgesToSuperview()
+        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.topToBottom(of: searchBar, offset: 10)
+        
+        progress.edgesToSuperview()
+        view.bringSubviewToFront(progress)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let text = searchBar.text!.lowercased()
         searchBar.endEditing(true)
-        self.progressView.start()
-        fb.search(string: text) {
-            for view in self.stackView.arrangedSubviews {
-                view.removeFromSuperview()
-            }
-            for post in self.fb.posts {
-                if post.post.title.lowercased().contains(text) {
-                    post.vc = self
-                    self.stackView.addArrangedSubview(post)
-                }
-            }
-            if self.stackView.arrangedSubviews == [] {
-                self.noSearchResults.text = "No results found."
-            } else {
-                self.noSearchResults.text = ""
-            }
-            self.progressView.stop()
+        progress.start()
+        self.fb.search(string: searchBar.text!) {
+            self.progress.stop()
+            self.collectionView.reloadData()
         }
         return true
     }
-        
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        var posts = [Post]()
+        for post in fb.posts { if post.title.contains(searchBar.text!.lowercased()) { posts.append(post) } }
+        return posts.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var posts = [Post]()
+        for post in fb.posts { if post.title.contains(searchBar.text!.lowercased()) { posts.append(post) } }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+        cell.setupView(post: posts[indexPath.row])
+        cell.vc = self
+        return cell
+    }
+        
 }
+
+
+

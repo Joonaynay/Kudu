@@ -19,7 +19,7 @@ class FirebaseModel: ObservableObject {
     
     @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
-    @Published public var posts = [PostView]()
+    @Published public var posts = [Post]()
 
     
     @Published public var subjects = [Subject]()
@@ -28,13 +28,15 @@ class FirebaseModel: ObservableObject {
         self.subjects = [Subject(name: "Entrepreneurship", image: "person"), Subject(name: "Career", image: "building.2"), Subject(name: "Workout", image: "heart"), Subject(name: "Confidence", image: "crown"), Subject(name: "Communication", image: "bubble.left"), Subject(name: "Motivation", image: "lightbulb"), Subject(name: "Spirituality", image: "leaf"), Subject(name: "Financial", image: "dollarsign.square"), Subject(name: "Focus", image: "scope"), Subject(name: "Happiness", image: "face.smiling"), Subject(name: "Habits", image: "infinity"), Subject(name: "Success", image: "hands.sparkles"), Subject(name: "Books/Audiobooks", image: "book"), Subject(name: "Failure", image: "cloud.heavyrain"), Subject(name: "Leadership", image: "person.3"), Subject(name: "Relationships", image: "figure.wave"), Subject(name: "Will Power", image: "battery.100.bolt"), Subject(name: "Mindfulness", image: "rays"), Subject(name: "Purpose", image: "sunrise"), Subject(name: "Time Management", image: "clock"), Subject(name: "Goals", image: "target")].sorted { $0.name < $1.name }
     }
     
-    func likePost(currentPost: Post) {
+    func likePost(post: Int) {
         
-        if !currentPost.likes.contains(currentUser.id) {
+        if !self.posts[post].likes.contains(currentUser.id) {
             //Save the users current ID to the likes on the post, so we can later get the number of people who have liked the post.
-            db.save(collection: "posts", document: currentPost.id, field: "likes", data: [self.currentUser.id])
+            db.save(collection: "posts", document: self.posts[post].id, field: "likes", data: [self.currentUser.id])
+            self.posts[post].likes.append(self.currentUser.id)
         } else {
-            Firestore.firestore().collection("posts").document(currentPost.id).updateData(["likes": FieldValue.arrayRemove([currentUser.id])])
+            Firestore.firestore().collection("posts").document(self.posts[post].id).updateData(["likes": FieldValue.arrayRemove([currentUser.id])])
+            self.posts[post].likes.removeAll { like in like == self.currentUser.id }
         }
     }
     
@@ -185,7 +187,7 @@ class FirebaseModel: ObservableObject {
             //Load all documents
             self.db.getDocs(collection: "posts") { query in
                 
-                var postsArray = [PostView]()
+                var postsArray = [Post]()
                 
                 for doc in query!.documents {
                     
@@ -198,8 +200,8 @@ class FirebaseModel: ObservableObject {
                     
                     self.loadPost(postId: postId, completion: {
                         
-                        if let index = self.posts.firstIndex(where: { pview in
-                            pview.post.id == postId
+                        if let index = self.posts.firstIndex(where: { post in
+                            post.id == postId
                             
                         }) {
                             postsArray.append(self.posts[index])
@@ -212,11 +214,11 @@ class FirebaseModel: ObservableObject {
                 
                 group.notify(queue: .main, execute: {
                     for post in postsArray {
-                        if !self.posts.contains(where: { pview in
-                            pview.post.id == post.post.id }) {
+                        if !self.posts.contains(where: { post in
+                            post.id == post.id }) {
                             self.posts.append(post)
                             self.posts.sort { p1, p2 in
-                                p1.post.date.timeIntervalSince1970 < p1.post.date.timeIntervalSince1970
+                                p1.date.timeIntervalSince1970 < p1.date.timeIntervalSince1970
                             }
                         }
                     }
@@ -228,8 +230,8 @@ class FirebaseModel: ObservableObject {
     
     func loadPost(postId: String, completion:@escaping () -> Void) {
         
-        if self.posts.contains(where: { pview in
-            pview.post.id == postId
+        if self.posts.contains(where: { post in
+            post.id == postId
         }) {
             completion()
         } else {
@@ -281,7 +283,7 @@ class FirebaseModel: ObservableObject {
                                     dateFormat.timeStyle = .full
                                     guard let dateFormatted = dateFormat.date(from: date) else { return }
                                     let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
-                                    self.posts.append(PostView(post: post))
+                                    self.posts.append(post)
                                     completion()
                                 } else {
                                     completion()
@@ -306,7 +308,7 @@ class FirebaseModel: ObservableObject {
                 
                 let group = DispatchGroup()
                 //Loop through each document and get data
-                var posts = [PostView]()
+                var posts = [Post]()
                 for post in query!.documents {
                     group.enter()
                     let title = post.get("title") as! String
@@ -336,7 +338,7 @@ class FirebaseModel: ObservableObject {
                                         return
                                     }
                                     let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
-                                    posts.append(PostView(post: post))
+                                    posts.append(post)
                                 }
                                 group.leave()
                             }
@@ -346,7 +348,7 @@ class FirebaseModel: ObservableObject {
                 group.notify(queue: .main) {
                     self.posts = posts
                     self.posts.sort { p1, p2 in
-                        p1.post.date.timeIntervalSince1970 > p2.post.date.timeIntervalSince1970
+                        p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
                     }
                     completion()
                 }

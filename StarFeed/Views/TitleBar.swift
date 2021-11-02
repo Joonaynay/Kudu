@@ -114,6 +114,11 @@ class TitleBar: UIView {
         return menu
     }
     
+    override func didMoveToSuperview() {
+        self.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
+        self.height(70)
+    }
+        
     private func addConstraints() {
         if backButton == nil {
             titleLabel.leadingToSuperview(offset: 10)
