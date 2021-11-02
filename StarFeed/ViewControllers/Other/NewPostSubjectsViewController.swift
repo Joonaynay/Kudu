@@ -114,9 +114,11 @@ class NewPostSubjectsViewController: UIViewController {
         postButton.isEnabled = false
         postButton.addAction(UIAction(title: "") { _ in
             if let image = self.image, let movieURL = self.movieURL {
-                UserDefaults.standard.set(true, forKey: "24HrsAlert")
                 self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: movieURL, description: self.desc)
                 self.navigationController?.popToRootViewController(animated: true)
+                let alert = UIAlertController(title: nil, message: "Please allow up to 24 hours for your post to upload", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                self.navigationController?.present(alert, animated: true)
             }
             
         }, for: .touchUpInside)

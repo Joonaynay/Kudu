@@ -33,9 +33,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                     fb.currentUser = user
                 } else {
-                    let loginNav = UINavigationController(rootViewController: LoginViewController())
-                    loginNav.navigationBar.isHidden = true
-                    window.rootViewController = loginNav
+                    //Check if can load from Core Data
+                    let cd = Persistence()
+                    let file = FileManagerModel.shared
+                    if let user = cd.fetchUser(uid: uid) {
+                        print("Loaded User From Core Data")
+                        
+                        var profileImage: UIImage?
+                        if let image = file.getFromFileManager(name: uid) {
+                            profileImage = image
+                        } else {
+                            profileImage = nil
+                        }
+                        let user = User(id: user.id!, username: user.username!, name: user.name!, likes: user.likes!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!)
+                        if !fb.users.contains(where: { users in
+                            user.id == users.id
+                        }) {
+                            fb.users.append(user)
+                        }
+                        window.rootViewController = TabBarController()
+                    } else {
+                        let loginNav = UINavigationController(rootViewController: LoginViewController())
+                        loginNav.navigationBar.isHidden = true
+                        window.rootViewController = loginNav
+                    }
                 }
             }
         } else {
@@ -43,25 +64,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             loginNav.navigationBar.isHidden = true
             window.rootViewController = loginNav
         }
-        self.window = window        
+        self.window = window
+            
+            return true
+        }
         
-        return true
+        // MARK: UISceneSession Lifecycle
+        
+        func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+            // Called when a new scene session is being created.
+            // Use this method to select a configuration to create the new scene with.
+            return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        }
+        
+        func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+            // Called when the user discards a scene session.
+            // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+            // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+        }
+        
+        
     }
     
-    // MARK: UISceneSession Lifecycle
-    
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-    
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-    
-}
-

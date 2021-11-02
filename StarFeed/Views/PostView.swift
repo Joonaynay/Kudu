@@ -89,14 +89,14 @@ class PostView: UICollectionViewCell {
     private lazy var likeButtonAction: UIAction = {
         let action = UIAction() { _ in
             self.fb.likePost(post: self.post!)
-            if self.fb.posts[self.post!].likes.contains(self.fb.currentUser.id) {
+            if self.fb.currentUser.likes.contains(self.fb.posts[self.post!].id) {
                     self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
                     self.likeButton.tintColor = UIColor.theme.blueColor
                 } else {
                     self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
                     self.likeButton.tintColor = .label
                 }
-            let result = String(format: "%ld %@", locale: Locale.current, self.fb.posts[self.post!].likes.count, "")
+            let result = String(format: "%ld %@", locale: Locale.current, self.fb.posts[self.post!].likeCount, "")
             self.likeCount.text = result
         }
         return action
@@ -176,14 +176,14 @@ class PostView: UICollectionViewCell {
         self.user = user
         
         
-        if fb.posts[post].likes.contains(self.fb.currentUser.id) {
+        if fb.currentUser.likes.contains(fb.posts[post].id) {
                 self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
                 self.likeButton.tintColor = UIColor.theme.blueColor
             } else {
                 self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
                 self.likeButton.tintColor = .label
             }
-        let result = String(format: "%ld %@", locale: Locale.current, fb.posts[post].likes.count, "")
+        let result = String(format: "%ld %@", locale: Locale.current, fb.posts[post].likeCount, "")
         likeCount.text = result
             
         

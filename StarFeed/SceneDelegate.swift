@@ -31,9 +31,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                     fb.currentUser = user
                 } else {
-                    let loginNav = UINavigationController(rootViewController: LoginViewController())
-                    loginNav.navigationBar.isHidden = true
-                    window.rootViewController = loginNav
+                    //Check if can load from Core Data
+                    let cd = Persistence()
+                    let file = FileManagerModel.shared
+                    if let user = cd.fetchUser(uid: uid) {
+                        print("Loaded User From Core Data")
+                        
+                        var profileImage: UIImage?
+                        if let image = file.getFromFileManager(name: uid) {
+                            profileImage = image
+                        } else {
+                            profileImage = nil
+                        }
+                        let user = User(id: user.id!, username: user.username!, name: user.name!, likes: user.likes!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!)
+                        if !fb.users.contains(where: { users in
+                            user.id == users.id
+                        }) {
+                            fb.users.append(user)
+                        }
+                        window.rootViewController = TabBarController()
+                    } else {
+                        let loginNav = UINavigationController(rootViewController: LoginViewController())
+                        loginNav.navigationBar.isHidden = true
+                        window.rootViewController = loginNav
+                    }
                 }
             }
         } else {

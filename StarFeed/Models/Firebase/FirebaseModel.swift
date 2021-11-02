@@ -17,7 +17,7 @@ class FirebaseModel: ObservableObject {
     private let cd = Persistence()
     public let db = FirestoreModel.shared
     
-    @Published public var currentUser = User(id: "", username: "", name: "", profileImage: nil, following: [], followers: [], posts: [])
+    @Published public var currentUser = User(id: "", username: "", name: "", likes: [], profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
     @Published public var posts = [Post]()
     
@@ -27,17 +27,38 @@ class FirebaseModel: ObservableObject {
         self.subjects = [Subject(name: "Art", image: "paintbrush"), Subject(name: "Entrepreneurship", image: "person"), Subject(name: "Career", image: "building.2"), Subject(name: "Workout", image: "heart"), Subject(name: "Confidence", image: "crown"), Subject(name: "Communication", image: "bubble.left"), Subject(name: "Motivation", image: "lightbulb"), Subject(name: "Spirituality", image: "leaf"), Subject(name: "Financial", image: "dollarsign.square"), Subject(name: "Focus", image: "scope"), Subject(name: "Happiness", image: "face.smiling"), Subject(name: "Habits", image: "infinity"), Subject(name: "Success", image: "hands.sparkles"), Subject(name: "Books/Audiobooks", image: "book"), Subject(name: "Failure", image: "cloud.heavyrain"), Subject(name: "Leadership", image: "person.3"), Subject(name: "Relationships", image: "figure.wave"), Subject(name: "Will Power", image: "battery.100.bolt"), Subject(name: "Mindfulness", image: "rays"), Subject(name: "Purpose", image: "sunrise"), Subject(name: "Time Management", image: "clock"), Subject(name: "Goals", image: "target")].sorted { $0.name < $1.name }
     }
     
-
+    
     
     func likePost(post: Int) {
         
-        if !self.posts[post].likes.contains(currentUser.id) {
+        if !self.currentUser.likes.contains(self.posts[post].id) {
             //Save the users current ID to the likes on the post, so we can later get the number of people who have liked the post.
-            db.save(collection: "posts", document: self.posts[post].id, field: "likes", data: [self.currentUser.id])
-            self.posts[post].likes.append(self.currentUser.id)
+            Firestore.firestore().collection("users").document(self.currentUser.id).updateData(["likes": FieldValue.arrayUnion([self.posts[post].id])])
+            Firestore.firestore().collection("posts").document(self.posts[post].id).updateData(["likeCount": FieldValue.increment(Int64(1))])
+            self.posts[post].likeCount += 1
+            self.currentUser.likes.append(self.posts[post].id)
+            if let index = self.users.firstIndex(where: { users in users.id == self.currentUser.id }) {
+                self.users[index].likes.append(self.posts[post].id)
+            }            
+            
+            //Save to coredata
+            let coreUser = cd.fetchUser(uid: self.currentUser.id)
+            coreUser?.likes?.append(self.posts[post].id)
+            cd.save()
         } else {
-            Firestore.firestore().collection("posts").document(self.posts[post].id).updateData(["likes": FieldValue.arrayRemove([currentUser.id])])
-            self.posts[post].likes.removeAll { like in like == self.currentUser.id }
+            Firestore.firestore().collection("users").document(self.currentUser.id).updateData(["likes": FieldValue.arrayRemove([self.posts[post].id])])
+            Firestore.firestore().collection("posts").document(self.posts[post].id).updateData(["likeCount": FieldValue.increment(Int64(-1))])
+            self.currentUser.likes.removeAll() { like in like == self.posts[post].id }
+            if let index = self.users.firstIndex(where: { users in users.id == self.currentUser.id }) {
+                self.users[index].likes.removeAll() { like in like == self.posts[post].id }
+            }
+            
+            self.posts[post].likeCount -= 1
+            
+            //Save to coredata
+            let coreUser = cd.fetchUser(uid: self.currentUser.id)
+            coreUser?.likes?.removeAll(where: { like in like == self.posts[post].id })
+            cd.save()
         }
     }
     
@@ -259,7 +280,7 @@ class FirebaseModel: ObservableObject {
                         completion()
                         return
                     }
-                    guard let date = doc.get("date") as? String else {
+                    guard let time = doc.get("date") as? TimeInterval else {
                         completion()
                         return
                     }
@@ -267,11 +288,11 @@ class FirebaseModel: ObservableObject {
                         completion()
                         return
                     }
-                    guard let likes = doc.get("likes") as? [String] else {
+                    guard let description = doc.get("description") as? String else {
                         completion()
                         return
                     }
-                    guard let description = doc.get("description") as? String else {
+                    guard let likeCount = doc.get("likeCount") as? Int else {
                         completion()
                         return
                     }
@@ -287,11 +308,7 @@ class FirebaseModel: ObservableObject {
                                 //Add to view model
                                 
                                 if let image = image, let url = url, let user = user {
-                                    let dateFormat = DateFormatter()
-                                    dateFormat.dateStyle = .full
-                                    dateFormat.timeStyle = .full
-                                    guard let dateFormatted = dateFormat.date(from: date) else { return }
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: dateFormatted, uid: user.id, likes: likes, movie: url, description: description))
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: Date(timeIntervalSince1970: time), uid: user.id, likeCount: likeCount, movie: url, description: description))
                                     self.posts.append(post)
                                     completion()
                                 } else {
@@ -316,56 +333,52 @@ class FirebaseModel: ObservableObject {
             completion(user)
         } else {
             
-            //Check if can load from Core Data
-            if let user = cd.fetchUser(uid: uid) {
-                print("Loaded User From Core Data")
-                
-                if let profileImage = self.file.getFromFileManager(name: uid) {
-                    let user = User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers! ,posts: user.posts!)
-                    completion(user)
-                    if !self.users.contains(where: { users in
-                        user.id == users.id
-                    }) {
-                        self.users.append(user)
-                    }
-                } else {
-                    let user = User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers! ,posts: user.posts!)
-                    completion(user)
-                    if !self.users.contains(where: { users in
-                        user.id == users.id
-                    }) {
-                        self.users.append(user)
-                    }
+            //Load Firestore doc
+            db.getDoc(collection: "users", id: uid) { doc in
+                guard let doc = doc else {
+                    completion(nil)
+                    return
+                }
+                                                                
+                guard let username = doc.get("username") as? String else {
+                    completion(nil)
+                    return
+                }
+                guard let name = doc.get("name") as? String else {
+                    completion(nil)
+                    return
+                }
+                guard let following = doc.get("following") as? [String] else {
+                    completion(nil)
+                    return
+                }
+                guard let followers = doc.get("followers") as? [String] else {
+                    completion(nil)
+                    return
+                }
+                guard let posts = doc.get("posts") as? [String] else {
+                    completion(nil)
+                    return
+                }
+                guard let likes = doc.get("likes") as? [String] else {
+                    completion(nil)
+                    return 
                 }
                 
-            } else {
-                
-                //Load Firestore doc
-                db.getDoc(collection: "users", id: uid) { doc in
+                //Load Profile Image
+                self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
                     
+                    //Create User
+                    let user = User(id: uid, username: username, name: name, likes: likes, profileImage: profileImage, following: following, followers: followers, posts: posts)
                     print("Loaded User From Firebase")
-                    
-                    
-                    let username = doc?.get("username") as! String
-                    let name = doc?.get("name") as! String
-                    let following = doc?.get("following") as! [String]
-                    let followers = doc?.get("followers") as! [String]
-                    let posts = doc?.get("posts") as! [String]
-                    
-                    //Load Profile Image
-                    self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-                        
-                        //Create User
-                        let user = User(id: uid, username: username, name: name, profileImage: profileImage, following: following, followers: followers, posts: posts)
-                        if !self.users.contains(where: { users in
-                            user.id == users.id
-                        }) {
-                            self.users.append(user)
-                        }
-                        
-                        //Return User
-                        completion(user)
+                    if !self.users.contains(where: { users in
+                        user.id == users.id
+                    }) {
+                        self.users.append(user)
                     }
+                    
+                    //Return User
+                    completion(user)
                 }
             }
         }
@@ -379,14 +392,9 @@ class FirebaseModel: ObservableObject {
             desc = description!
         }
         
-        //Find Date
-        let dateFormat = DateFormatter()
-        dateFormat.dateStyle = .full
-        dateFormat.timeStyle = .full
-        let dateString = dateFormat.string(from: Date())
         
         //Save Post to Firestore
-        let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": dateString, "likes": [], "description": desc] as [String : Any]
+        let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": Date().timeIntervalSince1970, "description": desc, "likeCount": 0] as [String : Any]
         self.db.newDoc(collection: "posts", document: nil, data: dict) { postId in
             
             //Save postId to User
@@ -414,40 +422,26 @@ class FirebaseModel: ObservableObject {
             print("Loaded User From Model")
             completion(user)
         } else {
-            //Check if can load from Core Data
-            if let user = cd.fetchUser(uid: uid) {
+            
+            //Load Firestore doc
+            self.db.getDoc(collection: "users", id: uid) { doc in
                 
-                print("Loaded User From Core Data")
+                print("Loaded User From Firebase")
                 
+                guard let username = doc?.get("username") as? String else { return }
                 
-                if let profileImage = self.file.getFromFileManager(name: uid) {
-                    completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: profileImage, following: user.following!, followers: user.followers!, posts: user.posts!))
-                } else {
-                    completion(User(id: user.id!, username: user.username!, name: user.name!, profileImage: nil, following: user.following!, followers: user.followers!, posts: user.posts!))
+                //Load Profile Image
+                self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
+                    
+                    
+                    //Create User
+                    let user = User(id: uid, username: username, name: nil, likes: [], profileImage: profileImage, following: [], followers: [], posts: [])
+                    self.users.append(user)
+                    
+                    //Return User
+                    completion(self.users.last)
                 }
-                
-            } else {
-                
-                //Load Firestore doc
-                self.db.getDoc(collection: "users", id: uid) { doc in
-                    
-                    print("Loaded User From Firebase")
-                    
-                    guard let username = doc?.get("username") as? String else { return }
-                    
-                    //Load Profile Image
-                    self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-                        
-                        
-                        //Create User
-                        let user = User(id: uid, username: username, name: nil, profileImage: profileImage, following: [], followers: [], posts: [])
-                        self.users.append(user)
-                        
-                        //Return User
-                        completion(self.users.last)
-                    }
-                }
-            }
+            }            
         }
     }
 }

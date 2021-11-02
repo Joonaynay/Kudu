@@ -79,7 +79,7 @@ class FirestoreModel: ObservableObject {
         db.collection(collection).getDocuments { docs, error in
             
             //Check for error
-            if error == nil {
+            if let docs = docs {
                 //Return documents
                 completion(docs)
             } else {

@@ -8,6 +8,8 @@
 import UIKit
 import FirebaseAuth
 import CoreData
+import FirebaseFirestore
+import AVFAudio
 
 class AuthModel: ObservableObject {
     static let shared = AuthModel()
@@ -45,13 +47,13 @@ class AuthModel: ObservableObject {
     }
     
     func changeEmail(newEmail: String, completion:@escaping (String?) -> Void) {
-                self.auth.currentUser?.updateEmail(to: newEmail, completion: { error in
-                    if let error = error  {
-                        completion(error.localizedDescription)
-                    } else {
-                        completion(nil)
-                    }
-                })
+        self.auth.currentUser?.updateEmail(to: newEmail, completion: { error in
+            if let error = error  {
+                completion(error.localizedDescription)
+            } else {
+                completion(nil)
+            }
+        })
     }
     
     
@@ -75,6 +77,7 @@ class AuthModel: ObservableObject {
                         currentUser.followers = user.followers
                         currentUser.following = user.following
                         currentUser.posts = user.posts
+                        currentUser.likes = user.likes
                         self.cd.save()
                         
                         //Save ProfileImage to FileManager
@@ -152,6 +155,7 @@ class AuthModel: ObservableObject {
                                                     currentUser.followers = user.followers
                                                     currentUser.following = user.following
                                                     currentUser.posts = user.posts
+                                                    currentUser.likes = user.likes
                                                     self.cd.save()
                                                     
                                                     completion(nil)
@@ -186,8 +190,16 @@ class AuthModel: ObservableObject {
                 self.storage.delete(path: "Profile Images", file: uid)
                 for post in self.fb.currentUser.posts {
                     self.db.deleteDoc(collection: "posts", document: post)
+                    let commentsDb = Firestore.firestore().collection("posts").document(post).collection("comments")
+                    commentsDb.getDocuments { query, error in
+                        if let query = query {
+                            for doc in query.documents {
+                                commentsDb.document(doc.documentID).delete()
+                            }
+                        }
+                    }
                     self.storage.delete(path: "images", file: post)
-                    self.storage.delete(path: "videos", file: "\(post).m4v")                    
+                    self.storage.delete(path: "videos", file: "\(post).m4v")
                 }
                 self.file.deleteAllImages()
                 self.cd.deleteAll()
@@ -224,61 +236,66 @@ class AuthModel: ObservableObject {
     
     func changeUsername(newUsername: String, completion: @escaping (String?) -> Void) {
         if newUsername.count < 20 {
-            db.getDocs(collection: "users") { query in
-                let group = DispatchGroup()
-                for doc in query!.documents {
-                    group.enter()
-                    if let otherUsername = doc.get("username") as? String {
+            Firestore.firestore().collection("users").getDocuments { query, error in
+                if let error = error {
+                    completion(error.localizedDescription)
+                } else if let query = query {
+                    let group = DispatchGroup()
+                    for doc in query.documents {
+                        group.enter()
+                        guard let otherUsername = doc.get("username") as? String else {
+                            completion("Please check your internet connection.")
+                            group.leave()
+                            return
+                        }
                         if otherUsername == newUsername {
                             completion("That username is already taken.")
                             break
                         } else {
                             group.leave()
                         }
-                    } else {
-                        group.leave()
+                    }
+                    group.notify(queue: .main) {
+                        completion(nil)
+                        self.db.save(collection: "users", document: self.fb.currentUser.id, field: "username", data: newUsername)
+                        let coreUser = self.cd.fetchUser(uid: self.fb.currentUser.id)
+                        coreUser?.username = newUsername
+                        self.cd.save()
+                        self.fb.currentUser.username = newUsername
+                        if let index = self.fb.users.firstIndex(where: { users in
+                            users.id == self.fb.currentUser.id
+                        }) {
+                            self.fb.users[index].username = newUsername
+                        }
                     }
                 }
-                group.notify(queue: .main) {
-                    completion(nil)
-                    self.db.save(collection: "users", document: self.fb.currentUser.id, field: "username", data: newUsername)
-                    let coreUser = self.cd.fetchUser(uid: self.fb.currentUser.id)
-                    coreUser?.username = newUsername
-                    self.cd.save()
-                    self.fb.currentUser.username = newUsername
-                    if let index = self.fb.users.firstIndex(where: { users in
-                        users.id == self.fb.currentUser.id
-                    }) {
-                        self.fb.users[index].username = newUsername
-                    }
-                }
-            }
-        } else {
-            completion("Username must be 20 characters or less.")
         }
+    } else {
+        completion("Username must be 20 characters or less.")
     }
-    
-    func signOut(completion:@escaping (String?) -> Void) {
-        UserDefaults.standard.setValue(nil, forKeyPath: "uid")
-        self.file.deleteAllImages()
-        self.cd.deleteAll()
-        do {
-            try auth.signOut()
-        } catch {
-            completion(nil)
-        }
-        self.cd.container = NSPersistentContainer(name: "FreshModel")
-        self.cd.container.loadPersistentStores { desc, error in
-            if let error = error {
-                fatalError(error.localizedDescription)
-            }
-        }
-        self.cd.context = self.cd.container.viewContext
-        
+}
+
+func signOut(completion:@escaping (String?) -> Void) {
+    UserDefaults.standard.setValue(nil, forKeyPath: "uid")
+    self.file.deleteAllImages()
+    self.cd.deleteAll()
+    do {
+        try auth.signOut()
+    } catch {
         completion(nil)
-        
     }
+    self.cd.container = NSPersistentContainer(name: "FreshModel")
+    self.cd.container.loadPersistentStores { desc, error in
+        if let error = error {
+            fatalError(error.localizedDescription)
+        }
+    }
+    self.cd.context = self.cd.container.viewContext
     
+    completion(nil)
     
+}
+
+
 }
 
