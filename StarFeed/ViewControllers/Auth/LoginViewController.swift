@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 import TinyConstraints
 
 class LoginViewController: UIViewController {
@@ -57,7 +58,7 @@ class LoginViewController: UIViewController {
         
         //Create Account Button
         createAccountButton.backgroundColor = .clear
-
+        
         createAccountButton.addTarget(self, action: #selector(didTapCreateAccountButton), for: .touchUpInside)
         
         //ScrollView
@@ -124,11 +125,16 @@ class LoginViewController: UIViewController {
         self.progressView.start()
         auth.signIn(email: email.text!, password: password.text!) { error in
             if error == nil {
-                self.progressView.stop()
-                let tab = TabBarController()
-                tab.modalTransitionStyle = .flipHorizontal                
-                tab.modalPresentationStyle = .fullScreen
-                self.present(tab, animated: true)
+                if Auth.auth().currentUser?.isEmailVerified == true {
+                    self.progressView.stop()
+                    let tab = TabBarController()
+                    tab.modalTransitionStyle = .flipHorizontal
+                    tab.modalPresentationStyle = .fullScreen
+                    self.present(tab, animated: true)
+                } else {
+                    self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+                    self.navigationController?.pushViewController(EmailViewController(), animated: true)
+                }
             } else {
                 self.progressView.stop()
                 let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)

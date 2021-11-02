@@ -38,6 +38,13 @@ class FirebaseModel: ObservableObject {
         }
     }
     
+    func deletePost(id: String) {
+        
+        self.db.deleteDoc(collection: "posts", document: id)
+        self.storage.delete(path: "images", file: id)
+        self.storage.delete(path: "videos", file: "\(id).m4v")
+    }
+    
     func commentOnPost(currentPost: Post, comment: String, completion: @escaping () -> Void) {
         
         //Save comments when someone comments on a post

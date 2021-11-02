@@ -10,11 +10,11 @@ import FirebaseAuth
 
 class EmailViewController: UIViewController {
     
-    let activity = UIActivityIndicatorView()
+    private let activity = UIActivityIndicatorView()
     
     private let auth = AuthModel.shared
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -23,7 +23,7 @@ class EmailViewController: UIViewController {
         return label
     }()
     
-    let resendButton: UIButton = {
+    private let resendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Resend email", for: .normal)
         button.contentHorizontalAlignment = .center
@@ -35,7 +35,7 @@ class EmailViewController: UIViewController {
         return button
     }()
     
-    let timerLabel: UILabel = {
+    private let timerLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.preferredFont(forTextStyle: .footnote)
@@ -45,9 +45,17 @@ class EmailViewController: UIViewController {
         return label
     }()
     
-    var num: Int = 60
+    private let changeEmailButton: UIButton = {
+       let button = UIButton()
+        button.setTitle("Change email", for: .normal)
+        button.setTitleColor(UIColor.theme.accentColor, for: .normal)
+        button.setTitleColor(UIColor.theme.secondaryText, for: .highlighted)
+        return button
+    }()
     
-    let descriptionLabel: UILabel = {
+    private var num: Int = 60
+    
+    private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.preferredFont(forTextStyle: .body)
@@ -55,12 +63,28 @@ class EmailViewController: UIViewController {
         label.text = "You should have recieved an email with a link to verify your account."
         return label
     }()
+    
+    let showProfilePicturePage: Bool
         
-    var timer: Timer!
+    private var timer: Timer!
     
-    let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
-    let cancelButton = CustomButton(text: "Cancel", color: .clear)
+    private let fb = FirebaseModel.shared
     
+    private let nextButton = CustomButton(text: "Next", color: UIColor.theme.blueColor)
+    private let signOutButton = CustomButton(text: "Sign Out", color: .clear)
+    
+    init() {
+        if fb.currentUser.profileImage == nil {
+            showProfilePicturePage = true
+        } else {
+            showProfilePicturePage = false
+        }
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,7 +94,7 @@ class EmailViewController: UIViewController {
     
     func setupView() {
         view.backgroundColor = .systemBackground
-        
+                
         //Timer
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFire), userInfo: nil, repeats: true)
         
@@ -80,13 +104,27 @@ class EmailViewController: UIViewController {
             self.resendButton.isEnabled = false
             self.num = 60
             self.timerLabel.text = "60"
+            Auth.auth().currentUser?.sendEmailVerification(completion: { error in
+                if let error = error {
+                    let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(errorAlert, animated: true)
+                }
+            })
         }, for: .touchUpInside)
         
-        nextButton.addAction(UIAction(title: "") { _ in
+        nextButton.addAction(UIAction() { _ in
             self.auth.checkEmail { error in
                 if error == nil {
-                    let profilePictureView = ProfilePictureViewController(showBackButton: false)
-                    self.navigationController?.pushViewController(profilePictureView, animated: true)
+                    if self.showProfilePicturePage {
+                        let profilePictureView = ProfilePictureViewController(showBackButton: false)
+                        self.navigationController?.pushViewController(profilePictureView, animated: true)
+                    } else {
+                        let nav = TabBarController()
+                        nav.modalTransitionStyle = .flipHorizontal
+                        nav.modalPresentationStyle = .fullScreen
+                        self.present(nav, animated: true)
+                    }
                 } else {
                     let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "Ok", style: .default))
@@ -95,51 +133,28 @@ class EmailViewController: UIViewController {
             }
         }, for: .touchUpInside)
         
-        cancelButton.addAction(UIAction(title: "") { _ in
-            let alert = UIAlertController(title: "Clicking cancel will delete your account.", message: "You wil have to create a new account to use the app later. Are you sure you want to cancel?", preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
-            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-                // Delete Account
-                let alert = UIAlertController(title: "Delete Account", message: "Please type in your password to delete your account.", preferredStyle: .alert)
-                alert.addTextField { textField in
-                    textField.placeholder = "Password"
-                    textField.isSecureTextEntry = true
-                }
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
-                    guard let email = Auth.auth().currentUser?.email! else { return }
-                    self.auth.signIn(email: email, password: alert.textFields!.first!.text!) { error in
-                        if error == nil {
-                            self.auth.deleteUser { error in
-                                if error == nil {
-                                    let login = UINavigationController(rootViewController: LoginViewController())
-                                    login.modalTransitionStyle = .flipHorizontal
-                                    login.modalPresentationStyle = .fullScreen
-                                    login.navigationBar.isHidden = true
-                                    self.present(login, animated: true)
-                                }
-                            }
-                        } else {
-                            let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                            self.present(alert, animated: true)
-                        }
-                        
-                    }
-                }))
-                self.present(alert, animated: true)
-            }))
-            self.present(alert, animated: true)
-            
+        signOutButton.addAction(UIAction(title: "") { _ in
+            self.auth.signOut { _ in }
+            let login = UINavigationController(rootViewController: LoginViewController())
+            login.modalTransitionStyle = .flipHorizontal
+            login.modalPresentationStyle = .fullScreen
+            login.navigationBar.isHidden = true
+            self.present(login, animated: true)
         }, for: .touchUpInside)
         
+        //Change Email Button
+        changeEmailButton.addAction(UIAction() { _ in
+            self.navigationController?.pushViewController(ChangeEmailViewController(showVerifyView: false), animated: true)
+        }, for: .touchUpInside)
+        
+        view.addSubview(changeEmailButton)
         view.addSubview(titleLabel)
         view.addSubview(resendButton)
         view.addSubview(timerLabel)
         view.addSubview(activity)
         view.addSubview(descriptionLabel)
         view.addSubview(nextButton)
-        view.addSubview(cancelButton)
+        view.addSubview(signOutButton)
         activity.startAnimating()
         
     }
@@ -167,6 +182,8 @@ class EmailViewController: UIViewController {
         timerLabel.topToBottom(of: resendButton, offset: -5)
         timerLabel.horizontalToSuperview()
         
+        changeEmailButton.topToBottom(of: timerLabel, offset: 5)
+        changeEmailButton.horizontalToSuperview()
         
         activity.centerInSuperview()
         activity.height(50)
@@ -176,11 +193,11 @@ class EmailViewController: UIViewController {
         descriptionLabel.horizontalToSuperview()
         
         nextButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
-        nextButton.bottomToTop(of: cancelButton)
+        nextButton.bottomToTop(of: signOutButton)
         nextButton.height(50)
         
-        cancelButton.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 15), usingSafeArea: true)
-        cancelButton.height(50)
+        signOutButton.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 15), usingSafeArea: true)
+        signOutButton.height(50)
         
     }
 }

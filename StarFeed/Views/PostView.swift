@@ -22,14 +22,14 @@ class PostView: UIView {
         titleLabel.numberOfLines = 2
         return titleLabel
     }()
-        
+    
     
     //Main Image/Thumbnail
     private let imageViewButton: UIButton = {
         let button = UIButton()
         return button
     }()
-        
+    
     //Button to move to comments
     private let commentsButton: UIButton = {
         let button = UIButton()
@@ -60,7 +60,7 @@ class PostView: UIView {
     
     // Info Button
     private let infoButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
@@ -87,7 +87,7 @@ class PostView: UIView {
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     
-    private let followButton = CustomButton(text: "Follow", color: UIColor.theme.blueColor)
+    private let followButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     
     private var first = true
     
@@ -156,13 +156,27 @@ class PostView: UIView {
         let dateString = dateFormatter.string(from: post.date)
         date.text = dateString
         
+        if fb.currentUser.id == user.id {
+            followButton.label.text = "Edit Post"
+        } else {
+            if self.fb.currentUser.following.contains(user.id) {
+                self.followButton.label.text = "Unfollow"
+            } else {
+                self.followButton.label.text = "Follow"
+            }
+        }
+        
         followButton.addAction(UIAction() { _ in
-            self.fb.followUser(followUser: user) {
-                if self.fb.currentUser.following.contains(user.id) {
-                    self.followButton.label.text = "Unfollow"
-                } else {
-                    self.followButton.label.text = "Follow"
+            if self.fb.currentUser.id != user.id {
+                self.fb.followUser(followUser: user) {
+                    if self.fb.currentUser.following.contains(user.id) {
+                        self.followButton.label.text = "Unfollow"
+                    } else {
+                        self.followButton.label.text = "Follow"
+                    }
                 }
+            } else {
+                // Pull up edit post sheet.
             }
         }, for: .touchUpInside)
         
@@ -179,7 +193,7 @@ class PostView: UIView {
                 self.vc?.navigationController?.pushViewController(profileView, animated: true)
             }
             
-
+            
         }, for: .touchUpInside)
         
         imageViewButton.setBackgroundImage(post.image, for: .normal)
@@ -202,16 +216,21 @@ class PostView: UIView {
         guard let user = fb.users.first(where: { user in
             user.id == post.uid
         }) else { return }
-
-        if fb.currentUser.following.contains(user.id) {
-            followButton.label.text = "Unfollow"
+        
+        if fb.currentUser.id == user.id {
+            followButton.label.text = "Edit Post"
         } else {
-            followButton.label.text = "Follow"
+            if self.fb.currentUser.following.contains(user.id) {
+                self.followButton.label.text = "Unfollow"
+            } else {
+                self.followButton.label.text = "Follow"
+            }
         }
+        
         profile.profileImage.image = user.profileImage
         profile.usernameLabel.text = user.username
     }
-        
+    
     
     
     private func addConstraints() {
@@ -220,10 +239,10 @@ class PostView: UIView {
         imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
         imageViewButton.widthToSuperview()
         
-        infoButton.leftToRight(of: titleLabel, offset: 8)
+        infoButton.leftToRight(of: titleLabel, offset: 6)
         infoButton.topToBottom(of: imageViewButton, offset: 15)
-        infoButton.width(25)
-        infoButton.height(25)
+        infoButton.width(30)
+        infoButton.height(30)
         
         titleLabel.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 40))
         titleLabel.topToBottom(of: imageViewButton, offset: 5)

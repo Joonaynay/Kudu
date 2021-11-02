@@ -25,7 +25,7 @@ class StorageModel: ObservableObject {
         }
         
     }
-    
+        
     func loadMovie(path: String, file: String, completion:@escaping (URL?) -> Void) {
         storage.child(path).child(file).downloadURL { url, error in
             if error == nil {

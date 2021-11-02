@@ -65,6 +65,12 @@ class CustomTextField: UITextField, UITextFieldDelegate {
             } else {
                 vc.doneButton.isEnabled = false
             }
+        } else if let vc = vc as? ChangeEmailViewController {
+            if !vc.password.text!.isEmpty && !vc.newEmail.text!.isEmpty && !vc.confirmEmail.text!.isEmpty {
+                vc.doneButton.isEnabled = true
+            } else {
+                vc.doneButton.isEnabled = false
+            }
         }
     }
     
