@@ -57,6 +57,7 @@ class VideoDetailsViewController: UIViewController {
         self.post = post
         self.image.image = post.image
         self.image.contentMode = .scaleAspectFill
+        self.image.clipsToBounds = true
         self.desc.text = post.description
         self.titleLabel.text = post.title
         super.init(nibName: nil, bundle: nil)
