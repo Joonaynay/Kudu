@@ -25,7 +25,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     if Auth.auth().currentUser?.isEmailVerified == true {
                         window.rootViewController = TabBarController()
                     } else {
-                        window.rootViewController = EmailViewController()
+                        let nav = UINavigationController(rootViewController: EmailViewController())
+                        nav.navigationBar.isHidden = true
+                        window.rootViewController = nav
                     }
                     fb.currentUser = user
                 } else {

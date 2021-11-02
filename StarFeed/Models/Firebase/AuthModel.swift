@@ -34,15 +34,14 @@ class AuthModel: ObservableObject {
         })
     }
     
-    func changeEmail(email: String, completion:@escaping (String?) -> Void) {
-        auth.currentUser?.updateEmail(to: email, completion: { error in
-            if let error = error  {
-                completion(error.localizedDescription)
-            } else {
-                completion(nil)
-            }
-            
-        })
+    func changeEmail(newEmail: String, completion:@escaping (String?) -> Void) {
+                self.auth.currentUser?.updateEmail(to: newEmail, completion: { error in
+                    if let error = error  {
+                        completion(error.localizedDescription)
+                    } else {
+                        completion(nil)
+                    }
+                })
     }
     
     
@@ -82,7 +81,7 @@ class AuthModel: ObservableObject {
                 }
             } else if let error = error {
                 if error.localizedDescription == "The password is invalid or the user does not have a password." {
-                    completion("Invalid password.")
+                    completion("Incorrect password.")
                 } else {
                     completion(error.localizedDescription)
                 }
@@ -247,7 +246,6 @@ class AuthModel: ObservableObject {
             completion("Username must be 20 characters or less.")
         }
     }
-    
     
     func signOut(completion:@escaping (String?) -> Void) {
         UserDefaults.standard.setValue(nil, forKeyPath: "uid")
