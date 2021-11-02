@@ -69,9 +69,26 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         cell.vc = self
         return cell
     }
+        
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+
+        if maximumOffset - currentOffset <= 10.0 {
+            print("loading")
+            self.loadExplore(lastDoc: self.lastDoc) { last in
+                if let last = last {
+                    print("loaded")
+                    self.lastDoc = last
+                    self.collectionView.reloadData()
+                }
+            }
+        }
+    }
     
     func loadExplore(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
-        let db = Firestore.firestore().collection("posts").limit(to: 3).order(by: "likeCount", descending: true)
+        let db = Firestore.firestore().collection("posts").limit(to: 2).order(by: "likeCount", descending: true)
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in
                 if let query = query, error == nil {
