@@ -91,7 +91,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func loadExplore(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
-        let db = Firestore.firestore().collection("posts")                        
+        let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .limit(to: 2)
 
