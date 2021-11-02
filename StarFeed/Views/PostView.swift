@@ -156,28 +156,26 @@ class PostView: UIView {
         let dateString = dateFormatter.string(from: post.date)
         date.text = dateString
         
-        if fb.currentUser.id == user.id {
-            followButton.label.text = "Edit Post"
+        
+        
+        
+        if self.fb.currentUser.following.contains(user.id) {
+            self.followButton.label.text = "Unfollow"
         } else {
-            if self.fb.currentUser.following.contains(user.id) {
-                self.followButton.label.text = "Unfollow"
-            } else {
-                self.followButton.label.text = "Follow"
-            }
+            self.followButton.label.text = "Follow"
         }
         
+        
         followButton.addAction(UIAction() { _ in
-            if self.fb.currentUser.id != user.id {
-                self.fb.followUser(followUser: user) {
-                    if self.fb.currentUser.following.contains(user.id) {
-                        self.followButton.label.text = "Unfollow"
-                    } else {
-                        self.followButton.label.text = "Follow"
-                    }
+            
+            self.fb.followUser(followUser: user) {
+                if self.fb.currentUser.following.contains(user.id) {
+                    self.followButton.label.text = "Unfollow"
+                } else {
+                    self.followButton.label.text = "Follow"
                 }
-            } else {
-                // Pull up edit post sheet.
             }
+            
         }, for: .touchUpInside)
         
         imageViewButton.addAction(UIAction() { _ in
@@ -217,14 +215,10 @@ class PostView: UIView {
             user.id == post.uid
         }) else { return }
         
-        if fb.currentUser.id == user.id {
-            followButton.label.text = "Edit Post"
+        if self.fb.currentUser.following.contains(user.id) {
+            self.followButton.label.text = "Unfollow"
         } else {
-            if self.fb.currentUser.following.contains(user.id) {
-                self.followButton.label.text = "Unfollow"
-            } else {
-                self.followButton.label.text = "Follow"
-            }
+            self.followButton.label.text = "Follow"
         }
         
         profile.profileImage.image = user.profileImage

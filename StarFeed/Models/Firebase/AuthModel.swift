@@ -20,6 +20,16 @@ class AuthModel: ObservableObject {
     private let db = FirestoreModel.shared
     private let fb = FirebaseModel.shared
     
+    func forgotPassword(email: String, completion: @escaping (String?) -> Void) {
+        auth.sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                completion(error.localizedDescription)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
     func checkEmail(completion:@escaping (String?) -> Void) {
         auth.currentUser?.reload(completion: { error in
             if error == nil {

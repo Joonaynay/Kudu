@@ -24,6 +24,12 @@ class LoginViewController: UIViewController {
     private let signInButton = CustomButton(text: "Sign In", color: UIColor.theme.blueColor)
     private let createAccountButton = CustomButton(text: "Create Account", color: .clear)
     private var keyboardShowing: Bool = false
+    private let forgotPasswordButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Forgot Password", for: .normal)
+        button.contentHorizontalAlignment = .right
+        return button
+    }()
     
     
     
@@ -51,6 +57,28 @@ class LoginViewController: UIViewController {
         
         //Password
         password.isSecureTextEntry = true
+        forgotPasswordButton.addAction(UIAction() { _ in
+            let emailAlert = UIAlertController(title: "Reset Email", message: "Please type in your email to recieve a link to reset your password.", preferredStyle: .alert)
+            emailAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            emailAlert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+                self.auth.forgotPassword(email: emailAlert.textFields!.first!.text!) { error in
+                    if let error = error {
+                        let errorAlert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+                        errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                        self.present(errorAlert, animated: true)
+                    } else {
+                        let successAlert = UIAlertController(title: "Success", message: "Successfully sent an email to \(emailAlert.textFields!.first!.text!)", preferredStyle: .alert)
+                        successAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+                        self.present(successAlert, animated: true)
+                    }
+                }
+            }))
+            emailAlert.addTextField { textField in
+                textField.placeholder = "Email"
+            }
+            self.present(emailAlert, animated: true)
+
+        }, for: .touchUpInside)
         
         //Sign In Button
         signInButton.addTarget(self, action: #selector(didTapSignInButton), for: .touchUpInside)
@@ -58,7 +86,6 @@ class LoginViewController: UIViewController {
         
         //Create Account Button
         createAccountButton.backgroundColor = .clear
-        
         createAccountButton.addTarget(self, action: #selector(didTapCreateAccountButton), for: .touchUpInside)
         
         //ScrollView
@@ -70,6 +97,7 @@ class LoginViewController: UIViewController {
         stackView.stack([
             email,
             password,
+            forgotPasswordButton,
             signInButton,
             createAccountButton
         ], axis: .vertical, width: nil, height: nil, spacing: 10)
@@ -98,6 +126,8 @@ class LoginViewController: UIViewController {
         signInButton.height(50)
         createAccountButton.height(50)
         
+        forgotPasswordButton.height(25)
+                
         progressView.edgesToSuperview()
         view.bringSubviewToFront(progressView)
         

@@ -1,14 +1,14 @@
 //
-//  VideoDetailsViewController.swift
+//  EditPostViewController.swift
 //  StarFeed
 //
-//  Created by Wendy Buhler on 10/27/21.
+//  Created by Forrest Buhler on 11/1/21.
 //
 
 import UIKit
 
-class VideoDetailsViewController: UIViewController {
-    
+class EditPostViewController: UIViewController {
+        
     private let image = UIImageView()
     
     private let titleLabel: UILabel = {
@@ -121,5 +121,4 @@ class VideoDetailsViewController: UIViewController {
         stackView.width(to: view, offset: -30)
         
     }
-    
 }

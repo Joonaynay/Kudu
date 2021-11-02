@@ -18,6 +18,7 @@
 		52E5BA192724F135007B05C4 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E5BA182724F135007B05C4 /* Comment.swift */; };
 		966BEB153153282CE3E63A96 /* Pods_StarFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */; };
 		AB266A46F92D7A92EDCF36B9 /* Pods_StarFeedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ADD7EDA7198EA0E92222FF0 /* Pods_StarFeedTests.framework */; };
+		E0345E272730C6B000CC9B91 /* EditPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0345E262730C6B000CC9B91 /* EditPostViewController.swift */; };
 		E058F9B6271952FC006CC85C /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E058F9B5271952FC006CC85C /* PostModel.swift */; };
 		E08250E627152D6800C6D58C /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08250E527152D6800C6D58C /* TitleBar.swift */; };
 		E08A65FB2719FDC000254D66 /* SubjectPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08A65FA2719FDC000254D66 /* SubjectPostViewController.swift */; };
@@ -94,6 +95,7 @@
 		C20F3EF2A3075AE95F6CFF82 /* Pods-StarFeed.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeed.debug.xcconfig"; path = "Target Support Files/Pods-StarFeed/Pods-StarFeed.debug.xcconfig"; sourceTree = "<group>"; };
 		CEA1AFF2681C735988BE5302 /* Pods-StarFeedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StarFeedTests.debug.xcconfig"; path = "Target Support Files/Pods-StarFeedTests/Pods-StarFeedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D9B962DE28299765A6A98D7C /* Pods_StarFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StarFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0345E262730C6B000CC9B91 /* EditPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostViewController.swift; sourceTree = "<group>"; };
 		E058F9B5271952FC006CC85C /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		E08250E527152D6800C6D58C /* TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBar.swift; sourceTree = "<group>"; };
 		E08A65FA2719FDC000254D66 /* SubjectPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectPostViewController.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				E08A65FA2719FDC000254D66 /* SubjectPostViewController.swift */,
 				52E5BA142724ECD3007B05C4 /* CommentsViewController.swift */,
 				52912BCE272A34A100E7AE03 /* VideoDetailsViewController.swift */,
+				E0345E262730C6B000CC9B91 /* EditPostViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -642,6 +645,7 @@
 				E0FDBFF5271D40C300EC1D1B /* FreshModel.xcdatamodeld in Sources */,
 				E0F1118E2718AE400062E190 /* ImagePicker.swift in Sources */,
 				E0EF3AFA2714CE2400D5FDF8 /* SubjectsViewController.swift in Sources */,
+				E0345E272730C6B000CC9B91 /* EditPostViewController.swift in Sources */,
 				E0EF3AFE2714D83C00D5FDF8 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

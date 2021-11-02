@@ -27,9 +27,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     private let xButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "xmark"), for: .normal)
-        button.contentVerticalAlignment = .fill
-        button.contentHorizontalAlignment = .fill
-        button.tintColor = UIColor.theme.accentColor
+        button.tintColor = .label
         return button
     }()
     
@@ -61,10 +59,10 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         label.topToSuperview(offset: 10)
         label.centerXToSuperview()
         
-        xButton.topToSuperview(offset: 15, usingSafeArea: true)
-        xButton.trailingToSuperview(offset: 15)
-        xButton.height(25)
-        xButton.width(25)
+        xButton.topToSuperview(offset: 10, usingSafeArea: true)
+        xButton.height(20)
+        xButton.width(20)
+        xButton.trailingToSuperview(offset: 10)
         
     }
     
@@ -82,9 +80,9 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         case 2:
             cell.setupCell(title: "Change Password", image: true)
         case 3:
-            cell.setupCell(title: "Delete Account", image: true)
+            cell.setupCell(title: "Delete Account", image: false)
         case 4:
-            cell.setupCell(title: "Sign Out", image: true)
+            cell.setupCell(title: "Sign Out", image: false)
         default:
             cell.setupCell(title: "Title", image: false)
         }
