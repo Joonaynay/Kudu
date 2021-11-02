@@ -48,7 +48,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         collectionView.delegate = self
         view.addSubview(collectionView)
         collectionView.refreshControl?.addAction(UIAction() { _ in
-            
+            self.collectionView.reloadData()
             self.collectionView.refreshControl?.endRefreshing()
             
         }, for: .valueChanged)
@@ -69,18 +69,21 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         cell.vc = self
         return cell
     }
-        
+    
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-
+        
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-
+        
         if maximumOffset - currentOffset <= 10.0 {
-            print("loading")
-            self.loadExplore(lastDoc: self.lastDoc) { last in
-                if let last = last {
-                    print("loaded")
-                    self.lastDoc = last
+            
+        if !self.collectionView.refreshControl!.isRefreshing {
+                self.collectionView.refreshControl?.beginRefreshing()
+                self.loadExplore(lastDoc: self.lastDoc) { last in
+                    if let last = last {
+                        self.lastDoc = last
+                    }
+                    self.collectionView.refreshControl?.endRefreshing()
                     self.collectionView.reloadData()
                 }
             }
@@ -88,7 +91,10 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func loadExplore(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
-        let db = Firestore.firestore().collection("posts").limit(to: 2).order(by: "likeCount", descending: true)
+        let db = Firestore.firestore().collection("posts")                        
+            .order(by: "date", descending: true)
+            .limit(to: 2)
+
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in
                 if let query = query, error == nil {
@@ -115,6 +121,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                         }
                     }
                     group.notify(queue: .main) {
+                        self.fb.posts.sort { p1, p2 in
+                            p1.date.timeIntervalSince1970 > p1.date.timeIntervalSince1970
+                        }
                         completion(query.documents.last)
                     }
                 }
