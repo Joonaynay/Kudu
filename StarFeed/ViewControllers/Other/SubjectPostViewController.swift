@@ -48,12 +48,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource {
         
         //CollectionView
         collectionView.dataSource = self
-        collectionView.refreshControl?.addAction(UIAction() { _ in
-            
-                self.collectionView.refreshControl?.endRefreshing()
-                self.collectionView.reloadData()
-            
-        }, for: .valueChanged)
+
         view.addSubview(collectionView)
     }
  

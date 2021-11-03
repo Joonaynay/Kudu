@@ -47,16 +47,13 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         collectionView.dataSource = self
         collectionView.delegate = self
         view.addSubview(collectionView)
-        collectionView.refreshControl?.addAction(UIAction() { _ in
-            self.collectionView.reloadData()
-            self.collectionView.refreshControl?.endRefreshing()
-            
-        }, for: .valueChanged)
+        view.addSubview(collectionView.bottomRefresh)
     }
     
     private func setupConstraints() {
-        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.horizontalToSuperview()
         collectionView.topToBottom(of: titleBar)
+        collectionView.bottomToTop(of: collectionView.bottomRefresh)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -69,6 +66,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         cell.vc = self
         return cell
     }
+        
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
@@ -76,14 +74,14 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
         if maximumOffset - currentOffset <= 10.0 {
-            
-        if !self.collectionView.refreshControl!.isRefreshing {
-                self.collectionView.refreshControl?.beginRefreshing()
+                
+            if !collectionView.bottomRefresh.isLoading {
+                self.collectionView.bottomRefresh.start()
                 self.loadExplore(lastDoc: self.lastDoc) { last in
                     if let last = last {
                         self.lastDoc = last
                     }
-                    self.collectionView.refreshControl?.endRefreshing()
+                    self.collectionView.bottomRefresh.stop()
                     self.collectionView.reloadData()
                 }
             }
@@ -94,7 +92,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .limit(to: 2)
-
+        
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in
                 if let query = query, error == nil {
@@ -129,7 +127,6 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                 }
             }
         }
-        
     }
 }
 

@@ -48,6 +48,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.register(TableCell.self, forCellReuseIdentifier: "tableCell")
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.isScrollEnabled = false
         tableView.backgroundColor = .systemBackground
     }
     

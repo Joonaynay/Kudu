@@ -103,7 +103,7 @@ class VideoDetailsViewController: UIViewController {
     
     func addConstraints() {
         scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        scrollView.topToBottom(of: xButton)
+        scrollView.topToBottom(of: xButton, offset: 10)
         
         xButton.topToSuperview(offset: 10, usingSafeArea: true)
         xButton.height(20)
@@ -114,7 +114,7 @@ class VideoDetailsViewController: UIViewController {
         rectLine.widthToSuperview()
         rectLine.bottom(to: titleLabel, offset: 20)
         
-        image.topToSuperview(offset: 10)
+        image.topToSuperview()
         image.horizontalToSuperview()
         image.height(view.width * (9/16))
         

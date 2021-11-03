@@ -13,7 +13,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
 
     private let fb = FirebaseModel.shared
     
-    private let scrollView = CustomScrollView()
     private var backButton = BackButton()
     private let collectionView = CustomCollectionView()
     
@@ -47,13 +46,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         title.text = "This is my title."
         return title
     }
-    
-    private var rectangle: UIView {
-        let rect = UIView()
-        rect.backgroundColor = .blue
-        return rect
-    }
-    
+        
     //Edit Profile || Follow Button
     private let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     
@@ -171,12 +164,11 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
             }, for: .touchUpInside)
         }
         
-        scrollView.addSubview(profileImage)
-        scrollView.refreshControl = nil
+        view.addSubview(profileImage)
         
         //Username
         username.text = user.username
-        scrollView.addSubview(username)
+        view.addSubview(username)
         
         //Button
         if fb.currentUser.id == user.id {
@@ -195,14 +187,12 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         }
         
         //CollectionView
-        scrollView.addSubview(collectionView)
-        collectionView.isScrollEnabled = false
+        view.addSubview(collectionView)
         collectionView.dataSource = self
         
         // Scrollview
-        scrollView.addSubview(editProfileButton)
-        scrollView.addSubview(collectionView)
-        view.addSubview(scrollView)
+        view.addSubview(editProfileButton)
+        view.addSubview(collectionView)
         
     }
     
@@ -216,21 +206,18 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         
         profileImage.height(150)
         profileImage.width(150)
-        profileImage.centerX(to: scrollView)
-        profileImage.top(to: scrollView)
+        profileImage.centerX(to: view)
+        profileImage.topToBottom(of: backButton)
         
         username.topToBottom(of: profileImage, offset: 20)
-        username.centerX(to: scrollView)
+        username.centerX(to: view)
         username.horizontalToSuperview(insets: TinyEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         
         editProfileButton.height(50)
         editProfileButton.width(150)
-        editProfileButton.centerX(to: scrollView)
+        editProfileButton.centerX(to: view)
         editProfileButton.topToBottom(of: username, offset: 30)
-        
-        scrollView.topToBottom(of: backButton)
-        scrollView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        
+
         collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
         collectionView.topToBottom(of: editProfileButton, offset: 50)
         collectionView.width(to: view)

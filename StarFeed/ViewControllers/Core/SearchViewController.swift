@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class SearchViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
 
     private let fb = FirebaseModel.shared
 
+    private var lastDoc: QueryDocumentSnapshot?
     private let titleBar = TitleBar(title: "Search", backButton: false)
     private let collectionView = CustomCollectionView()
     
@@ -45,12 +47,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         
         //CollectionView
         collectionView.dataSource = self
-        collectionView.refreshControl?.addAction(UIAction() { _ in
-            
-                self.collectionView.refreshControl?.endRefreshing()
-                self.collectionView.reloadData()
-            
-        }, for: .valueChanged)
+
         view.addSubview(collectionView)
     }
  
@@ -69,7 +66,10 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchBar.endEditing(true)
         progress.start()
-        self.fb.search(string: searchBar.text!) {
+        self.search(string: searchBar.text!) { last in
+            if let last = last {
+                self.lastDoc = last
+            }
             self.progress.stop()
             self.collectionView.reloadData()
         }
@@ -89,6 +89,45 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         cell.setupView(post: posts[indexPath.row])
         cell.vc = self
         return cell
+    }
+    
+    func search(string: String, completion:@escaping (QueryDocumentSnapshot?) -> Void) {
+        
+        DispatchQueue.main.async {
+            
+            let db = Firestore.firestore().collection("posts")
+                .order(by: "date")
+                .whereField("title", in: [string.lowercased()])
+                .limit(to: 5)
+            
+            let group = DispatchGroup()
+            
+            //Load all documents
+            db.getDocuments { query, error in
+                guard let query = query else {
+                    completion(nil)
+                    return
+                }
+                                                        
+                for doc in query.documents {
+                    
+                    group.enter()
+                    var postId = ""
+                    let title = doc.get("title") as! String
+                    if title.lowercased().contains(string.lowercased()) {
+                        postId = doc.documentID
+                    }
+                    
+                    self.fb.loadPost(postId: postId, completion: {
+                        group.leave()
+                    })
+                }
+                
+                group.notify(queue: .main, execute: {
+                    completion(query.documents.last)
+                })
+            }
+        }
     }
         
 }

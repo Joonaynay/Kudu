@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import TinyConstraints
 
 class CustomCollectionView: UICollectionView {
+    
+    public var bottomRefresh = BottomRefresh()
 
     init() {
         let layout = UICollectionViewFlowLayout()
@@ -20,7 +23,7 @@ class CustomCollectionView: UICollectionView {
         register(PostView.self, forCellWithReuseIdentifier: "post")
         showsVerticalScrollIndicator = false
         delaysContentTouches = false
-        refreshControl = UIRefreshControl()
+
         alwaysBounceVertical = true
     }
     
@@ -33,5 +36,55 @@ class CustomCollectionView: UICollectionView {
             return true
         }
         return super.touchesShouldCancel(in: view)
+    }
+}
+
+class BottomRefresh: UIView {
+    
+    private let progressView = UIActivityIndicatorView()
+    public var isLoading = false
+    
+    init() {
+        super.init(frame: .zero)
+        addSubview(progressView)
+        progressView.edgesToSuperview()
+        progressView.centerInSuperview()        
+    }
+    
+    required init?(coder: NSCoder) {
+    
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func didMoveToSuperview() {
+        self.height(0)
+        self.bottomToSuperview(usingSafeArea: true)
+        self.centerXToSuperview()
+        self.horizontalToSuperview()
+    }
+    
+    func start() {
+        for constraint in self.constraints {
+            if constraint.firstAttribute == .height {
+                constraint.constant += 50
+            }
+        }
+        superview?.layoutIfNeeded()
+        self.isLoading = true
+        self.progressView.startAnimating()
+    }
+    
+    func stop() {
+        for constraint in self.constraints {
+            if constraint.firstAttribute == .height {
+                constraint.constant -= 50
+            }
+        }
+        superview?.layoutIfNeeded()
+        self.isLoading = false
+        self.progressView.stopAnimating()
+        if let collectionView = superview?.subviews.first(where: { view in view is CustomCollectionView }) as? CustomCollectionView {
+            collectionView.contentOffset.y += 50
+        }
     }
 }

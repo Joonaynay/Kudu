@@ -199,8 +199,9 @@ class FirebaseModel: ObservableObject {
             
             //Save to core data
             let deleteCoreUser = cd.fetchUser(uid: currentUser.id)
-            let newIndex = deleteCoreUser?.following?.firstIndex(of: followUser.id)
-            deleteCoreUser?.following?.remove(at: newIndex!)
+            if let newIndex = deleteCoreUser?.following?.firstIndex(of: followUser.id) {
+                deleteCoreUser?.following?.remove(at: newIndex)
+            }
             cd.save()
             
             completion()
@@ -209,54 +210,6 @@ class FirebaseModel: ObservableObject {
         
     }
     
-    func search(string: String, completion:@escaping () -> Void) {
-        
-        DispatchQueue.main.async {
-            
-            let group = DispatchGroup()
-            //Load all documents
-            self.db.getDocs(collection: "posts") { query in
-                
-                var postsArray = [Post]()
-                
-                for doc in query!.documents {
-                    
-                    group.enter()
-                    var postId = ""
-                    let title = doc.get("title") as! String
-                    if title.lowercased().contains(string.lowercased()) {
-                        postId = doc.documentID
-                    }
-                    
-                    self.loadPost(postId: postId, completion: {
-                        
-                        if let index = self.posts.firstIndex(where: { post in
-                            post.id == postId
-                            
-                        }) {
-                            postsArray.append(self.posts[index])
-                        }
-                        
-                        
-                        group.leave()
-                    })
-                }
-                
-                group.notify(queue: .main, execute: {
-                    for post in postsArray {
-                        if !self.posts.contains(where: { post in
-                            post.id == post.id }) {
-                            self.posts.append(post)
-                            self.posts.sort { p1, p2 in
-                                p1.date.timeIntervalSince1970 < p1.date.timeIntervalSince1970
-                            }
-                        }
-                    }
-                    completion()
-                })
-            }
-        }
-    }
     
     func loadPost(postId: String, completion:@escaping () -> Void) {
         
