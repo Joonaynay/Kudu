@@ -172,6 +172,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate {
         image.topToSuperview()
         image.horizontalToSuperview()
         image.height(view.width * (9/16))
+        image.width(to: view)
         
         stackView.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 30))
         stackView.topToBottom(of: image, offset: 30)

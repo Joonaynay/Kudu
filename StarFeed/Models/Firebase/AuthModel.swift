@@ -189,17 +189,7 @@ class AuthModel: ObservableObject {
                 self.db.deleteDoc(collection: "users", document: uid)
                 self.storage.delete(path: "Profile Images", file: uid)
                 for post in self.fb.currentUser.posts {
-                    self.db.deleteDoc(collection: "posts", document: post)
-                    let commentsDb = Firestore.firestore().collection("posts").document(post).collection("comments")
-                    commentsDb.getDocuments { query, error in
-                        if let query = query {
-                            for doc in query.documents {
-                                commentsDb.document(doc.documentID).delete()
-                            }
-                        }
-                    }
-                    self.storage.delete(path: "images", file: post)
-                    self.storage.delete(path: "videos", file: "\(post).m4v")
+                    self.fb.deletePost(id: post)
                 }
                 self.file.deleteAllImages()
                 self.cd.deleteAll()
@@ -209,6 +199,7 @@ class AuthModel: ObservableObject {
                         fatalError(error.localizedDescription)
                     }
                 }
+                self.fb.posts = [Post]()
                 self.cd.context = self.cd.container.viewContext
                 completion(nil)
                 UserDefaults.standard.setValue(nil, forKey: "uid")
@@ -281,9 +272,10 @@ func signOut(completion:@escaping (String?) -> Void) {
     self.cd.deleteAll()
     do {
         try auth.signOut()
-    } catch {
-        completion(nil)
+    } catch let error {
+        completion(error.localizedDescription)
     }
+    self.fb.posts = [Post]()
     self.cd.container = NSPersistentContainer(name: "FreshModel")
     self.cd.container.loadPersistentStores { desc, error in
         if let error = error {

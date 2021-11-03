@@ -18,6 +18,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     private let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
     private let progress = ProgressView()
     
+    private var posts = [Post]()
+    private var pageNumber = 0
+    
     private let noPostsLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -54,8 +57,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         //CollectionView
         collectionView.dataSource = self
         collectionView.delegate = self
-        
         view.addSubview(collectionView)
+        view.addSubview(collectionView.bottomRefresh)
         
         view.addSubview(noPostsLabel)
     }
@@ -81,22 +84,16 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchBar.endEditing(true)
         progress.start()
-        self.search(string: searchBar.text!.lowercased()) {
-            self.progress.stop()
-            self.collectionView.reloadData()
-        }
+        self.search(string: searchBar.text!.lowercased(), withPagination: false)
+        
         return true
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var posts = [Post]()
-        for post in fb.posts { if post.title.contains(searchBar.text!.lowercased()) { posts.append(post) } }
         return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var posts = [Post]()
-        for post in fb.posts { if post.title.contains(searchBar.text!.lowercased()) { posts.append(post) } }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.setupView(post: posts[indexPath.row])
         cell.vc = self
@@ -112,22 +109,52 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         if maximumOffset - currentOffset <= 10.0 {
             
             if !collectionView.bottomRefresh.isLoading {
+                self.pageNumber += 1
                 self.collectionView.bottomRefresh.start()
-                self.search(string: self.searchBar.text!.lowercased()) {
-                    self.collectionView.bottomRefresh.stop()
-                    self.collectionView.reloadData()
-                }
+                self.search(string: self.searchBar.text!.lowercased(), withPagination: true)
             }
         }
     }
     
     
-    func search(string: String, completion:@escaping () -> Void) {
-        fb.algoliaIndex.search(queries: ["title"], strategy: .stopIfEnoughMatches, requestOptions: .none) { result in
-            
+    func search(string: String, withPagination: Bool) {
+        if !withPagination {
+            self.pageNumber = 0
+        }
+        
+        let query = Query(string).set(\.page, to: self.pageNumber)
+        
+        fb.algoliaIndex.search(query: query, requestOptions: .none) { result in
+            if case .success(let response) = result {
+                let group = DispatchGroup()
+                if !withPagination {
+                    self.posts = [Post]()
+                }
+                for hit in response.hits {
+                    group.enter()
+                    self.fb.loadPost(postId: "\(hit.objectID)") {
+                        group.leave()
+                        if let post = self.fb.posts.first(where: { post in post.id == "\(hit.objectID)" }) {
+                            self.posts.append(post)
+                        }
+                    }
+                }
+                group.notify(queue: .main) {
+                    self.progress.stop()
+                    if self.collectionView.bottomRefresh.isLoading {
+                        self.collectionView.bottomRefresh.stop()
+                    }                    
+                    self.collectionView.reloadData()
+                }
+            } else {
+                self.progress.stop()
+                if self.collectionView.bottomRefresh.isLoading {
+                    self.collectionView.bottomRefresh.stop()
+                }
+                self.collectionView.reloadData()
+            }
         }
     }
-    
 }
 
 

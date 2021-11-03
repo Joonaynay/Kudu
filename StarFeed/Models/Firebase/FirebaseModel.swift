@@ -68,12 +68,6 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func deletePost(id: String) {
-        
-        self.db.deleteDoc(collection: "posts", document: id)
-        self.storage.delete(path: "images", file: id)
-        self.storage.delete(path: "videos", file: "\(id).m4v")
-    }
     
     func commentOnPost(currentPost: Post, comment: String, completion: @escaping () -> Void) {
         
@@ -380,6 +374,27 @@ class FirebaseModel: ObservableObject {
             } catch let error { print(error.localizedDescription) }
         }
     }
+    
+    
+    func deletePost(id: String) {
+        self.db.deleteDoc(collection: "posts", document: id)
+        let commentsDb = Firestore.firestore().collection("posts").document(id).collection("comments")
+        commentsDb.getDocuments { query, error in
+            if let query = query {
+                for doc in query.documents {
+                    commentsDb.document(doc.documentID).delete()
+                }
+            }
+        }
+        self.storage.delete(path: "images", file: id)
+        self.storage.delete(path: "videos", file: "\(id).m4v")
+        do {
+            try self.algoliaIndex.deleteObject(withID: ObjectID(stringLiteral: id))
+        } catch let error { fatalError(error.localizedDescription) }
+        
+    }
+    
+
     
     func loadConservativeUser(uid: String, completion:@escaping (User?) -> Void) {
         
