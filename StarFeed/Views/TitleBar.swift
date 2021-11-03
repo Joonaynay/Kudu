@@ -115,6 +115,9 @@ class TitleBar: UIView {
     }
     
     override func didMoveToSuperview() {
+        guard superview != nil else {
+            return
+        }
         self.edgesToSuperview(excluding: .bottom, usingSafeArea: true)
         self.height(70)
     }

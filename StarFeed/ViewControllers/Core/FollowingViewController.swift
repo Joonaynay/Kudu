@@ -92,6 +92,10 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
     }
     
     func loadFollowing(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
+        guard !self.fb.currentUser.following.isEmpty else {
+            completion(nil)
+            return
+        }
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .whereField("uid", in: self.fb.currentUser.following)

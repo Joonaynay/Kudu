@@ -55,8 +55,11 @@ class BottomRefresh: UIView {
     
         fatalError("init(coder:) has not been implemented")
     }
-    
+            
     override func didMoveToSuperview() {
+        guard superview != nil else {
+            return 
+        }
         self.height(0)
         self.bottomToSuperview(usingSafeArea: true)
         self.centerXToSuperview()
