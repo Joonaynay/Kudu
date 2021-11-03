@@ -61,7 +61,6 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     private func setupConstraints() {
-        noPostsLabel.text = ""
         collectionView.horizontalToSuperview()
         collectionView.topToBottom(of: titleBar)
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
@@ -130,19 +129,19 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                             group.leave()
                         }
                     }
-                    group.notify(queue: .main) {
+                    group.notify(queue: .main) { [self] in
                         self.fb.posts.sort { p1, p2 in
                             p1.date.timeIntervalSince1970 > p1.date.timeIntervalSince1970
                         }
                         completion(query.documents.last)
+                        if self.fb.posts.count == 0 {
+                            self.noPostsLabel.centerXToSuperview()
+                            self.noPostsLabel.centerYToSuperview()
+                            self.noPostsLabel.height(50)
+                            self.noPostsLabel.horizontalToSuperview()
+                        }
                     }
                 }
-            }
-            if self.fb.posts.count == 0 {
-                noPostsLabel.centerXToSuperview()
-                noPostsLabel.centerYToSuperview()
-                noPostsLabel.height(50)
-                noPostsLabel.horizontalToSuperview()
             }
         }
     }
