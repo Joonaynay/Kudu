@@ -19,6 +19,13 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     private let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
     private let progress = ProgressView()
     
+    private let noPostsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -49,6 +56,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         collectionView.dataSource = self
 
         view.addSubview(collectionView)
+        
+        view.addSubview(noPostsLabel)
     }
  
     private func setupConstraints() {
@@ -61,6 +70,11 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         
         progress.edgesToSuperview()
         view.bringSubviewToFront(progress)
+        
+        noPostsLabel.centerXToSuperview()
+        noPostsLabel.centerYToSuperview()
+        noPostsLabel.height(50)
+        noPostsLabel.horizontalToSuperview()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -88,6 +102,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.setupView(post: posts[indexPath.row])
         cell.vc = self
+        noPostsLabel.text = ""
         return cell
     }
     
@@ -122,7 +137,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
                         group.leave()
                     })
                 }
-                
+                if self.fb.posts.count == 0 {
+                    self.noPostsLabel.text = "No posts available."
+                }
                 group.notify(queue: .main, execute: {
                     completion(query.documents.last)
                 })
