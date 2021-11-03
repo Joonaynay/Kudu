@@ -17,6 +17,14 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
     
     private var lastDoc: QueryDocumentSnapshot?
     
+    private let noPostsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No posts available."
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -48,12 +56,18 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         collectionView.dataSource = self
         view.addSubview(collectionView)
         view.addSubview(collectionView.bottomRefresh)
+        view.addSubview(noPostsLabel)
     }
  
     private func setupConstraints() {
         collectionView.horizontalToSuperview()
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
         collectionView.topToBottom(of: titleBar)
+        
+        noPostsLabel.centerXToSuperview()
+        noPostsLabel.centerYToSuperview()
+        noPostsLabel.height(50)
+        noPostsLabel.horizontalToSuperview()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -68,6 +82,7 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.vc = self
         cell.setupView(post: posts[indexPath.row])
+        noPostsLabel.text = ""
         return cell
     }
     

@@ -72,7 +72,6 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         noPostsLabel.height(50)
         noPostsLabel.horizontalToSuperview()
         
-        view.bringSubviewToFront(noPostsLabel)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

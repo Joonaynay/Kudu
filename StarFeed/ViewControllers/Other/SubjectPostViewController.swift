@@ -19,6 +19,14 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
     
     private let subject: Subject
     
+    private let noPostsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No posts available."
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        return label
+    }()
+    
     init(subject: Subject) {
         self.titleBar = TitleBar(title: subject.name, backButton: true)
         self.subject = subject
@@ -60,12 +68,18 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         
         view.addSubview(collectionView)
         view.addSubview(collectionView.bottomRefresh)
+        view.addSubview(noPostsLabel)
     }
     
     private func setupConstraints() {
         collectionView.horizontalToSuperview()
         collectionView.topToBottom(of: titleBar)
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
+        
+        noPostsLabel.centerXToSuperview()
+        noPostsLabel.centerYToSuperview()
+        noPostsLabel.height(50)
+        noPostsLabel.horizontalToSuperview()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -80,6 +94,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.setupView(post: posts[indexPath.row])
         cell.vc = self
+        self.noPostsLabel.text = ""
         return cell
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
