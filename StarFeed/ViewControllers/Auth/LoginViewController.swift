@@ -28,6 +28,8 @@ class LoginViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Forgot Password", for: .normal)
         button.contentHorizontalAlignment = .right
+        button.setTitleColor(.systemGray2, for: .highlighted)
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
         return button
     }()
     

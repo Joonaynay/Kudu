@@ -236,9 +236,9 @@ class AuthModel: ObservableObject {
     
     func changeUsername(newUsername: String, completion: @escaping (String?) -> Void) {
         if newUsername.count < 20 {
-            Firestore.firestore().collection("users").getDocuments { query, error in
-                if let error = error {
-                    completion(error.localizedDescription)
+            Firestore.firestore().collection("users").getDocuments(source: .server) { query, error in
+                if error != nil {
+                    completion("Check your internet connection.")
                 } else if let query = query {
                     let group = DispatchGroup()
                     for doc in query.documents {
