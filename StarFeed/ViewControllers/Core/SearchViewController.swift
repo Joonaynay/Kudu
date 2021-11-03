@@ -6,13 +6,12 @@
 //
 
 import UIKit
-import FirebaseFirestore
+import AlgoliaSearchClient
 
-class SearchViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
-
+class SearchViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate, UICollectionViewDelegate {
+    
     private let fb = FirebaseModel.shared
-
-    private var lastDoc: QueryDocumentSnapshot?
+    
     private let titleBar = TitleBar(title: "Search", backButton: false)
     private let collectionView = CustomCollectionView()
     
@@ -47,16 +46,19 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         
         //CollectionView
         collectionView.dataSource = self
-
+        collectionView.delegate = self
+        
         view.addSubview(collectionView)
+        view.addSubview(collectionView.bottomRefresh)
     }
- 
+    
     private func setupConstraints() {
         searchBar.topToBottom(of: titleBar, offset: 10)
         searchBar.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         searchBar.height(50)
         
-        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
+        collectionView.horizontalToSuperview()
+        collectionView.bottomToTop(of: collectionView.bottomRefresh)
         collectionView.topToBottom(of: searchBar, offset: 10)
         
         progress.edgesToSuperview()
@@ -66,10 +68,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchBar.endEditing(true)
         progress.start()
-        self.search(string: searchBar.text!) { last in
-            if let last = last {
-                self.lastDoc = last
-            }
+        self.search(string: searchBar.text!.lowercased()) {
             self.progress.stop()
             self.collectionView.reloadData()
         }
@@ -91,45 +90,30 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         return cell
     }
     
-    func search(string: String, completion:@escaping (QueryDocumentSnapshot?) -> Void) {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
-        DispatchQueue.main.async {
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        
+        if maximumOffset - currentOffset <= 10.0 {
             
-            let db = Firestore.firestore().collection("posts")
-                .order(by: "date")
-                .whereField("title", in: [string.lowercased()])
-                .limit(to: 5)
-            
-            let group = DispatchGroup()
-            
-            //Load all documents
-            db.getDocuments { query, error in
-                guard let query = query else {
-                    completion(nil)
-                    return
+            if !collectionView.bottomRefresh.isLoading {
+                self.collectionView.bottomRefresh.start()
+                self.search(string: self.searchBar.text!.lowercased()) {
+                    self.collectionView.bottomRefresh.stop()
+                    self.collectionView.reloadData()
                 }
-                                                        
-                for doc in query.documents {
-                    
-                    group.enter()
-                    var postId = ""
-                    let title = doc.get("title") as! String
-                    if title.lowercased().contains(string.lowercased()) {
-                        postId = doc.documentID
-                    }
-                    
-                    self.fb.loadPost(postId: postId, completion: {
-                        group.leave()
-                    })
-                }
-                
-                group.notify(queue: .main, execute: {
-                    completion(query.documents.last)
-                })
             }
         }
     }
-        
+    
+    
+    func search(string: String, completion:@escaping () -> Void) {
+        fb.algoliaIndex.search(queries: ["title"], strategy: .stopIfEnoughMatches, requestOptions: .none) { result in
+            
+        }
+    }
+    
 }
 
 

@@ -135,7 +135,6 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                 }
             }
         }
-        
     }
 }
 

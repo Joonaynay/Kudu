@@ -11,6 +11,7 @@ pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
 pod 'Firebase/Analytics'
 pod 'Firebase/Storage'
+pod 'AlgoliaSearchClient'
 
   target 'StarFeedTests' do
     inherit! :search_paths

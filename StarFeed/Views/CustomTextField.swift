@@ -9,9 +9,8 @@ import UIKit
 import TinyConstraints
 
 class CustomTextField: UITextField, UITextFieldDelegate {
-    var insets: UIEdgeInsets!
     
-    var image: UIImageView!
+    var image: UIImageView?
     
     weak var vc: UIViewController?
     
@@ -26,15 +25,12 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         delegate = self
         if let image = image {
             self.image = UIImageView(image: UIImage(systemName: image))
-            insets = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 12)
-            addSubview(self.image)
-            self.image.leadingToSuperview(offset: 9)
-            self.image.tintColor = .systemGray2
-            self.image.height(23)
-            self.image.width(23)
-            self.image.centerYToSuperview()
-        } else {
-            insets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+            addSubview(self.image!)
+            self.image!.leadingToSuperview(offset: 9)
+            self.image!.tintColor = .systemGray2
+            self.image!.height(23)
+            self.image!.width(23)
+            self.image!.centerYToSuperview()
         }
     }
     
@@ -80,6 +76,12 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     }
     
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        var insets = UIEdgeInsets()
+        if self.image?.image != nil {
+            insets = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 45)
+        } else {
+            insets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 45)
+        }
         return bounds.inset(by: insets)
     }
     
@@ -88,6 +90,12 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     }
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
+        var insets = UIEdgeInsets()
+        if self.image?.image != nil {
+            insets = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 45)
+        } else {
+            insets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 45)
+        }
         return bounds.inset(by: insets)
     }
     

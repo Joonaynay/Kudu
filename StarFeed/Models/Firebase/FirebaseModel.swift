@@ -7,6 +7,8 @@
 
 import UIKit
 import FirebaseFirestore
+import AlgoliaSearchClient
+import CoreMIDI
 
 class FirebaseModel: ObservableObject {
     
@@ -20,10 +22,14 @@ class FirebaseModel: ObservableObject {
     @Published public var currentUser = User(id: "", username: "", name: "", likes: [], profileImage: nil, following: [], followers: [], posts: [])
     @Published public var users = [User]()
     @Published public var posts = [Post]()
-    
     @Published public var subjects = [Subject]()
+    public let algoliaClient: SearchClient
+    public let algoliaIndex: Index
     
     init() {
+        self.algoliaClient = SearchClient(appID: "Y9I3DGQAIY", apiKey: "f2c8c8deff57a9f6c1471ceaccf3dcef")
+        self.algoliaIndex = algoliaClient.index(withName: "title")
+        
         self.subjects = [Subject(name: "Art", image: "paintbrush"), Subject(name: "Entrepreneurship", image: "person"), Subject(name: "Career", image: "building.2"), Subject(name: "Workout", image: "heart"), Subject(name: "Confidence", image: "crown"), Subject(name: "Communication", image: "bubble.left"), Subject(name: "Motivation", image: "lightbulb"), Subject(name: "Spirituality", image: "leaf"), Subject(name: "Financial", image: "dollarsign.square"), Subject(name: "Focus", image: "scope"), Subject(name: "Happiness", image: "face.smiling"), Subject(name: "Habits", image: "infinity"), Subject(name: "Success", image: "hands.sparkles"), Subject(name: "Books/Audiobooks", image: "book"), Subject(name: "Failure", image: "cloud.heavyrain"), Subject(name: "Leadership", image: "person.3"), Subject(name: "Relationships", image: "figure.wave"), Subject(name: "Will Power", image: "battery.100.bolt"), Subject(name: "Mindfulness", image: "rays"), Subject(name: "Purpose", image: "sunrise"), Subject(name: "Time Management", image: "clock"), Subject(name: "Goals", image: "target")].sorted { $0.name < $1.name }
     }
     
@@ -345,9 +351,9 @@ class FirebaseModel: ObservableObject {
             desc = description!
         }
         
-        
+        let date = Date().timeIntervalSince1970
         //Save Post to Firestore
-        let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": Date().timeIntervalSince1970, "description": desc, "likeCount": 0] as [String : Any]
+        let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": date, "description": desc, "likeCount": 0] as [String : Any]
         self.db.newDoc(collection: "posts", document: nil, data: dict) { postId in
             
             //Save postId to User
@@ -366,6 +372,12 @@ class FirebaseModel: ObservableObject {
             if let current = self.cd.fetchUser(uid: self.currentUser.id) {
                 current.posts?.append(postId!)
             }
+            
+            //Save to algolia
+            let records = ["objectID": postId, "title": title]
+            do {
+                try self.algoliaIndex.saveObject(records)
+            } catch let error { print(error.localizedDescription) }
         }
     }
     

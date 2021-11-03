@@ -212,6 +212,8 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
+  - AlgoliaSearchClient (8.11.0):
+    - Logging
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -348,6 +350,7 @@ PODS:
   - gRPC-Core/Interface (1.28.2)
   - GTMSessionFetcher/Core (1.6.1)
   - leveldb-library (1.22.1)
+  - Logging (1.4.0)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -357,6 +360,7 @@ PODS:
   - TinyConstraints (4.0.2)
 
 DEPENDENCIES:
+  - AlgoliaSearchClient
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Firestore
@@ -366,6 +370,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
+    - AlgoliaSearchClient
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAnalytics
@@ -382,12 +387,14 @@ SPEC REPOS:
     - gRPC-Core
     - GTMSessionFetcher
     - leveldb-library
+    - Logging
     - nanopb
     - PromisesObjC
     - TinyConstraints
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
+  AlgoliaSearchClient: dc1f5eea2ab15ecd7dfa46604656b1187f65efee
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: 54cdc8bc9c9b3de54f43dab86e62f5a76b47034f
   FirebaseAnalytics: 4751d6a49598a2b58da678cc07df696bcd809ab9
@@ -404,10 +411,11 @@ SPEC CHECKSUMS:
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
+  Logging: beeb016c9c80cf77042d62e83495816847ef108b
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   TinyConstraints: 7b7ccc0c485bb3bb47082138ff28bc33cd49897f
 
-PODFILE CHECKSUM: 8492a65d0487f44b16e6c4b407a852d723d2eef8
+PODFILE CHECKSUM: 60556b207a4f0614295b54c13377d8017d2e5504
 
 COCOAPODS: 1.10.2
