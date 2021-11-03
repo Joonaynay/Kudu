@@ -55,7 +55,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate {
     
     private let editTitleButton: UIButton = {
        let button = UIButton()
-        button.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+        button.setImage(UIImage(systemName: "pencil"), for: .normal)
         button.tintColor = UIColor.theme.accentColor
         return button
     }()
@@ -101,23 +101,23 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate {
         view.addSubview(xButton)
         view.addSubview(rectLine)
         view.addSubview(editTitleButton)
-        view.addSubview(titleTextField)
-        view.addSubview(titleDoneButton)
         scrollView.refreshControl = nil
         scrollView.addSubview(stackView)
         scrollView.addSubview(image)
         
-        titleTextField.font = titleLabel.font
-        titleTextField.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 9)
-        titleTextField.delegate = self
         
         editTitleButton.addAction(UIAction() { _ in
+            self.view.addSubview(self.titleTextField)
+            self.titleTextField.font = self.titleLabel.font
+            self.titleTextField.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 9)
+            self.titleTextField.delegate = self
             self.titleTextField.horizontalToSuperview()
             self.titleTextField.topToBottom(of: self.image, offset: 32)
             self.titleTextField.height(min: 50, max: 1000)
             self.titleTextField.font = self.titleLabel.font
             self.titleTextField.text = self.post.title
             
+            self.view.addSubview(self.titleDoneButton)
             self.titleDoneButton.topToBottom(of: self.titleTextField, offset: 5)
             self.titleDoneButton.trailing(to: self.titleTextField, offset: -5)
             self.titleDoneButton.height(50)
@@ -126,12 +126,10 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate {
         
         titleDoneButton.addAction(UIAction() { _ in
             //self.fb.db.save(collection: "posts", document: self.post.id, field: "title", data: self.titleTextField.text!)
-            for constraint in self.titleTextField.constraints {
-                constraint.isActive = false
-            }
-            for constraint in self.titleDoneButton.constraints {
-                constraint.isActive = false
-            }
+            self.titleTextField.removeFromSuperview()
+            self.titleDoneButton.removeFromSuperview()
+
+            
         }, for: .touchUpInside)
         
         let descHeader = header
@@ -176,7 +174,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate {
         
         stackView.edgesToSuperview(excluding: .top, insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 30))
         stackView.topToBottom(of: image, offset: 30)
-        stackView.width(to: view, offset: -30)
+        stackView.width(to: view, offset: -45)
         
     }
     
