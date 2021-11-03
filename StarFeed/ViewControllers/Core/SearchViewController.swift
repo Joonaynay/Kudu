@@ -117,9 +117,6 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
                     self.collectionView.bottomRefresh.stop()
                     self.collectionView.reloadData()
                 }
-                group.notify(queue: .main, execute: {
-                    completion(query.documents.last)
-                })
             }
         }
     }
