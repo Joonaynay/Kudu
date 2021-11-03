@@ -49,6 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         }) {
                             fb.users.append(user)
                         }
+                        fb.currentUser = user
                         window.rootViewController = TabBarController()
                     } else {
                         let loginNav = UINavigationController(rootViewController: LoginViewController())

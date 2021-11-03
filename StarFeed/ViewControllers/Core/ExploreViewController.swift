@@ -29,11 +29,13 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         super.viewDidLoad()
         setupView()
         setupConstraints()
+        self.collectionView.bottomRefresh.start()
         self.loadExplore(lastDoc: self.lastDoc) { last in
             if let last = last {
                 self.lastDoc = last
             }
             self.collectionView.reloadData()
+            self.collectionView.bottomRefresh.stop()
         }
     }
     
@@ -65,6 +67,12 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         collectionView.topToBottom(of: titleBar)
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
         
+        noPostsLabel.centerXToSuperview()
+        noPostsLabel.centerYToSuperview()
+        noPostsLabel.height(50)
+        noPostsLabel.horizontalToSuperview()
+        
+        view.bringSubviewToFront(noPostsLabel)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -75,6 +83,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.setupView(post: fb.posts[indexPath.item])
         cell.vc = self
+        self.noPostsLabel.text = ""
         return cell
     }
     
@@ -117,6 +126,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                     group.notify(queue: .main) {
                         completion(query.documents.last)
                     }
+                } else {
+                    completion(nil)
                 }
             }
         } else {
@@ -134,15 +145,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                             p1.date.timeIntervalSince1970 > p1.date.timeIntervalSince1970
                         }
                         completion(query.documents.last)
-                        if self.fb.posts.count == 0 {
-                            self.noPostsLabel.centerXToSuperview()
-                            self.noPostsLabel.centerYToSuperview()
-                            self.noPostsLabel.height(50)
-                            self.noPostsLabel.horizontalToSuperview()
-                        } else {
-                            self.noPostsLabel.text = ""
-                        }
                     }
+                } else {
+                    completion(nil)
                 }
             }
         }
