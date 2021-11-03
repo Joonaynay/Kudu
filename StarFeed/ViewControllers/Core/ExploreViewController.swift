@@ -17,6 +17,14 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     
     public var lastDoc: QueryDocumentSnapshot?
     
+    private let noPostsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No posts available."
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -43,6 +51,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         view.addSubview(titleBar)
         view.backgroundColor = .systemBackground
         
+        view.addSubview(noPostsLabel)
+        
         //CollectionView
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -51,9 +61,11 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     private func setupConstraints() {
+        noPostsLabel.text = ""
         collectionView.horizontalToSuperview()
         collectionView.topToBottom(of: titleBar)
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -66,7 +78,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         cell.vc = self
         return cell
     }
-        
+    
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
@@ -74,7 +86,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
         if maximumOffset - currentOffset <= 10.0 {
-                
+            
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
                 self.loadExplore(lastDoc: self.lastDoc) { last in
@@ -125,6 +137,12 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                         completion(query.documents.last)
                     }
                 }
+            }
+            if self.fb.posts.count == 0 {
+                noPostsLabel.centerXToSuperview()
+                noPostsLabel.centerYToSuperview()
+                noPostsLabel.height(50)
+                noPostsLabel.horizontalToSuperview()
             }
         }
     }
