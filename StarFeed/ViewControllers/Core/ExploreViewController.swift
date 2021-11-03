@@ -139,6 +139,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                             self.noPostsLabel.centerYToSuperview()
                             self.noPostsLabel.height(50)
                             self.noPostsLabel.horizontalToSuperview()
+                        } else {
+                            self.noPostsLabel.text = ""
                         }
                     }
                 }
