@@ -17,6 +17,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     
     public var lastDoc: QueryDocumentSnapshot?
     
+    public var posts = [Post]()
+    
     private let noPostsLabel: UILabel = {
         let label = UILabel()
         label.text = "No posts available."
@@ -75,12 +77,12 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fb.posts.count
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setupView(post: fb.posts[indexPath.item])
+        cell.setupView(post: posts[indexPath.item])
         cell.vc = self
         self.noPostsLabel.text = ""
         return cell
@@ -119,6 +121,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                     for doc in query.documents {
                         group.enter()
                         self.fb.loadPost(postId: doc.documentID) {
+                            if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
+                                self.posts.append(post)
+                            }
                             group.leave()
                         }
                     }
@@ -136,6 +141,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                     for doc in query.documents {
                         group.enter()
                         self.fb.loadPost(postId: doc.documentID) {
+                            if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
+                                self.posts.append(post)
+                            }
                             group.leave()
                         }
                     }

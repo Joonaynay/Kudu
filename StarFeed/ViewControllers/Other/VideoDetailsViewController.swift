@@ -16,7 +16,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
     private let image = UIImageView()
     
     private let titleLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.numberOfLines = 0
         label.sizeToFit()
         label.font = UIFont.preferredFont(forTextStyle: .title2)
@@ -58,7 +58,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
     private var post: Post
     
     private let editImageButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setImage(UIImage(systemName: "pencil.circle.fill"), for: .normal)
         button.tintColor = UIColor.theme.accentColor
         button.backgroundColor = .systemBackground
@@ -70,14 +70,14 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
     }()
     
     private let editTitleButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setImage(UIImage(systemName: "rectangle.and.pencil.and.ellipsis"), for: .normal)
         button.tintColor = UIColor.theme.accentColor
         return button
     }()
     
     private var titleTextView: UITextView = {
-       let textField = UITextView()
+        let textField = UITextView()
         textField.isEditable = true
         textField.backgroundColor = .secondarySystemBackground
         textField.sizeToFit()
@@ -90,14 +90,14 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
     private let titleDoneButton = CustomButton(text: "Save", color: UIColor.theme.blueColor)
     
     private let editDescButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setImage(UIImage(systemName: "rectangle.and.pencil.and.ellipsis"), for: .normal)
         button.tintColor = UIColor.theme.accentColor
         return button
     }()
     
     private var descTextView: UITextView = {
-       let textField = UITextView()
+        let textField = UITextView()
         textField.isEditable = true
         textField.backgroundColor = .secondarySystemBackground
         textField.sizeToFit()
@@ -107,14 +107,21 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         return textField
     }()
     
-    private let deletePostButton = CustomButton(text: "Delete", color: .clear)
+    private let deletePostButton: UIButton = {
+       let button = UIButton()
+        button.setTitle("Delete", for: .normal)
+        button.setTitleColor(.secondaryLabel, for: .highlighted)
+        button.setTitleColor(.red, for: .normal)
+        button.contentHorizontalAlignment = .left
+        return button
+    }()
     
     private let descDoneButton = CustomButton(text: "Save", color: UIColor.theme.blueColor)
     
     private let fb = FirebaseModel.shared
     
     private let auth = AuthModel.shared
-        
+    
     init(post: Post) {
         self.post = post
         self.image.image = post.image
@@ -216,7 +223,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         descDoneButton.addAction(UIAction() { _ in
             if self.descTextView.text != self.post.title {
                 self.fb.db.save(collection: "posts", document: self.post.id, field: "description", data: self.descTextView.text!)
-
+                
                 self.post.description = self.descTextView.text
                 if let index = self.fb.posts.firstIndex(where: { post in post.id == self.post.id }) {
                     self.fb.posts[index].description = self.descTextView.text
@@ -248,11 +255,44 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                             self.present(errorAlert, animated: true)
                         } else {
                             self.fb.deletePost(id: self.post.id)
+                            switch self.vc {
+                            case is ProfileViewController:
+                                let vc = self.vc as! ProfileViewController
+                                vc.posts = [Post]()
+                                vc.loadProfile(lastDoc: nil) { last in
+                                    vc.lastDoc = last
+                                }
+                            case is FollowingViewController:
+                                let vc = self.vc as! FollowingViewController
+                                vc.posts = [Post]()
+                                vc.loadFollowing(lastDoc: nil) { last in
+                                    vc.lastDoc = last
+                                }
+                            case is SearchViewController:
+                                let vc = self.vc as! SearchViewController
+                                vc.posts = [Post]()
+                                vc.search(string: vc.searchBar.text!, withPagination: false)
+                                vc.pageNumber += 1
+                                
+                            case is ExploreViewController:
+                                let vc = self.vc as! ExploreViewController
+                                vc.posts = [Post]()
+                                vc.loadExplore(lastDoc: nil) { last in
+                                    vc.lastDoc = last
+                                }
+                                
+                            case is SubjectPostViewController:
+                                let vc = self.vc as! SubjectPostViewController
+                                vc.posts = [Post]()
+                                vc.loadSubjectPosts(lastDoc: nil) { last in
+                                    vc.lastDoc = last
+                                }
+                                
+                            default:
+                                return
+                            }
                             if let collectionView = self.vc?.view.subviews.first(where: { view in view is CustomCollectionView }) as? CustomCollectionView {
                                 collectionView.reloadData()
-                            }
-                            if let vc = self.vc as? ProfileViewController {
-                                vc
                             }
                             let successAlert = UIAlertController(title: "Success", message: "Successfully deleted post.", preferredStyle: .alert)
                             successAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
@@ -283,7 +323,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         stackView.axis = .vertical
         stackView.spacing = 10
         stackView.setCustomSpacing(40, after: titleLabel)
-
+        
     }
     
     func addConstraints() {
@@ -299,15 +339,16 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         rectLine.widthToSuperview()
         rectLine.bottom(to: titleLabel, offset: 20)
         
+
+        
+        
         if fb.currentUser.id == self.post.uid {
             editImageButton.bottom(to: image, offset: -5)
             editImageButton.trailing(to: image, offset: -5)
             editImageButton.width(30)
             editImageButton.height(30)
             scrollView.bringSubviewToFront(editImageButton)
-        }
-        
-        if fb.currentUser.id == self.post.uid {
+            
             editTitleButton.bottom(to: titleLabel)
             editTitleButton.leadingToTrailing(of: titleLabel, offset: -7)
             
@@ -315,7 +356,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
             editDescButton.leadingToTrailing(of: descLabel, offset: -7)
             
             deletePostButton.topToBottom(of: descLabel, offset: 10)
-            deletePostButton.leadingToSuperview(offset: 5)
+            deletePostButton.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 30))
+            deletePostButton.height(50)
         }
         
         image.topToSuperview()

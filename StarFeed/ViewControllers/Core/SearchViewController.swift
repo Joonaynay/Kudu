@@ -15,11 +15,11 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
     private let titleBar = TitleBar(title: "Search", backButton: false)
     private let collectionView = CustomCollectionView()
     
-    private let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
+    public let searchBar = CustomTextField(text: "Search...", image: "magnifyingglass")
     private let progress = ProgressView()
     
-    private var posts = [Post]()
-    private var pageNumber = 0
+    public var posts = [Post]()
+    public var pageNumber = 0
     
     private let noPostsLabel: UILabel = {
         let label = UILabel()

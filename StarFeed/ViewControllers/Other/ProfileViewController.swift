@@ -16,8 +16,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     private var backButton = BackButton()
     private let collectionView = CustomCollectionView()
     
-    private var posts = [Post]()
-    private var lastDoc: QueryDocumentSnapshot?
+    public var posts = [Post]()
+    public var lastDoc: QueryDocumentSnapshot?
     
     private let infoButton: UIButton = {
         let button = UIButton()

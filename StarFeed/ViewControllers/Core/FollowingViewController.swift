@@ -15,7 +15,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
     private let titleBar = TitleBar(title: "Following", backButton: false)
     private let collectionView = CustomCollectionView()
     
-    private var lastDoc: QueryDocumentSnapshot?
+    public var lastDoc: QueryDocumentSnapshot?
+    
+    public var posts = [Post]()
     
     private let noPostsLabel: UILabel = {
         let label = UILabel()
@@ -71,14 +73,10 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var posts = [Post]()
-        for post in fb.posts { if self.fb.currentUser.following.contains(post.uid) { posts.append(post) } }
         return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var posts = [Post]()
-        for post in fb.posts { if self.fb.currentUser.following.contains(post.uid) { posts.append(post) } }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.vc = self
         cell.setupView(post: posts[indexPath.row])
@@ -123,6 +121,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                     for doc in query.documents {
                         group.enter()
                         self.fb.loadPost(postId: doc.documentID) {
+                            if let post = self.fb.posts.first(where: { post in post.id == doc.documentID }) {
+                                self.posts.append(post)
+                            }
                             group.leave()
                         }
                     }
@@ -138,6 +139,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                     for doc in query.documents {
                         group.enter()
                         self.fb.loadPost(postId: doc.documentID) {
+                            if let post = self.fb.posts.first(where: { post in post.id == doc.documentID }) {
+                                self.posts.append(post)
+                            }
                             group.leave()
                         }
                     }
