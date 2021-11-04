@@ -109,9 +109,6 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
                         alert.addAction(UIAlertAction(title: "OK", style: .default))
                         self.present(alert, animated: true)
                     } else {
-                        if let vc = self.vc as? ProfileViewController {
-                            vc.username.text = alert.textFields?.first?.text
-                        }
                         let alert = UIAlertController(title: "Success", message: "Username has successfully been changed.", preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .default))
                         self.present(alert, animated: true)

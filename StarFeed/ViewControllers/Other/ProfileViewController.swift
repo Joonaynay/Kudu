@@ -9,12 +9,15 @@ import UIKit
 import TinyConstraints
 import FirebaseFirestore
 
-class ProfileViewController: UIViewController, UICollectionViewDataSource {
-
+class ProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    
     private let fb = FirebaseModel.shared
     
     private var backButton = BackButton()
     private let collectionView = CustomCollectionView()
+    
+    private var posts = [Post]()
+    private var lastDoc: QueryDocumentSnapshot?
     
     private let infoButton: UIButton = {
         let button = UIButton()
@@ -24,32 +27,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         button.contentHorizontalAlignment = .fill
         return button
     }()
-    
-    //Profile Image
-    private let profileImage: UIButton = {
-        let button = UIButton()
-        button.contentVerticalAlignment = .fill
-        button.contentHorizontalAlignment = .fill
-        button.isEnabled = false
-        return button
-    }()
-    
-    // Username Label
-    public let username: UILabel = {
-        let username = UILabel()
-        username.textAlignment = .center
-        return username
-    }()
-    
-    private var postTitle: UILabel {
-        let title = UILabel()
-        title.text = "This is my title."
-        return title
-    }
-        
-    //Edit Profile || Follow Button
-    private let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
-    
+
     private var user: User
     
     init(user: User) {
@@ -69,18 +47,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
     
     
     override func viewWillAppear(_ animated: Bool) {
-        self.username.text = self.user.username
         backButton.vc = self
-        if let image = self.user.profileImage {
-            self.profileImage.setImage(image, for: .normal)
-            self.profileImage.setImage(image, for: .disabled)
-        }
         
-        //Check if it needs to be loaded
-        if fb.currentUser.id != user.id {
-            //Add the follow button
-            self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"
-        }
         if self.user.followers == [] && self.user.posts == [] {
             
             //Get index of user
@@ -95,33 +63,23 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
                 self.fb.users[index].followers = followers
                 self.fb.users[index].posts = posts
                 self.user = self.fb.users[index]
-                let group = DispatchGroup()
-                for post in posts {
-                    group.enter()
-                    self.fb.loadPost(postId: post) { group.leave() }
-                }
-                group.notify(queue: .main) {
-                    self.collectionView.reloadData()
-                    let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
-                        UIAction(title: "Followers: \(self.user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
-                        UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
-                    ])
-                    self.infoButton.menu = menu
-                    self.fb.posts.sort { p1, p2 in
-                        p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
-                    }
+                self.collectionView.reloadData()
+                let menu = UIMenu(title: "", image: nil, options: .displayInline, children: [
+                    UIAction(title: "Followers: \(self.user.followers.count)", image: UIImage(systemName: "person"), handler: { _ in }),
+                    UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
+                ])
+                self.infoButton.menu = menu
+                self.fb.posts.sort { p1, p2 in
+                    p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
                 }
             }
-            
-        } else if user.id == fb.currentUser.id {
-            let group = DispatchGroup()
-            for post in self.fb.currentUser.posts {
-                group.enter()
-                self.fb.loadPost(postId: post) {
-                    group.leave()
+        }
+        
+        if !collectionView.bottomRefresh.isLoading {
+            self.loadProfile(lastDoc: self.lastDoc) { last in
+                if let last = last {
+                    self.lastDoc = last
                 }
-            }
-            group.notify(queue: .main) {
                 self.collectionView.reloadData()
             }
         }
@@ -147,6 +105,171 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         
         view.addSubview(infoButton)
         
+
+        //CollectionView
+        view.addSubview(collectionView)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        view.addSubview(collectionView.bottomRefresh)
+        
+        // CollectionView
+        collectionView.register(ProfileView.self, forCellWithReuseIdentifier: "profile")
+        
+    }
+    
+    
+    private func setupConstraints() {
+        
+        infoButton.topToSuperview(offset: 21, usingSafeArea: true)
+        infoButton.trailingToSuperview(offset: 12)
+        infoButton.height(23)
+        infoButton.width(23)
+        
+                
+        collectionView.horizontalToSuperview()
+        collectionView.bottomToTop(of: collectionView.bottomRefresh)
+        collectionView.topToBottom(of: backButton)
+        collectionView.width(to: view)
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        self.posts.count + 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var cell: UICollectionViewCell
+        if indexPath.row == 0 {
+            let profileCell = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! ProfileView
+            profileCell.vc = self
+            profileCell.setupCell(user: self.user)
+            cell = profileCell
+        } else {
+            let postCell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
+            postCell.vc = self
+            postCell.setupView(post: self.posts[indexPath.row - 1])
+            cell = postCell
+        }
+
+        return cell
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        
+        if maximumOffset - currentOffset <= 10.0 {
+            
+            if !collectionView.bottomRefresh.isLoading {
+                self.collectionView.bottomRefresh.start()
+                self.loadProfile(lastDoc: self.lastDoc) { last in
+                    if let last = last {
+                        self.lastDoc = last
+                    }
+                    self.collectionView.bottomRefresh.stop()
+                    self.collectionView.reloadData()
+                }
+            }
+        }
+    }
+    
+    func loadProfile(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
+        let db = Firestore.firestore().collection("posts")
+            .order(by: "date", descending: true)
+            .whereField("uid", isEqualTo: self.user.id)
+            .limit(to: 2)
+        
+        if let lastDoc = lastDoc {
+            db.start(afterDocument: lastDoc).getDocuments { query, error in
+                if let query = query, error == nil {
+                    let group = DispatchGroup()
+                    for doc in query.documents {
+                        group.enter()
+                        self.fb.loadPost(postId: doc.documentID) {
+                            group.leave()
+                            if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
+                                self.posts.append(post)
+                            }
+                        }
+                    }
+                    group.notify(queue: .main) {
+                        completion(query.documents.last)
+                    }
+                } else {
+                    completion(nil)
+                }
+            }
+        } else {
+            db.getDocuments { query, error in
+                if let query = query, error == nil {
+                    let group = DispatchGroup()
+                    for doc in query.documents {
+                        group.enter()
+                        self.fb.loadPost(postId: doc.documentID) {
+                            if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
+                                self.posts.append(post)
+                            }
+                            group.leave()
+                        }
+                    }
+                    group.notify(queue: .main) {
+                        completion(query.documents.last)
+                    }
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+    }
+}
+
+class ProfileView: UICollectionViewCell {
+    
+    private let fb = FirebaseModel.shared
+    weak var vc: UIViewController?
+    
+    //Profile Image
+    private let profileImage: UIButton = {
+        let button = UIButton()
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        button.isEnabled = false
+        return button
+    }()
+    
+    //Edit Profile || Follow Button
+    private let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
+    
+    // Username Label
+    public let username: UILabel = {
+        let username = UILabel()
+        username.textAlignment = .center
+        return username
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        contentView.addSubview(profileImage)
+        contentView.addSubview(username)
+        contentView.addSubview(editProfileButton)
+        addConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func setupCell(user: User) {
+        //Username
+        username.text = user.username
+        
+        //Set followbutton text
+        if fb.currentUser.id != user.id {
+            //Add the follow button
+            self.editProfileButton.label.text = self.fb.currentUser.following.contains(user.id) ? "Unfollow" : "Follow"
+        }
+        
         //Profile Image
         if let image = user.profileImage {
             profileImage.setImage(image, for: .normal)
@@ -160,84 +283,46 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         if fb.currentUser.id == user.id {
             profileImage.isEnabled = true
             profileImage.addAction(UIAction() { _ in
-                self.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
+                self.vc?.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
             }, for: .touchUpInside)
         }
-        
-        view.addSubview(profileImage)
-        
-        //Username
-        username.text = user.username
-        view.addSubview(username)
         
         //Button
         if fb.currentUser.id == user.id {
             editProfileButton.label.text = "Edit Profile"
             editProfileButton.addAction(UIAction() { _ in
                 let editProfile = EditProfileViewController()
-                editProfile.vc = self
-                self.present(editProfile, animated: true)
+                editProfile.vc = self.vc
+                self.vc?.present(editProfile, animated: true)
             }, for: .touchUpInside)
         } else {
             editProfileButton.addAction(UIAction() { _ in
-                self.fb.followUser(followUser: self.user) {
-                    self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user.id) ? "Unfollow" : "Follow"                
+                self.fb.followUser(followUser: user) {
+                    self.editProfileButton.label.text = self.fb.currentUser.following.contains(user.id) ? "Unfollow" : "Follow"
                 }
             }, for: .touchUpInside)
         }
-        
-        //CollectionView
-        view.addSubview(collectionView)
-        collectionView.dataSource = self
-        
-        // Scrollview
-        view.addSubview(editProfileButton)
-        view.addSubview(collectionView)
-        
     }
     
+    override func prepareForReuse() {
+        username.text = nil
+        editProfileButton.label.text = nil
+    }
     
-    private func setupConstraints() {
-        
-        infoButton.topToSuperview(offset: 21, usingSafeArea: true)
-        infoButton.trailingToSuperview(offset: 12)
-        infoButton.height(23)
-        infoButton.width(23)
-        
+    private func addConstraints() {
         profileImage.height(150)
         profileImage.width(150)
-        profileImage.centerX(to: view)
-        profileImage.topToBottom(of: backButton)
+        profileImage.centerXToSuperview()
+        profileImage.topToSuperview(offset: 25)
         
         username.topToBottom(of: profileImage, offset: 20)
-        username.centerX(to: view)
+        username.centerXToSuperview()
         username.horizontalToSuperview(insets: TinyEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         
         editProfileButton.height(50)
         editProfileButton.width(150)
-        editProfileButton.centerX(to: view)
+        editProfileButton.centerXToSuperview()
         editProfileButton.topToBottom(of: username, offset: 30)
 
-        collectionView.edgesToSuperview(excluding: .top, usingSafeArea: true)
-        collectionView.topToBottom(of: editProfileButton, offset: 50)
-        collectionView.width(to: view)
-        
     }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var posts = [Post]()
-        for post in fb.posts { if post.uid == self.user.id { posts.append(post) } }
-        return posts.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var posts = [Post]()
-        for post in fb.posts { if post.uid == self.user.id { posts.append(post) } }
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.vc = self
-        cell.setupView(post: posts[indexPath.row])
-        return cell
-    }
-    
-    
 }
