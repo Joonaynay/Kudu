@@ -260,7 +260,7 @@ class FirebaseModel: ObservableObject {
                             self.storage.loadMovie(path: "videos", file: "\(doc.documentID).m4v") { url in
                                 //Add to view model
                                 
-                                if let image = image, let url = url, let user = user {
+                                if let image = image, let user = user {
                                     let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: Date(timeIntervalSince1970: time), uid: user.id, likeCount: likeCount, movie: url, description: description))
                                     self.posts.append(post)
                                     completion()
@@ -337,7 +337,7 @@ class FirebaseModel: ObservableObject {
         }
     }
     
-    func addPost(image: UIImage, title: String, subjects: [String], movie: URL, description: String?) {
+    func addPost(image: UIImage, title: String, subjects: [String], movie: URL?, description: String?) {
         
         // Make sure they have a description
         var desc = ""
@@ -360,7 +360,9 @@ class FirebaseModel: ObservableObject {
             self.storage.saveImage(path: "images", file: postId!, image: image)
             
             //Save movie to Firestore
-            self.storage.saveMovie(path: "videos", file: postId!, url: movie)
+            if let movie = movie {
+                self.storage.saveMovie(path: "videos", file: postId!, url: movie)
+            }
             
             //Save to core data
             if let current = self.cd.fetchUser(uid: self.currentUser.id) {
@@ -377,6 +379,19 @@ class FirebaseModel: ObservableObject {
     
     
     func deletePost(id: String) {
+        //Remove from user document in firestore
+        Firestore.firestore().collection("users").document(self.currentUser.id).updateData(["posts": FieldValue.arrayRemove([id])])
+        
+        //Remove from Current user
+        self.currentUser.posts.removeAll { string in string == id }
+        if let index = self.users.firstIndex(where: { user in user.id == self.currentUser.id }) {
+            self.users[index].posts.removeAll(where: { string in string == id })
+        }
+        let coreUser = self.cd.fetchUser(uid: self.currentUser.id)
+        coreUser?.posts?.removeAll(where: { string in string == id })
+        self.cd.save()
+        
+        //Delete document and comments
         self.db.deleteDoc(collection: "posts", document: id)
         let commentsDb = Firestore.firestore().collection("posts").document(id).collection("comments")
         commentsDb.getDocuments { query, error in
@@ -386,15 +401,18 @@ class FirebaseModel: ObservableObject {
                 }
             }
         }
+        
+        //Delete File
         self.storage.delete(path: "images", file: id)
         self.storage.delete(path: "videos", file: "\(id).m4v")
+        
+        //Remove from algolia
         do {
             try self.algoliaIndex.deleteObject(withID: ObjectID(stringLiteral: id))
         } catch let error { fatalError(error.localizedDescription) }
         
-        self.posts.removeAll { post in
-            post.id == id
-        }
+        //Remove from FirebaseModel
+        self.posts.removeAll { post in post.id == id }
         
     }
     

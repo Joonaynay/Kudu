@@ -30,7 +30,9 @@ class PostView: UICollectionViewCell {
     
     private lazy var imageViewButtonAction: UIAction = {
         let action = UIAction() { _ in
-            self.vc?.present(VideoPlayer(url: self.fb.posts[self.post!].movie!), animated: true)
+            if let movie = self.fb.posts[self.post!].movie {
+                self.vc?.present(VideoPlayer(url: movie), animated: true)
+            }
         }
         return action
     }()
@@ -211,7 +213,19 @@ class PostView: UICollectionViewCell {
         }
         
         //Set imageview image
+        imageViewButton.isEnabled = false
+        if fb.posts[post].movie != nil {
+            imageViewButton.isEnabled = true
+            let playButton = UIImageView(image: UIImage(systemName: "play.circle.fill"))
+            playButton.contentMode = .scaleAspectFill
+            imageViewButton.addSubview(playButton)
+            playButton.centerInSuperview()
+            playButton.height(50)
+            playButton.width(50)
+            
+        }
         imageViewButton.setImage(fb.posts[post].image, for: .normal)
+        imageViewButton.setImage(fb.posts[post].image, for: .disabled)
         imageViewButton.imageView!.contentMode = .scaleAspectFill
         
         //Set user image
@@ -235,6 +249,11 @@ class PostView: UICollectionViewCell {
         followButton.removeAction(followButtonAction, for: .touchUpInside)
         
         //Remove any other text or images
+        for subview in imageViewButton.subviews {
+            if let subview = subview as? UIImageView, subview.image == UIImage(systemName: "play.circle.fill") {
+                subview.removeFromSuperview()
+            }
+        }
         imageViewButton.setImage(nil, for: .normal)
         profile.profileImage.image = nil
         titleLabel.text = nil

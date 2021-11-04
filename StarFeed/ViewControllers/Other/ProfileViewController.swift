@@ -27,7 +27,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         button.contentHorizontalAlignment = .fill
         return button
     }()
-
+    
     private var user: User
     
     init(user: User) {
@@ -69,9 +69,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                     UIAction(title: "Posts: \(self.user.posts.count)", image: UIImage(systemName: "camera"), handler: { _ in })
                 ])
                 self.infoButton.menu = menu
-                self.fb.posts.sort { p1, p2 in
-                    p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
-                }
             }
         }
         
@@ -105,14 +102,27 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         view.addSubview(infoButton)
         
-
+        
         //CollectionView
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            if !self.collectionView.bottomRefresh.isLoading {
+                self.posts = [Post]()
+                self.loadProfile(lastDoc: nil) { last in
+                    if let last = last {
+                        self.lastDoc = last
+                    }
+                    self.collectionView.reloadData()
+                    self.collectionView.refreshControl?.endRefreshing()
+                }
+            } else {
+                self.collectionView.refreshControl?.endRefreshing()
+            }
+        }, for: .valueChanged)
         view.addSubview(collectionView)
         collectionView.dataSource = self
         collectionView.delegate = self
         view.addSubview(collectionView.bottomRefresh)
-        
-        // CollectionView
         collectionView.register(ProfileView.self, forCellWithReuseIdentifier: "profile")
         
     }
@@ -125,7 +135,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         infoButton.height(23)
         infoButton.width(23)
         
-                
+        
         collectionView.horizontalToSuperview()
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
         collectionView.topToBottom(of: backButton)
@@ -147,10 +157,12 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         } else {
             let postCell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
             postCell.vc = self
-            postCell.setupView(post: self.posts[indexPath.row - 1])
+            if posts.count >= indexPath.row {
+                postCell.setupView(post: posts[indexPath.row - 1])
+            }
             cell = postCell
         }
-
+        
         return cell
     }
     
@@ -159,7 +171,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
-        if maximumOffset - currentOffset <= 10.0 {
+        if maximumOffset - currentOffset <= 10.0 && !self.collectionView.refreshControl!.isRefreshing {
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
@@ -178,7 +190,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .whereField("uid", isEqualTo: self.user.id)
-            .limit(to: 2)
+            .limit(to: 10)
         
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in
@@ -237,9 +249,36 @@ class ProfileView: UICollectionViewCell {
         button.isEnabled = false
         return button
     }()
+    private lazy var profileImageAction: UIAction = {
+        let action = UIAction() { _ in
+            self.vc?.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
+        }
+        return action
+    }()
     
     //Edit Profile || Follow Button
     private let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
+    private lazy var editProfileButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            let editProfile = EditProfileViewController()
+            editProfile.vc = self.vc
+            self.vc?.present(editProfile, animated: true)
+        }
+        return action
+    }()
+    
+    private lazy var followButtonAction: UIAction = {
+        let action = UIAction() { _ in
+            self.fb.followUser(followUser: self.user!) {
+                self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user!.id) ? "Unfollow" : "Follow"
+                if let superview = self.superview as? CustomCollectionView {
+                    superview.reloadData()
+                }
+            }
+        }
+        return action
+    }()
+
     
     // Username Label
     public let username: UILabel = {
@@ -247,6 +286,8 @@ class ProfileView: UICollectionViewCell {
         username.textAlignment = .center
         return username
     }()
+    
+    private var user: User?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -261,6 +302,7 @@ class ProfileView: UICollectionViewCell {
     }
     
     public func setupCell(user: User) {
+        self.user = user
         //Username
         username.text = user.username
         
@@ -268,43 +310,42 @@ class ProfileView: UICollectionViewCell {
         if fb.currentUser.id != user.id {
             //Add the follow button
             self.editProfileButton.label.text = self.fb.currentUser.following.contains(user.id) ? "Unfollow" : "Follow"
+            
         }
         
         //Profile Image
         if let image = user.profileImage {
             profileImage.setImage(image, for: .normal)
+            profileImage.setImage(image, for: .disabled)
         } else {
             profileImage.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+            profileImage.setImage(UIImage(systemName: "person.circle.fill"), for: .disabled)
         }
+        profileImage.imageView!.contentMode = .scaleAspectFill
         profileImage.imageView!.layer.masksToBounds = false
         profileImage.imageView!.layer.cornerRadius = 75
         profileImage.imageView!.clipsToBounds = true
         
         if fb.currentUser.id == user.id {
             profileImage.isEnabled = true
-            profileImage.addAction(UIAction() { _ in
-                self.vc?.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
-            }, for: .touchUpInside)
+            profileImage.addAction(profileImageAction, for: .touchUpInside)
         }
         
         //Button
         if fb.currentUser.id == user.id {
             editProfileButton.label.text = "Edit Profile"
-            editProfileButton.addAction(UIAction() { _ in
-                let editProfile = EditProfileViewController()
-                editProfile.vc = self.vc
-                self.vc?.present(editProfile, animated: true)
-            }, for: .touchUpInside)
+            editProfileButton.addAction(editProfileButtonAction, for: .touchUpInside)
         } else {
-            editProfileButton.addAction(UIAction() { _ in
-                self.fb.followUser(followUser: user) {
-                    self.editProfileButton.label.text = self.fb.currentUser.following.contains(user.id) ? "Unfollow" : "Follow"
-                }
-            }, for: .touchUpInside)
+            editProfileButton.addAction(followButtonAction, for: .touchUpInside)
         }
     }
     
     override func prepareForReuse() {
+        //Remove actions
+        profileImage.removeAction(profileImageAction, for: .touchUpInside)
+        editProfileButton.removeAction(editProfileButtonAction, for: .touchUpInside)
+        editProfileButton.removeAction(followButtonAction, for: .touchUpInside)
+        
         username.text = nil
         editProfileButton.label.text = nil
     }
@@ -323,6 +364,6 @@ class ProfileView: UICollectionViewCell {
         editProfileButton.width(150)
         editProfileButton.centerXToSuperview()
         editProfileButton.topToBottom(of: username, offset: 30)
-
+        
     }
 }

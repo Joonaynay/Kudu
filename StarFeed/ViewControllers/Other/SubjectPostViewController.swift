@@ -65,6 +65,21 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         view.backgroundColor = .systemBackground
         
         //CollectionView
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            if !self.collectionView.bottomRefresh.isLoading {
+                self.posts = [Post]()
+                self.loadSubjectPosts(lastDoc: nil) { last in
+                    if let last = last {
+                        self.lastDoc = last
+                    }
+                    self.collectionView.reloadData()
+                    self.collectionView.refreshControl?.endRefreshing()
+                }
+            } else {
+                self.collectionView.refreshControl?.endRefreshing()
+            }
+        }, for: .valueChanged)
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -90,7 +105,9 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setupView(post: posts[indexPath.row])
+        if posts.count >= indexPath.row + 1 {
+            cell.setupView(post: posts[indexPath.row])
+        }
         cell.vc = self
         self.noPostsLabel.text = ""
         return cell
@@ -100,7 +117,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
-        if maximumOffset - currentOffset <= 10.0 {
+        if maximumOffset - currentOffset <= 10.0 && !self.collectionView.refreshControl!.isRefreshing {
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
@@ -119,7 +136,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .whereField("subjects", arrayContains: self.subject.name)
-            .limit(to: 2)
+            .limit(to: 10)
         
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in
@@ -153,9 +170,6 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
                         }
                     }
                     group.notify(queue: .main) {
-                        self.fb.posts.sort { p1, p2 in
-                            p1.date.timeIntervalSince1970 > p1.date.timeIntervalSince1970
-                        }
                         completion(query.documents.last)
                     }
                 }

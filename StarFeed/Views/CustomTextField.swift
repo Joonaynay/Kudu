@@ -36,7 +36,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if let vc = vc as? NewPostViewController {
-            if vc.imageView.image != nil && vc.movieURL != nil && self.text != "" && self.text!.count <= 100 {
+            if vc.imageView.image != nil && self.text != "" && self.text!.count <= 100 {
                 vc.nextButton.isEnabled = true
             } else {
                 vc.nextButton.isEnabled = false

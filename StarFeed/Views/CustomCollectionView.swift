@@ -87,7 +87,9 @@ class BottomRefresh: UIView {
         self.isLoading = false
         self.progressView.stopAnimating()
         if let collectionView = superview?.subviews.first(where: { view in view is CustomCollectionView }) as? CustomCollectionView {
-            collectionView.contentOffset.y += 50
+            if collectionView.contentOffset.y != 0 {
+                collectionView.contentOffset.y += 50
+            }
         }
     }
 }

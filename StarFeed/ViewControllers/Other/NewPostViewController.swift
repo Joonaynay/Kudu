@@ -42,7 +42,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         return label
     }
     
-    var movieURL: URL!
+    var movieURL: URL?
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -84,6 +84,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
     private func setupView() {
         // View
         view.backgroundColor = .systemBackground
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         // Back Button
         view.addSubview(backButton)
@@ -152,12 +153,14 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // Stack View
         scrollView.addSubview(stackView)
+        scrollView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         let titleHeader = header
-        titleHeader.text = "Title"
+        titleHeader.text = "TITLE"
+                        
+        let optionalHeader = header
+        optionalHeader.text = "OPTIONAL"
         
-        let descHeader = header
-        descHeader.text = "Description"
-        stackView.stack([titleHeader, titleText, descHeader, desc, imageButton, imageView, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
+        stackView.stack([titleHeader, titleText, imageButton, imageView, optionalHeader, desc, videoButton, videoView, nextButton], axis: .vertical, width: nil, height: nil, spacing: 10)
         
     }
     
@@ -191,14 +194,10 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         dismiss(animated: true)
-        if imageView.image != nil && videoView.layer.sublayers?.first != nil && titleText.text != "" {
-            nextButton.isEnabled = true
-        } else {
-            nextButton.isEnabled = false
-        }
         
         if let image = info[.editedImage] as? UIImage {
             self.imageView.image = image
+
         } else if let url = info[.mediaURL] as? URL {
             self.movieURL = url
             let videoPlayer = AVPlayerLayer(player: AVPlayer(url: url))
@@ -212,6 +211,11 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
             videoPlayer.addSublayer(play.layer)
             videoView.layer.addSublayer(videoPlayer)
             
+        }
+        if self.imageView.image != nil && titleText.text != "" {
+            nextButton.isEnabled = true
+        } else {
+            nextButton.isEnabled = false
         }
     }
     
@@ -238,6 +242,10 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
             desc.text = ""
         }
         desc.textColor = .label
+    }
+    
+    @objc func dismissKeyboard() {
+        self.desc.endEditing(true)
     }
     
     
