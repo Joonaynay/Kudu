@@ -39,6 +39,16 @@ class TitleBar: UIView {
         return button
     }()
     
+    private let arrowDownImage: UIImageView = {
+       let arrow = UIImageView()
+        arrow.image = UIImage(systemName: "chevron.down.circle.fill")
+        arrow.tintColor = UIColor.theme.accentColor
+        arrow.contentMode = .scaleToFill
+        arrow.backgroundColor = .systemBackground
+        arrow.layer.cornerRadius = 15
+        return arrow
+    }()
+    
     init(title: String, backButton: Bool) {
         if backButton {
             let backButton = UIButton()
@@ -63,6 +73,8 @@ class TitleBar: UIView {
             menuButton.imageView!.layer.cornerRadius = 25
             menuButton.imageView!.clipsToBounds = true
         }
+        
+        menuButton.addSubview(arrowDownImage)
         
         if backButton {
             self.backButton?.addAction(UIAction(title: "") { _ in
@@ -142,6 +154,12 @@ class TitleBar: UIView {
         menuButton.height(50)
         menuButton.width(50)
         menuButton.bottomToSuperview(offset: -10)
+        
+        arrowDownImage.height(20)
+        arrowDownImage.width(20)
+        arrowDownImage.bottomToSuperview(offset: 6)
+        arrowDownImage.trailingToSuperview()
+
         
         line.height(1)
         line.bottomToSuperview()

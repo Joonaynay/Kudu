@@ -11,11 +11,11 @@ struct FileManagerModel {
     
     static let shared = FileManagerModel()
     
-    func saveImage(image: UIImage, name: String) {
+    func saveImage(image: UIImage, id: String) {
         
         let imageData = image.jpegData(compressionQuality: 1.0)
         
-        guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(name).jpeg") else { return }
+        guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(id).jpeg") else { return }
         do {
             try imageData?.write(to: path)
             
@@ -26,9 +26,9 @@ struct FileManagerModel {
         
     }
     
-    func getPath(name: String) -> URL? {
+    func getPath(id: String) -> URL? {
         
-        guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(name).jpeg") else { return nil }
+        guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(id).jpeg") else { return nil }
         
         return path
 
@@ -36,9 +36,9 @@ struct FileManagerModel {
     }
     
     
-    func getFromFileManager(name: String) -> UIImage? {
+    func getFromFileManager(id: String) -> UIImage? {
         
-        guard let path = getPath(name: name)?.path else { return nil }
+        guard let path = getPath(id: id)?.path else { return nil }
         
         return UIImage(contentsOfFile: path)
     }
@@ -55,14 +55,4 @@ struct FileManagerModel {
             }
         } catch  { print(error) }
     }
-    
-//    func getMovie(url: URL) -> Data {
-//        do {
-//            let movie = try Data(contentsOf: url)
-//            return movie
-//        } catch let error {
-//            fatalError(error.localizedDescription)
-//        }
-//    }
-    
 }

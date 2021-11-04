@@ -72,6 +72,7 @@ class PostView: UICollectionViewCell {
     private lazy var infoButtonAction: UIAction = {
         let action = UIAction() { _ in
             let details = VideoDetailsViewController(post: self.fb.posts[self.post!])
+            details.vc = self.vc
             details.modalPresentationStyle = .pageSheet
             self.vc?.present(details, animated: true)
         }

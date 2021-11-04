@@ -96,7 +96,7 @@ class ProfilePictureViewController: UIViewController, UIImagePickerControllerDel
             if let image = self.image {
                 self.fb.currentUser.profileImage = image
                 self.storage.saveImage(path: "Profile Images", file: self.fb.currentUser.id, image: image)
-                self.file.saveImage(image: image, name: self.fb.currentUser.id)
+                self.file.saveImage(image: image, id: self.fb.currentUser.id)
                 self.fb.currentUser.profileImage = image
                 if let index = self.fb.users.firstIndex(where: { users in
                     users.id == self.fb.currentUser.id

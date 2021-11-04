@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         print("Loaded User From Core Data")
                         
                         var profileImage: UIImage?
-                        if let image = file.getFromFileManager(name: uid) {
+                        if let image = file.getFromFileManager(id: uid) {
                             profileImage = image
                         } else {
                             profileImage = nil

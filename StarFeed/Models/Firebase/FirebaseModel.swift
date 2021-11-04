@@ -14,8 +14,8 @@ class FirebaseModel: ObservableObject {
     
     static let shared = FirebaseModel()
     
-    private let file = FileManagerModel.shared
-    private let storage = StorageModel.shared
+    public let file = FileManagerModel.shared
+    public let storage = StorageModel.shared
     private let cd = Persistence()
     public let db = FirestoreModel.shared
     
@@ -354,7 +354,7 @@ class FirebaseModel: ObservableObject {
             self.db.save(collection: "users", document: self.currentUser.id, field: "posts", data: [postId!])
             
             //Save to filemanager
-            self.file.saveImage(image: image, name: postId!)
+            self.file.saveImage(image: image, id: postId!)
             
             //Save Image to Firebase Storage
             self.storage.saveImage(path: "images", file: postId!, image: image)
@@ -391,6 +391,10 @@ class FirebaseModel: ObservableObject {
         do {
             try self.algoliaIndex.deleteObject(withID: ObjectID(stringLiteral: id))
         } catch let error { fatalError(error.localizedDescription) }
+        
+        self.posts.removeAll { post in
+            post.id == id
+        }
         
     }
     

@@ -50,14 +50,18 @@ class StorageModel: ObservableObject {
             //Convert UIImage to Data
             let imageData = image.jpegData(compressionQuality: 1)
             //Save data to FirebaseStorage
-            storage.child(path).child(file).putData(imageData!)
+            storage.child(path).child(file).putData(imageData!, metadata: nil) { _, error in
+                if let error = error {
+                    fatalError(error.localizedDescription)
+                }
+            }
         }
     }
     
     func loadImage(path: String, id: String, completion:@escaping (UIImage?) -> Void) {
         
         //Check if image is already saved in filemanager
-        if let image = file.getFromFileManager(name: id) {
+        if let image = file.getFromFileManager(id: id) {
             completion(image)
         } else {
             

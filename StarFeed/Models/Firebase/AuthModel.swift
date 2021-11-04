@@ -82,7 +82,7 @@ class AuthModel: ObservableObject {
                         
                         //Save ProfileImage to FileManager
                         if let profileImage = user.profileImage {
-                            self.file.saveImage(image: profileImage, name: user.id)
+                            self.file.saveImage(image: profileImage, id: user.id)
                         }
                         
                         completion(nil)
