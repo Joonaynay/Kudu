@@ -119,7 +119,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .whereField("subjects", arrayContains: self.subject.name)
-            .limit(to: 2)
+            .limit(to: 10)
         
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in

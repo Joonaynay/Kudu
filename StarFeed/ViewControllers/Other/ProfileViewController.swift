@@ -178,7 +178,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .whereField("uid", isEqualTo: self.user.id)
-            .limit(to: 2)
+            .limit(to: 10)
         
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in

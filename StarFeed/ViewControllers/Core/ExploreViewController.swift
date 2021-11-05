@@ -112,7 +112,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     func loadExplore(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
-            .limit(to: 2)
+            .limit(to: 10)
         
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in

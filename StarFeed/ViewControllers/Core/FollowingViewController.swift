@@ -112,7 +112,7 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         let db = Firestore.firestore().collection("posts")
             .order(by: "date", descending: true)
             .whereField("uid", in: self.fb.currentUser.following)
-            .limit(to: 2)
+            .limit(to: 10)
         
         if let lastDoc = lastDoc {
             db.start(afterDocument: lastDoc).getDocuments { query, error in
