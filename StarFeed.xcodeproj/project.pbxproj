@@ -10,6 +10,7 @@
 		5246D9E6271BBF1F0024500C /* ProfilePictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246D9E5271BBF1F0024500C /* ProfilePictureViewController.swift */; };
 		5246D9E8271D1CFD0024500C /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246D9E7271D1CFD0024500C /* EditProfileViewController.swift */; };
 		5246D9EA271E55970024500C /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246D9E9271E55970024500C /* ProgressView.swift */; };
+		5280827D2734B9C200E10B89 /* ContactUsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5280827C2734B9C200E10B89 /* ContactUsViewController.swift */; };
 		52912BCF272A34A100E7AE03 /* VideoDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52912BCE272A34A100E7AE03 /* VideoDetailsViewController.swift */; };
 		52DCF16327192DF200AD187C /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF16227192DF200AD187C /* Grid.swift */; };
 		52DCF1652719486100AD187C /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DCF1642719486100AD187C /* PostView.swift */; };
@@ -83,6 +84,7 @@
 		5246D9E5271BBF1F0024500C /* ProfilePictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureViewController.swift; sourceTree = "<group>"; };
 		5246D9E7271D1CFD0024500C /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		5246D9E9271E55970024500C /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		5280827C2734B9C200E10B89 /* ContactUsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsViewController.swift; sourceTree = "<group>"; };
 		52912BCE272A34A100E7AE03 /* VideoDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailsViewController.swift; sourceTree = "<group>"; };
 		52DCF16227192DF200AD187C /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		52DCF1642719486100AD187C /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 			isa = PBXGroup;
 			children = (
 				E099735A27165DFE00073785 /* ProfileViewController.swift */,
+				5280827C2734B9C200E10B89 /* ContactUsViewController.swift */,
 				5246D9E7271D1CFD0024500C /* EditProfileViewController.swift */,
 				E09973A82716A30400073785 /* NewPostViewController.swift */,
 				E0F111912719164B0062E190 /* NewPostSubjectsViewController.swift */,
@@ -637,6 +640,7 @@
 				E08250E627152D6800C6D58C /* TitleBar.swift in Sources */,
 				E0FDBFEF271D3F0000EC1D1B /* Persistence.swift in Sources */,
 				52E5BA192724F135007B05C4 /* Comment.swift in Sources */,
+				5280827D2734B9C200E10B89 /* ContactUsViewController.swift in Sources */,
 				52DCF16327192DF200AD187C /* Grid.swift in Sources */,
 				E0B6F48C271BDDA700DEDDC3 /* ProfileButton.swift in Sources */,
 				E0F111902718BCAC0062E190 /* VideoPlayer.swift in Sources */,

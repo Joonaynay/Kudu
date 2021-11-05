@@ -7,8 +7,10 @@
 
 import UIKit
 import FirebaseAuth
+import MessageUI
+import SafariServices
 
-class EditProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class EditProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     private let auth = AuthModel.shared
     let tableView = UITableView(frame: .zero, style: .grouped)
@@ -68,7 +70,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 6
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -81,8 +83,10 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         case 2:
             cell.setupCell(title: "Change Password", image: true)
         case 3:
-            cell.setupCell(title: "Delete Account", image: false)
+            cell.setupCell(title: "Contact Us", image: true)
         case 4:
+            cell.setupCell(title: "Delete Account", image: false)
+        case 5:
             cell.setupCell(title: "Sign Out", image: false)
         default:
             cell.setupCell(title: "Title", image: false)
@@ -127,6 +131,25 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
             vc?.navigationController?.pushViewController(ChangePasswordViewController(), animated: true)
             
         case 3:
+            // Contact us
+            if MFMailComposeViewController.canSendMail() {
+                let mailComposeVC = MFMailComposeViewController()
+                mailComposeVC.mailComposeDelegate = self
+                mailComposeVC.setSubject("Contact Us / Feedback")
+                mailComposeVC.setToRecipients(["tbuhler347@gmail.com"])
+                mailComposeVC.setMessageBody("Hello, \nWe would love to hear your feedback. Feel free to contact us. Thanks!\n\nYThe starFeed team", isHTML: false)
+                self.present(mailComposeVC, animated: true)
+            } else {
+                guard let url = URL(string: "https://www.google.com") else { return }
+                let safariVC = SFSafariViewController(url: url)
+                self.present(safariVC, animated: true)
+            }
+            
+            func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+                controller.dismiss(animated: true)
+            }
+            
+        case 4:
             // Delete Account
             let alert = UIAlertController(title: "Delete Account", message: "Please type in your password to delete your account.", preferredStyle: .alert)
             alert.addTextField { textField in
@@ -156,7 +179,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
             }))
             self.present(alert, animated: true)
             
-        case 4:
+        case 5:
             //Sign Out
             let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
