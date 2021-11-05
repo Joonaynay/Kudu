@@ -144,6 +144,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
     }
     
     func setupView() {
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        scrollView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         view.addSubview(scrollView)
         view.addSubview(xButton)
         scrollView.addSubview(rectLine)
@@ -260,32 +262,40 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                                 let vc = self.vc as! ProfileViewController
                                 vc.posts = [Post]()
                                 vc.loadProfile(lastDoc: nil) { last in
-                                    vc.lastDoc = last
+                                    if let last = last {
+                                        vc.lastDoc = last
+                                    }
                                 }
                             case is FollowingViewController:
                                 let vc = self.vc as! FollowingViewController
                                 vc.posts = [Post]()
                                 vc.loadFollowing(lastDoc: nil) { last in
-                                    vc.lastDoc = last
+                                    if let last = last {
+                                        vc.lastDoc = last
+                                    }
+                                    
                                 }
                             case is SearchViewController:
                                 let vc = self.vc as! SearchViewController
                                 vc.posts = [Post]()
-                                vc.search(string: vc.searchBar.text!, withPagination: false)
-                                vc.pageNumber += 1
+                                vc.search(string: vc.searchBar.text!, withPagination: false)                                
                                 
                             case is ExploreViewController:
                                 let vc = self.vc as! ExploreViewController
                                 vc.posts = [Post]()
                                 vc.loadExplore(lastDoc: nil) { last in
-                                    vc.lastDoc = last
+                                    if let last = last {
+                                        vc.lastDoc = last
+                                    }
                                 }
                                 
                             case is SubjectPostViewController:
                                 let vc = self.vc as! SubjectPostViewController
                                 vc.posts = [Post]()
                                 vc.loadSubjectPosts(lastDoc: nil) { last in
-                                    vc.lastDoc = last
+                                    if let last = last {
+                                        vc.lastDoc = last
+                                    }
                                 }
                                 
                             default:
@@ -428,6 +438,11 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                 collectionView.reloadData()
             }
         }
+    }
+    
+    @objc func dismissKeyboard() {
+        self.descTextView.endEditing(true)
+        self.titleTextView.endEditing(true)
     }
     
 }

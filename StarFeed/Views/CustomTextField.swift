@@ -23,6 +23,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         backgroundColor = .secondarySystemBackground
         returnKeyType = .done
         delegate = self
+        self.addTarget(self, action: #selector(textChanged), for: .editingChanged)
         if let image = image {
             self.image = UIImageView(image: UIImage(systemName: image))
             addSubview(self.image!)
@@ -34,20 +35,18 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         }
     }
     
-    func textFieldDidChangeSelection(_ textField: UITextField) {
+    @objc func textChanged() {
         if let vc = vc as? NewPostViewController {
-            if vc.imageView.image != nil && vc.movieURL != nil && self.text != "" && self.text!.count <= 100 {
+            if vc.imageView.image != nil && self.text != "" && self.text!.count <= 100 {
                 vc.nextButton.isEnabled = true
             } else {
                 vc.nextButton.isEnabled = false
-            }
-            if self.text!.count > 100 {
-                vc.nextButton.isEnabled = false
-                let alert = UIAlertController(title: "Title must be 100 characters long or less.", message: nil, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                vc.present(alert, animated: true)
-            } else {
-                vc.nextButton.isEnabled = true
+                if self.text!.count > 100 {
+                    vc.nextButton.isEnabled = false
+                    let alert = UIAlertController(title: "Title must be 100 characters long or less.", message: nil, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                    vc.present(alert, animated: true)
+                }
             }
         } else if let vc = vc as? CreateAccountViewController {
             if !vc.firstName.text!.isEmpty && !vc.lastName.text!.isEmpty && !vc.email.text!.isEmpty && !vc.username.text!.isEmpty && !vc.password.text!.isEmpty && !vc.confirmPassword.text!.isEmpty {

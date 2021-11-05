@@ -9,9 +9,9 @@ import UIKit
 import FirebaseFirestore
 
 class FollowingViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-
+    
     private let fb = FirebaseModel.shared
-
+    
     private let titleBar = TitleBar(title: "Following", backButton: false)
     private let collectionView = CustomCollectionView()
     
@@ -31,11 +31,13 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         super.viewDidLoad()
         setupView()
         setupConstraints()
+        self.collectionView.bottomRefresh.start()
         loadFollowing(lastDoc: self.lastDoc) { last in
             if let last = last {
                 self.lastDoc = last
             }
             self.collectionView.reloadData()
+            self.collectionView.bottomRefresh.stop()
         }
     }
     
@@ -54,13 +56,29 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         view.backgroundColor = .systemBackground
         
         //CollectionView
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            self.posts = [Post]()
+            if !self.collectionView.bottomRefresh.isLoading {
+                self.loadFollowing(lastDoc: nil) { last in
+                    if let last = last {
+                        self.lastDoc = last
+                    }
+                    self.collectionView.reloadData()
+                    self.collectionView.refreshControl?.endRefreshing()
+                }
+            } else {
+                self.collectionView.refreshControl?.endRefreshing()
+            }
+            
+        }, for: .valueChanged)
         collectionView.delegate = self
         collectionView.dataSource = self
         view.addSubview(collectionView)
         view.addSubview(collectionView.bottomRefresh)
         view.addSubview(noPostsLabel)
     }
- 
+    
     private func setupConstraints() {
         collectionView.horizontalToSuperview()
         collectionView.bottomToTop(of: collectionView.bottomRefresh)
@@ -79,7 +97,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
         cell.vc = self
-        cell.setupView(post: posts[indexPath.row])
+        if posts.count >= indexPath.row + 1 {
+            cell.setupView(post: posts[indexPath.row])
+        }
         noPostsLabel.text = ""
         return cell
     }
@@ -89,16 +109,16 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
-        if maximumOffset - currentOffset <= 10.0 {
-                
+        if maximumOffset - currentOffset <= 10.0 && !self.collectionView.refreshControl!.isRefreshing {
+            
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
                 self.loadFollowing(lastDoc: self.lastDoc) { last in
                     if let last = last {
                         self.lastDoc = last
                     }
-                    self.collectionView.bottomRefresh.stop()
                     self.collectionView.reloadData()
+                    self.collectionView.bottomRefresh.stop()
                 }
             }
         }
@@ -146,9 +166,6 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                         }
                     }
                     group.notify(queue: .main) {
-                        self.fb.posts.sort { p1, p2 in
-                            p1.date.timeIntervalSince1970 > p1.date.timeIntervalSince1970
-                        }
                         completion(query.documents.last)
                     }
                 }

@@ -58,6 +58,21 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         view.addSubview(noPostsLabel)
         
         //CollectionView
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addAction(UIAction() { _ in
+            if !self.collectionView.bottomRefresh.isLoading {
+                self.posts = [Post]()
+                self.loadExplore(lastDoc: nil) { last in
+                    if let last = last {
+                        self.lastDoc = last
+                    }
+                    self.collectionView.reloadData()
+                    self.collectionView.refreshControl?.endRefreshing()
+                }
+            } else {
+                self.collectionView.refreshControl?.endRefreshing()
+            }
+        }, for: .valueChanged)
         collectionView.dataSource = self
         collectionView.delegate = self
         view.addSubview(collectionView)
@@ -82,7 +97,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "post", for: indexPath) as! PostView
-        cell.setupView(post: posts[indexPath.item])
+        if posts.count >= indexPath.row + 1 {
+            cell.setupView(post: posts[indexPath.row])
+        }
         cell.vc = self
         self.noPostsLabel.text = ""
         return cell
@@ -94,7 +111,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
-        if maximumOffset - currentOffset <= 10.0 {
+        if maximumOffset - currentOffset <= 10.0 && !self.collectionView.refreshControl!.isRefreshing {
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
@@ -147,10 +164,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                             group.leave()
                         }
                     }
-                    group.notify(queue: .main) { [self] in
-                        self.fb.posts.sort { p1, p2 in
-                            p1.date.timeIntervalSince1970 > p1.date.timeIntervalSince1970
-                        }
+                    group.notify(queue: .main) {
                         completion(query.documents.last)
                     }
                 } else {
