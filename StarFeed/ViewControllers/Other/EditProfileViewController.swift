@@ -137,16 +137,12 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
                 mailComposeVC.mailComposeDelegate = self
                 mailComposeVC.setSubject("Contact Us / Feedback")
                 mailComposeVC.setToRecipients(["tbuhler347@gmail.com"])
-                mailComposeVC.setMessageBody("Hello, \nWe would love to hear your feedback. Feel free to contact us. Thanks!\n\nYThe starFeed team", isHTML: false)
-                self.present(mailComposeVC, animated: true)
+                mailComposeVC.setMessageBody("Hello, \nWe would love to hear your feedback. Feel free to contact us. Thanks!\n\nThe Starfeed team", isHTML: false)                
+                present(mailComposeVC, animated: true)
             } else {
                 guard let url = URL(string: "https://www.google.com") else { return }
                 let safariVC = SFSafariViewController(url: url)
-                self.present(safariVC, animated: true)
-            }
-            
-            func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-                controller.dismiss(animated: true)
+                present(safariVC, animated: true)
             }
             
         case 4:
@@ -196,6 +192,22 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
             
         default:
             return
+        }
+    }
+     
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+        switch result {
+        case .sent:
+            print("Sent")
+        case .cancelled:
+            print("Cancelled")
+        case .failed:
+            print("Failed")
+        case .saved:
+            print("Saved")
+        @unknown default:
+            print("Unknown")
         }
     }
 }

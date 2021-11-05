@@ -32,7 +32,7 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         setupView()
         setupConstraints()
         self.collectionView.bottomRefresh.start()
-        self.loadExplore(lastDoc: self.lastDoc) { last in
+        self.loadExplore(lastDoc: nil) { last in
             if let last = last {
                 self.lastDoc = last
             }
