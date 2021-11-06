@@ -320,8 +320,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         let descHeader = header
         descHeader.text = "DESCRIPTION"
         
-        self.xButton.addAction(UIAction() { _ in
-            self.dismiss(animated: true)
+        self.xButton.addAction(UIAction() { [weak self] _ in
+            self?.dismiss(animated: true)
         }, for: .touchUpInside)
         
         stackView.addArrangedSubview(titleLabel)

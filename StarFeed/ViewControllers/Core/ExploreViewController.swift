@@ -127,49 +127,38 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func loadExplore(lastDoc: QueryDocumentSnapshot?, completion: @escaping (QueryDocumentSnapshot?) -> Void) {
-        let db = Firestore.firestore().collection("posts")
-            .order(by: "date", descending: true)
-            .limit(to: 10)
-        
+        let db: Query
         if let lastDoc = lastDoc {
-            db.start(afterDocument: lastDoc).getDocuments { query, error in
-                if let query = query, error == nil {
-                    let group = DispatchGroup()
-                    for doc in query.documents {
-                        group.enter()
-                        self.fb.loadPost(postId: doc.documentID) {
-                            if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
-                                self.posts.append(post)
-                            }
-                            group.leave()
-                        }
-                    }
-                    group.notify(queue: .main) {
-                        completion(query.documents.last)
-                    }
-                } else {
-                    completion(nil)
-                }
-            }
+            db = Firestore.firestore().collection("posts")
+                .order(by: "date", descending: true)
+                .limit(to: 10)
+                .start(afterDocument: lastDoc)
         } else {
-            db.getDocuments { query, error in
-                if let query = query, error == nil {
-                    let group = DispatchGroup()
-                    for doc in query.documents {
-                        group.enter()
-                        self.fb.loadPost(postId: doc.documentID) {
-                            if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
-                                self.posts.append(post)
-                            }
-                            group.leave()
+            db = Firestore.firestore().collection("posts")
+                .order(by: "date", descending: true)
+                .limit(to: 10)
+        }
+        
+        db.getDocuments { query, error in
+            if let query = query, error == nil {
+                let group = DispatchGroup()
+                for doc in query.documents {
+                    group.enter()
+                    self.fb.loadPost(postId: doc.documentID) {
+                        if let post = self.fb.posts.first(where: { posts in posts.id == doc.documentID }) {
+                            self.posts.append(post)
                         }
+                        group.leave()
                     }
-                    group.notify(queue: .main) {
-                        completion(query.documents.last)
-                    }
-                } else {
-                    completion(nil)
                 }
+                group.notify(queue: .main) {
+                    self.posts.sort { p1, p2 in
+                        p1.date.timeIntervalSince1970 > p2.date.timeIntervalSince1970
+                    }
+                    completion(query.documents.last)
+                }
+            } else {
+                completion(nil)
             }
         }
     }

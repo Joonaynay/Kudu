@@ -7,10 +7,8 @@
 
 import UIKit
 import FirebaseAuth
-import MessageUI
-import SafariServices
 
-class EditProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
+class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private let auth = AuthModel.shared
     let tableView = UITableView(frame: .zero, style: .grouped)
@@ -47,7 +45,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     private func setupView() {
-        tableView.register(TableCell.self, forCellReuseIdentifier: "tableCell")
+        tableView.register(CustomTableCell.self, forCellReuseIdentifier: "tableCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.isScrollEnabled = false
@@ -74,7 +72,7 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! TableCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! CustomTableCell
         switch indexPath.row {
         case 0:
             cell.setupCell(title: "Change Username", image: true)
@@ -131,19 +129,11 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
             vc?.navigationController?.pushViewController(ChangePasswordViewController(), animated: true)
             
         case 3:
-            // Contact us
-            if MFMailComposeViewController.canSendMail() {
-                let mailComposeVC = MFMailComposeViewController()
-                mailComposeVC.mailComposeDelegate = self
-                mailComposeVC.setSubject("Contact Us / Feedback")
-                mailComposeVC.setToRecipients(["tbuhler347@gmail.com"])
-                mailComposeVC.setMessageBody("Hello, \nWe would love to hear your feedback. Feel free to contact us. Thanks!\n\nThe Starfeed team", isHTML: false)                
-                present(mailComposeVC, animated: true)
-            } else {
-                guard let url = URL(string: "https://www.google.com") else { return }
-                let safariVC = SFSafariViewController(url: url)
-                present(safariVC, animated: true)
-            }
+            let contactAlert = UIAlertController(title: "Contact Us", message: "We would love to hear your feedback or answer any questions! Email us at test@gmail.com", preferredStyle: .alert)
+            contactAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+            self.present(contactAlert, animated: true)
+                
+            
             
         case 4:
             // Delete Account
@@ -194,25 +184,9 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
             return
         }
     }
-     
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true)
-        switch result {
-        case .sent:
-            print("Sent")
-        case .cancelled:
-            print("Cancelled")
-        case .failed:
-            print("Failed")
-        case .saved:
-            print("Saved")
-        @unknown default:
-            print("Unknown")
-        }
-    }
 }
 
-class TableCell: UITableViewCell {
+class CustomTableCell: UITableViewCell {
     let imageUIView: UIImageView = {
         
         let image = UIImageView()
