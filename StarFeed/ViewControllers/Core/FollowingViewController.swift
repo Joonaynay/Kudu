@@ -21,7 +21,6 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
     
     private let noPostsLabel: UILabel = {
         let label = UILabel()
-        label.text = "No posts available."
         label.textAlignment = .center
         label.font = UIFont.preferredFont(forTextStyle: .title3)
         return label
@@ -32,9 +31,13 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         setupView()
         setupConstraints()
         self.collectionView.bottomRefresh.start()
-        loadFollowing(lastDoc: self.lastDoc) { last in
+        loadFollowing(lastDoc: self.lastDoc) { [weak self] last in
+            guard let self = self else { return }
             if let last = last {
                 self.lastDoc = last
+            }
+            if self.posts.isEmpty {
+                self.noPostsLabel.text = "No posts available."
             }
             self.collectionView.reloadData()
             self.collectionView.bottomRefresh.stop()

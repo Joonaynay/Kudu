@@ -137,7 +137,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         
         let query = Query(string).set(\.page, to: self.pageNumber)
         
-        fb.algoliaIndex.search(query: query, requestOptions: .none) { result in
+        fb.algoliaIndex.search(query: query, requestOptions: .none) { [weak self] result in
+            guard let self = self else { return }
             if case .success(let response) = result {
                 let group = DispatchGroup()
                 if !withPagination {
@@ -156,7 +157,10 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
                     self.progress.stop()
                     if self.collectionView.bottomRefresh.isLoading {
                         self.collectionView.bottomRefresh.stop()
-                    }                    
+                    }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "No search results."
+                    }
                     self.collectionView.reloadData()
                 }
             } else {

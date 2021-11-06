@@ -93,8 +93,8 @@ class AuthModel: ObservableObject {
                     
                 }
             } else if let error = error {
-                if error.localizedDescription == "The password is invalid or the user does not have a password." {
-                    completion("Incorrect password.")
+                if error.localizedDescription == "The password is invalid or the user does not have a password." || error.localizedDescription == "There is no user record corresponding to this identifier. The user may have been deleted." {
+                    completion("Invalid credentials.")
                 } else {
                     completion(error.localizedDescription)
                 }

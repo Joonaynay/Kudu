@@ -23,7 +23,6 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
     
     private let noPostsLabel: UILabel = {
         let label = UILabel()
-        label.text = "No posts available."
         label.textAlignment = .center
         label.font = UIFont.preferredFont(forTextStyle: .title3)
         return label
@@ -48,6 +47,9 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
                 self.lastDoc = last
             }
             self.collectionView.reloadData()
+            if self.posts.isEmpty {
+                self.noPostsLabel.text = "No posts available."
+            }
         }
     }
     

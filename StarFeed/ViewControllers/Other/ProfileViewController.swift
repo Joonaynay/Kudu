@@ -76,7 +76,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             self.loadProfile(lastDoc: self.lastDoc) { last in
                 if let last = last {
                     self.lastDoc = last
-                }
+                }                
                 self.collectionView.reloadData()
             }
         }
