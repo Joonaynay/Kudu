@@ -47,6 +47,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
             if let last = last {
                 self.lastDoc = last
             }
+            self.collectionView.reloadData()
         }
     }
     

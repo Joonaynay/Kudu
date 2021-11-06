@@ -50,7 +50,7 @@ class LoginViewController: UIViewController {
         
         // Image
         scrollView.addSubview(imageView)
-        let image = UIImage(systemName: "book")
+        let image = UIImage(named: "logo.png")
         imageView.image = image
         
         //Email
@@ -114,12 +114,12 @@ class LoginViewController: UIViewController {
     private func setupConstraints() {
         scrollView.edgesToSuperview(usingSafeArea: true)
         
-        imageView.width(100)
-        imageView.height(100)
-        imageView.topToSuperview(offset: 100)
+        imageView.width(300)
+        imageView.height(300)
+        imageView.topToSuperview(offset: 50)
         imageView.centerXToSuperview()
         
-        stackView.centerYToSuperview(offset: 100)
+        stackView.topToBottom(of: imageView)
         stackView.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         stackView.width(view.width - 30)
         
