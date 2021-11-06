@@ -76,6 +76,9 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
                     if let last = last {
                         self.lastDoc = last
                     }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "No posts available."
+                    }
                     self.collectionView.reloadData()
                     self.collectionView.refreshControl?.endRefreshing()
                 }
@@ -128,6 +131,7 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
                     if let last = last {
                         self.lastDoc = last
                     }
+                    self.noPostsLabel.text = "No posts available."
                     self.collectionView.bottomRefresh.stop()
                     self.collectionView.reloadData()
                 }

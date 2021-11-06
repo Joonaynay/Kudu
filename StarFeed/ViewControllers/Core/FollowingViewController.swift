@@ -69,6 +69,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                     }
                     self.collectionView.reloadData()
                     self.collectionView.refreshControl?.endRefreshing()
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "No posts available."
+                    }
                 }
             } else {
                 self.collectionView.refreshControl?.endRefreshing()
@@ -119,6 +122,9 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                 self.loadFollowing(lastDoc: self.lastDoc) { last in
                     if let last = last {
                         self.lastDoc = last
+                    }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "No posts available."
                     }
                     self.collectionView.reloadData()
                     self.collectionView.bottomRefresh.stop()

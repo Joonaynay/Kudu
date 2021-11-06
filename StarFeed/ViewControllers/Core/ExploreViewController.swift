@@ -69,6 +69,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                     if let last = last {
                         self.lastDoc = last
                     }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "No posts available."
+                    }
                     self.collectionView.reloadData()
                     self.collectionView.refreshControl?.endRefreshing()
                 }
@@ -121,6 +124,9 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.loadExplore(lastDoc: self.lastDoc) { last in
                     if let last = last {
                         self.lastDoc = last
+                    }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "No posts available."
                     }
                     self.collectionView.bottomRefresh.stop()
                     self.collectionView.reloadData()

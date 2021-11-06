@@ -28,6 +28,13 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         return button
     }()
     
+    private let noPostsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        return label
+    }()
+    
     private var user: User
     
     init(user: User) {
@@ -78,6 +85,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                     self.lastDoc = last
                 }                
                 self.collectionView.reloadData()
+                if self.posts.isEmpty {
+                    self.noPostsLabel.text = "This user has no posts."
+                }
             }
         }
     }
@@ -102,6 +112,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         view.addSubview(infoButton)
         
+        view.addSubview(noPostsLabel)
+        
         
         //CollectionView
         collectionView.refreshControl = UIRefreshControl()
@@ -111,6 +123,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.loadProfile(lastDoc: nil) { last in
                     if let last = last {
                         self.lastDoc = last
+                    }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "This user has no posts."
                     }
                     self.collectionView.reloadData()
                     self.collectionView.refreshControl?.endRefreshing()
@@ -134,6 +149,11 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         infoButton.trailingToSuperview(offset: 12)
         infoButton.height(23)
         infoButton.width(23)
+        
+        noPostsLabel.centerXToSuperview()
+        noPostsLabel.centerYToSuperview()
+        noPostsLabel.height(50)
+        noPostsLabel.horizontalToSuperview()
         
         
         collectionView.horizontalToSuperview()
@@ -178,6 +198,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.loadProfile(lastDoc: self.lastDoc) { last in
                     if let last = last {
                         self.lastDoc = last
+                    }
+                    if self.posts.isEmpty {
+                        self.noPostsLabel.text = "This user has no posts."
                     }
                     self.collectionView.bottomRefresh.stop()
                     self.collectionView.reloadData()
