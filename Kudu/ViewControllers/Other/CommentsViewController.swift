@@ -1,6 +1,6 @@
 //
 //  CommentsViewController.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Wendy Buhler on 10/23/21.
 //

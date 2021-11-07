@@ -1,6 +1,6 @@
 //
 //  PostView.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Wendy Buhler on 10/14/21.
 //

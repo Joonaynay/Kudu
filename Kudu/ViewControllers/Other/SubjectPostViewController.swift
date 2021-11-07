@@ -1,6 +1,6 @@
 //
 //  SubjectPostViewController.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Forrest Buhler on 10/15/21.
 //

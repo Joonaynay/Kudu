@@ -1,6 +1,6 @@
 //
 //  ProfilePictureViewController.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Wendy Buhler on 10/16/21.
 //

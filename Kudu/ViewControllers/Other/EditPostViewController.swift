@@ -1,6 +1,6 @@
 //
 //  EditPostViewController.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Forrest Buhler on 11/1/21.
 //

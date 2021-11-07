@@ -1,6 +1,6 @@
 //
 //  ProfileImage.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Forrest Buhler on 10/18/21.
 //

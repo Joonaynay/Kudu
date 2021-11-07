@@ -1,6 +1,6 @@
 //
 //  VideoDetailsViewController.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Wendy Buhler on 10/27/21.
 //

@@ -1,6 +1,6 @@
 //
 //  SearchViewController.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Forrest Buhler on 10/11/21.
 //

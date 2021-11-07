@@ -1,6 +1,6 @@
 //
 //  Colors.swift
-//  StarFeed
+//  Kudu
 //
 //  Created by Forrest Buhler on 10/12/21.
 //
