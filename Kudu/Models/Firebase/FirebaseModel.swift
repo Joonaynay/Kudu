@@ -78,7 +78,8 @@ class FirebaseModel: ObservableObject {
     }
     
     func loadComments(currentPost: Post, completion:@escaping ([Comment]?) -> Void) {
-        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { userDocs in
+        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { [weak self] userDocs in
+            guard let self = self else { return }
             
             if let userDocs = userDocs {
                 var list: [Comment] = []
@@ -220,7 +221,8 @@ class FirebaseModel: ObservableObject {
         } else {
             
             //Load Post Firestore Document
-            self.db.getDoc(collection: "posts", id: postId) { document in
+            self.db.getDoc(collection: "posts", id: postId) { [weak self] document in
+                guard let self = self else { return }
                 
                 
                 if let doc = document {
@@ -287,7 +289,9 @@ class FirebaseModel: ObservableObject {
         } else {
             
             //Load Firestore doc
-            db.getDoc(collection: "users", id: uid) { doc in
+            db.getDoc(collection: "users", id: uid) { [weak self] doc in
+                guard let self = self else { return }
+
                 guard let doc = doc else {
                     completion(nil)
                     return
@@ -348,7 +352,8 @@ class FirebaseModel: ObservableObject {
         let date = Date().timeIntervalSince1970
         //Save Post to Firestore
         let dict = ["title": title, "subjects": subjects, "uid": self.currentUser.id, "date": date, "description": desc, "likeCount": 0] as [String : Any]
-        self.db.newDoc(collection: "posts", document: nil, data: dict) { postId in
+        self.db.newDoc(collection: "posts", document: nil, data: dict) { [weak self] postId in
+            guard let self = self else { return }
             
             //Save postId to User
             self.db.save(collection: "users", document: self.currentUser.id, field: "posts", data: [postId!])
@@ -433,8 +438,8 @@ class FirebaseModel: ObservableObject {
                 guard let username = doc?.get("username") as? String else { return }
                 
                 //Load Profile Image
-                self.storage.loadImage(path: "Profile Images", id: uid) { profileImage in
-                    
+                self.storage.loadImage(path: "Profile Images", id: uid) { [weak self] profileImage in
+                    guard let self = self else { return }
                     
                     //Create User
                     let user = User(id: uid, username: username, name: nil, likes: [], profileImage: profileImage, following: [], followers: [], posts: [])
