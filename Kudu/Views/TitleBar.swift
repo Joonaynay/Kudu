@@ -78,11 +78,12 @@ class TitleBar: UIView {
         
         if backButton {
             self.backButton?.addAction(UIAction(title: "") { [weak self] _ in
-                if let vc = self?.vc {
+                guard let self = self else { return }
+                if let vc = self.vc {
                     vc.navigationController?.popViewController(animated: true)
                 }
             }, for: .touchUpInside)
-            self?.addSubview(self?.backButton!)
+            self.addSubview(self.backButton!)
         }
         addSubview(menuButton)
         addSubview(titleLabel)
