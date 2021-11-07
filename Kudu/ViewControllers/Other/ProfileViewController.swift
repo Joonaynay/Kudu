@@ -65,8 +65,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             
             fb.db.getDoc(collection: "users", id: user.id) { [weak self] doc in
                 guard let self = self else { return }
-                let followers = doc?.get("followers") as! [String]
-                let posts = doc?.get("posts") as! [String]
+                guard let followers = doc?.get("followers") as? [String] else { return }
+                guard let posts = doc?.get("posts") as? [String] else { return }
                 
                 self.fb.users[index].followers = followers
                 self.fb.users[index].posts = posts

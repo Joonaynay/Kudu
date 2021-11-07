@@ -64,14 +64,14 @@ class TitleBar: UIView {
         self.menuButton.menu = createMenu()
         if let profileImage = fb.currentUser.profileImage {
             menuButton.setImage(profileImage, for: .normal)
-            menuButton.contentMode = .scaleAspectFill
+            menuButton.imageView!.contentMode = .scaleAspectFill
             menuButton.imageView!.layer.masksToBounds = false
             menuButton.imageView!.layer.cornerRadius = 25
             menuButton.imageView!.clipsToBounds = true
         } else {
             menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
             menuButton.imageView!.layer.masksToBounds = false
-            menuButton.contentMode = .scaleAspectFill
+            menuButton.imageView!.contentMode = .scaleAspectFill
             menuButton.imageView!.layer.cornerRadius = 25
             menuButton.imageView!.clipsToBounds = true
         }
