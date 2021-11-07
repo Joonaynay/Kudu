@@ -56,7 +56,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         
         //CollectionView
         collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addAction(UIAction() { _ in
+        collectionView.refreshControl?.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if !self.collectionView.bottomRefresh.isLoading {
                 self.posts = [Post]()
                 self.search(string: self.searchBar.text!, withPagination: false)

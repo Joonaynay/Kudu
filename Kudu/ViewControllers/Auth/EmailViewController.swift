@@ -104,16 +104,17 @@ class EmailViewController: UIViewController {
             self.resendButton.isEnabled = false
             self.num = 60
             self.timerLabel.text = "60"
-            Auth.auth().currentUser?.sendEmailVerification(completion: { error in
+            Auth.auth().currentUser?.sendEmailVerification(completion: { [weak self] error in
                 if let error = error {
                     let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                     errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self.present(errorAlert, animated: true)
+                    self?.present(errorAlert, animated: true)
                 }
             })
         }, for: .touchUpInside)
         
-        nextButton.addAction(UIAction() { _ in
+        nextButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.auth.checkEmail { error in
                 if error == nil {
                     if self.showProfilePicturePage {
@@ -133,7 +134,8 @@ class EmailViewController: UIViewController {
             }
         }, for: .touchUpInside)
         
-        signOutButton.addAction(UIAction(title: "") { _ in
+        signOutButton.addAction(UIAction(title: "") { [weak self] _ in
+            guard let self = self else { return }
             self.auth.signOut { _ in }
             let login = UINavigationController(rootViewController: LoginViewController())
             login.modalTransitionStyle = .flipHorizontal
@@ -143,7 +145,8 @@ class EmailViewController: UIViewController {
         }, for: .touchUpInside)
         
         //Change Email Button
-        changeEmailButton.addAction(UIAction() { _ in
+        changeEmailButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.navigationController?.pushViewController(ChangeEmailViewController(showVerifyView: false), animated: true)
         }, for: .touchUpInside)
         

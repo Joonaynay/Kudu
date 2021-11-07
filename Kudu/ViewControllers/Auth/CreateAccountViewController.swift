@@ -84,7 +84,8 @@ class CreateAccountViewController: UIViewController {
         
         //Create Account Button
         createAccountButton.isEnabled = false
-        createAccountButton.addAction(UIAction(title: "") { _ in
+        createAccountButton.addAction(UIAction(title: "") { [weak self] _ in
+            guard let self = self else { return }
             self.progressView.start()
             self.isEditing = false
             self.auth.signUp(email: self.email.text!, password: self.password.text!, confirm: self.confirmPassword.text!, name: "\(self.firstName.text!) \(self.lastName.text!)", username: self.username.text!) { error in
