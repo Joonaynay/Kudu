@@ -13,6 +13,7 @@ class ImagePicker: UIImagePickerController {
         super.init(navigationBarClass: .none, toolbarClass: .none)
         self.mediaTypes = mediaTypes
         self.allowsEditing = allowsEditing
+        self.imageExportPreset = .current        
         self.sourceType = .photoLibrary    
     }
         

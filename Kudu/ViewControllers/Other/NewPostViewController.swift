@@ -197,7 +197,6 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         if let image = info[.editedImage] as? UIImage {
             self.imageView.image = image
-
         } else if let url = info[.mediaURL] as? URL {
             self.movieURL = url
             let videoPlayer = AVPlayerLayer(player: AVPlayer(url: url))

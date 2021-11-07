@@ -27,12 +27,12 @@ class ProfileButton: UIButton {
         if let image = image {
             profileImage.image = image
             profileImage.layer.masksToBounds = false
-            profileImage.layer.cornerRadius = 20
+            profileImage.layer.cornerRadius = UIScreen.main.bounds.width / 18
             profileImage.clipsToBounds = true
         } else {
             profileImage.image = UIImage(systemName: "person.circle.fill")
             profileImage.layer.masksToBounds = false
-            profileImage.layer.cornerRadius = 20
+            profileImage.layer.cornerRadius = UIScreen.main.bounds.width / 18
             profileImage.clipsToBounds = true
         }
         profileImage.contentMode = .scaleAspectFill
@@ -60,8 +60,8 @@ class ProfileButton: UIButton {
     func addConstraints() {
         profileImage.leadingToSuperview()
         profileImage.centerYToSuperview()
-        profileImage.height(40)
-        profileImage.width(40)
+        profileImage.height(UIScreen.main.bounds.width / 9)
+        profileImage.width(UIScreen.main.bounds.width / 9)
         
         usernameLabel.leadingToTrailing(of: profileImage, offset: 5)
         usernameLabel.centerYToSuperview()

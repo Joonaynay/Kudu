@@ -261,7 +261,7 @@ class FirebaseModel: ObservableObject {
                                 //Add to view model
                                 
                                 if let image = image, let user = user {
-                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: Date(timeIntervalSince1970: time), uid: user.id, likeCount: likeCount, movie: url, description: description))
+                                    let post = (Post(id: postId, image: image, title: title, subjects: subjects, date: Date(timeIntervalSince1970: time), uid: user.id, likeCount: likeCount, movie: url, description: description))   
                                     self.posts.append(post)
                                     completion()
                                 } else {

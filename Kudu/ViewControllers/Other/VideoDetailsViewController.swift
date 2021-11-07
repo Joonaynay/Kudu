@@ -64,7 +64,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         button.backgroundColor = .systemBackground
         button.contentHorizontalAlignment = .fill
         button.contentVerticalAlignment = .fill
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = 26
         return button
         
     }()

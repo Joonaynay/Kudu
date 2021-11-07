@@ -22,8 +22,7 @@ class FirestoreModel: ObservableObject {
                 // Check if data is an array
                 if let array = data as? [String] {
                     //Append data in firestore
-                    if doc?.get("comments") != nil {
-                        print("ooga booga")
+                    if doc?.get("comments") != nil {                        
                         document.updateData([field: FieldValue.arrayUnion(array)])
                     } else {
                         document.setData([field: data])

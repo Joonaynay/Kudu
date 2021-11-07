@@ -226,6 +226,7 @@ class PostView: UICollectionViewCell {
         }
         imageViewButton.setImage(fb.posts[post].image, for: .normal)
         imageViewButton.setImage(fb.posts[post].image, for: .disabled)
+
         imageViewButton.imageView!.contentMode = .scaleAspectFill
         
         //Set user image
@@ -264,9 +265,11 @@ class PostView: UICollectionViewCell {
     
     private func addConstraints() {
         
+        
         imageViewButton.edgesToSuperview(excluding: .bottom)
         imageViewButton.heightToWidth(of: self, multiplier: 9/16)
         imageViewButton.widthToSuperview()
+        
         
         infoButton.leftToRight(of: titleLabel, offset: 6)
         infoButton.topToBottom(of: imageViewButton, offset: 15)
