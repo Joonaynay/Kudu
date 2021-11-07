@@ -18,16 +18,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="nSl-3Y-Kxs">
-                                <rect key="frame" x="0.0" y="241" width="414" height="414"/>
+                                <rect key="frame" x="0.0" y="-59" width="414" height="1024"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="nSl-3Y-Kxs" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="197" id="Lvn-v9-4QZ"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="nSl-3Y-Kxs" secondAttribute="bottom" constant="207" id="RaS-C7-qGj"/>
-                            <constraint firstItem="nSl-3Y-Kxs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="WkE-3n-zmk"/>
-                            <constraint firstItem="nSl-3Y-Kxs" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="r2H-mj-NhU"/>
+                            <constraint firstItem="nSl-3Y-Kxs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Jjc-pa-OT6"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="nSl-3Y-Kxs" secondAttribute="trailing" id="gLQ-jg-eiM"/>
+                            <constraint firstItem="nSl-3Y-Kxs" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="qrj-6p-q9m"/>
+                            <constraint firstItem="nSl-3Y-Kxs" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" id="tEI-xi-Haw"/>
                         </constraints>
                     </view>
                 </viewController>
