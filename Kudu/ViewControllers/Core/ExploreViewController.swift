@@ -62,7 +62,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
         
         //CollectionView
         collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addAction(UIAction() { _ in
+        collectionView.refreshControl?.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if !self.collectionView.bottomRefresh.isLoading {
                 self.posts = [Post]()
                 self.loadExplore(lastDoc: nil) { last in
@@ -121,7 +122,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
-                self.loadExplore(lastDoc: self.lastDoc) { last in
+                self.loadExplore(lastDoc: self.lastDoc) { [weak self] last in
+                    guard let self = self else { return }
                     if let last = last {
                         self.lastDoc = last
                     }
@@ -148,7 +150,8 @@ class ExploreViewController: UIViewController, UICollectionViewDataSource, UICol
                 .limit(to: 10)
         }
         
-        db.getDocuments { query, error in
+        db.getDocuments { [weak self] query, error in
+            guard let self = self else { return }
             if let query = query, error == nil {
                 let group = DispatchGroup()
                 for doc in query.documents {

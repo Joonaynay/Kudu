@@ -63,7 +63,8 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
         collectionView.refreshControl?.addAction(UIAction() { _ in
             self.posts = [Post]()
             if !self.collectionView.bottomRefresh.isLoading {
-                self.loadFollowing(lastDoc: nil) { last in
+                self.loadFollowing(lastDoc: nil) { [weak self] last in
+                    guard let self = self else { return }
                     if let last = last {
                         self.lastDoc = last
                     }
@@ -119,7 +120,8 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
-                self.loadFollowing(lastDoc: self.lastDoc) { last in
+                self.loadFollowing(lastDoc: self.lastDoc) { [weak self] last in
+                    guard let self = self else { return }
                     if let last = last {
                         self.lastDoc = last
                     }
@@ -153,7 +155,8 @@ class FollowingViewController: UIViewController, UICollectionViewDataSource, UIC
                 .limit(to: 10)
         }
         
-        db.getDocuments { query, error in
+        db.getDocuments { [weak self] query, error in
+            guard let self = self else { return }
             if let query = query, error == nil {
                 let group = DispatchGroup()
                 for doc in query.documents {

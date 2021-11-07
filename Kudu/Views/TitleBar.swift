@@ -77,12 +77,12 @@ class TitleBar: UIView {
         menuButton.addSubview(arrowDownImage)
         
         if backButton {
-            self.backButton?.addAction(UIAction(title: "") { _ in
-                if let vc = self.vc {
+            self.backButton?.addAction(UIAction(title: "") { [weak self] _ in
+                if let vc = self?.vc {
                     vc.navigationController?.popViewController(animated: true)
                 }
             }, for: .touchUpInside)
-            self.addSubview(self.backButton!)
+            self?.addSubview(self?.backButton!)
         }
         addSubview(menuButton)
         addSubview(titleLabel)
@@ -94,17 +94,19 @@ class TitleBar: UIView {
     
     private func createMenu() -> UIMenu {
         let menu = UIMenu(title: "", options: .displayInline, children: [
-            UIAction(title: "Profile") { action in
+            UIAction(title: "Profile") { [weak self] action in
+                guard let self = self else { return }
                 let profile = ProfileViewController(user: self.fb.currentUser)
                 profile.hidesBottomBarWhenPushed = true
                 self.vc?.navigationController?.pushViewController(profile, animated: true)
             },
-            UIAction(title: "New Post") { action in
+            UIAction(title: "New Post") { [weak self] action in
                 let newPost = NewPostViewController()
                 newPost.hidesBottomBarWhenPushed = true
-                self.vc?.navigationController?.pushViewController(newPost, animated: true)
+                self?.vc?.navigationController?.pushViewController(newPost, animated: true)
             },
-            UIAction(title: "Sign Out") { action in
+            UIAction(title: "Sign Out") { [weak self] action in
+                guard let self = self else { return }
                 let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 alert.addAction(UIAlertAction(title: "Sign Out", style: .default, handler: { _ in

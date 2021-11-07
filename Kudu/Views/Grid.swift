@@ -72,7 +72,8 @@ class CustomCollectionViewCell: UICollectionViewCell {
     private var subject: Subject?
     
     private lazy var buttonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if let subject = self.subject {
                 self.delegate!.didPressCell(subject: subject)
             }

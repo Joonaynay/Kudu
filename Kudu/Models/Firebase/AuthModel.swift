@@ -33,9 +33,9 @@ class AuthModel: ObservableObject {
     }
     
     func checkEmail(completion:@escaping (String?) -> Void) {
-        auth.currentUser?.reload(completion: { error in
+        auth.currentUser?.reload(completion: { [weak self] error in
             if error == nil {
-                if self.auth.currentUser?.isEmailVerified == true {
+                if self?.auth.currentUser?.isEmailVerified == true {
                     completion(nil)
                 } else {
                     completion("Email not verified")
@@ -59,7 +59,9 @@ class AuthModel: ObservableObject {
     
     func signIn(email: String, password: String, completion:@escaping (String?) -> Void) {
         
-        self.auth.signIn(withEmail: email, password: password) { result, error in
+        self.auth.signIn(withEmail: email, password: password) { [weak self] result, error in
+            guard let self = self else { return }
+
             if result != nil && error == nil {
                 
                 //Save uid to userdefaults
@@ -108,7 +110,8 @@ class AuthModel: ObservableObject {
             if username.count < 20 {
                 if confirm == password {
                     
-                    db.getDocs(collection: "users") { query in
+                    db.getDocs(collection: "users") { [weak self] query in
+                        guard let self = self else { return }
                         let group = DispatchGroup()
                         for doc in query!.documents {
                             group.enter()
@@ -183,7 +186,8 @@ class AuthModel: ObservableObject {
     }
     
     func deleteUser(completion:@escaping (String?) -> Void) {
-        auth.currentUser!.delete(completion: { error in
+        auth.currentUser!.delete(completion: { [weak self] error in
+            guard let self = self else { return }
             if error == nil {
                 guard let uid = UserDefaults.standard.value(forKey: "uid") as? String else { return }
                 self.db.deleteDoc(collection: "users", document: uid)
@@ -210,9 +214,9 @@ class AuthModel: ObservableObject {
     }
     
     func changePassword(oldPassword: String, newPassword: String, completion: @escaping (String?) -> Void) {
-        signIn(email: auth.currentUser!.email!, password: oldPassword) { error in
+        signIn(email: auth.currentUser!.email!, password: oldPassword) { [weak self] error in
             if error == nil {
-                self.auth.currentUser?.updatePassword(to: newPassword, completion: { error in
+                self?.auth.currentUser?.updatePassword(to: newPassword, completion: { error in
                     if error != nil {
                         print(error!.localizedDescription)
                         completion(error!.localizedDescription)
@@ -227,7 +231,8 @@ class AuthModel: ObservableObject {
     
     func changeUsername(newUsername: String, completion: @escaping (String?) -> Void) {
         if newUsername.count < 20 {
-            Firestore.firestore().collection("users").getDocuments(source: .server) { query, error in
+            Firestore.firestore().collection("users").getDocuments(source: .server) { [weak self] query, error in
+                guard let self = self else { return }
                 if error != nil {
                     completion("Check your internet connection.")
                 } else if let query = query {
