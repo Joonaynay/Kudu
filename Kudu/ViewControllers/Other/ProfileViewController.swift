@@ -116,7 +116,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         
         //CollectionView
-        collectionView.alwaysBounceVertical = false
         collectionView.refreshControl = UIRefreshControl()
         collectionView.refreshControl?.addAction(UIAction() { _ in
             if !self.collectionView.bottomRefresh.isLoading {
@@ -135,6 +134,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.collectionView.refreshControl?.endRefreshing()
             }
         }, for: .valueChanged)
+        collectionView.alwaysBounceVertical = false
         view.addSubview(collectionView)
         collectionView.dataSource = self
         collectionView.delegate = self

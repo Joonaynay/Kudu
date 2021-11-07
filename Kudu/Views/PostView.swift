@@ -265,7 +265,7 @@ class PostView: UICollectionViewCell {
     private func addConstraints() {
         
         imageViewButton.edgesToSuperview(excluding: .bottom)
-        imageViewButton.heightToWidth(of: self, multiplier: 9/16 )
+        imageViewButton.heightToWidth(of: self, multiplier: 9/16)
         imageViewButton.widthToSuperview()
         
         infoButton.leftToRight(of: titleLabel, offset: 6)

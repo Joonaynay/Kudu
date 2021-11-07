@@ -20,7 +20,7 @@ class Grid: UICollectionView, UICollectionViewDataSource, UICollectionViewDelega
     init() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width / 2) - 15, height: UIScreen.main.bounds.width / 4)
+        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width / 3) - 15, height: UIScreen.main.bounds.width / 5)
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 10
         super.init(frame: .zero, collectionViewLayout: layout)
@@ -114,6 +114,8 @@ class CustomCollectionViewCell: UICollectionViewCell {
         subjectImage.centerInSuperview(offset: CGPoint(x: 0, y: -10))
         subjectLabel.topToBottom(of: subjectImage)
         subjectLabel.centerXToSuperview()
+        subjectLabel.widthToSuperview(offset: -10)
+        subjectLabel.adjustsFontSizeToFitWidth = true
         
     }
     

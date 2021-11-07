@@ -9,7 +9,7 @@ import UIKit
 import TinyConstraints
 
 class CustomCollectionView: UICollectionView {
-    
+        
     public var bottomRefresh = BottomRefresh()
 
     init() {
