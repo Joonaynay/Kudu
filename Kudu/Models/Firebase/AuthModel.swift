@@ -75,7 +75,7 @@ class AuthModel: ObservableObject {
                         let currentUser = CurrentUser(context: self.cd.context)
                         currentUser.username = user.username
                         currentUser.id = self.auth.currentUser?.uid
-                        currentUser.name = user.name
+                        currentUser.name = ""
                         currentUser.followers = user.followers
                         currentUser.following = user.following
                         currentUser.posts = user.posts

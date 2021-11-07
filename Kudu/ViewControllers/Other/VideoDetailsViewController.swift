@@ -272,6 +272,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                                     if let last = last {
                                         vc.lastDoc = last
                                     }
+                                    self.reloadCollection()
                                 }
                             case is FollowingViewController:
                                 let vc = self.vc as! FollowingViewController
@@ -280,7 +281,7 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                                     if let last = last {
                                         vc.lastDoc = last
                                     }
-                                    
+                                    self.reloadCollection()
                                 }
                             case is SearchViewController:
                                 let vc = self.vc as! SearchViewController
@@ -294,8 +295,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                                     if let last = last {
                                         vc.lastDoc = last
                                     }
+                                    self.reloadCollection()
                                 }
-                                
                             case is SubjectPostViewController:
                                 let vc = self.vc as! SubjectPostViewController
                                 vc.posts = [Post]()
@@ -303,14 +304,12 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                                     if let last = last {
                                         vc.lastDoc = last
                                     }
-                                }
-                                
+                                    self.reloadCollection()
+                                }                                
                             default:
                                 return
                             }
-                            if let collectionView = self.vc?.view.subviews.first(where: { view in view is CustomCollectionView }) as? CustomCollectionView {
-                                collectionView.reloadData()
-                            }
+
                             let successAlert = UIAlertController(title: "Success", message: "Successfully deleted post.", preferredStyle: .alert)
                             successAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
                                 self?.dismiss(animated: true)
@@ -341,6 +340,12 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
         stackView.spacing = 10
         stackView.setCustomSpacing(40, after: titleLabel)
         
+    }
+    
+    func reloadCollection() {
+        if let collectionView = self.vc?.view.subviews.first(where: { view in view is CustomCollectionView }) as? CustomCollectionView {
+            collectionView.reloadData()
+        }
     }
     
     func addConstraints() {
