@@ -78,10 +78,12 @@ class ProfilePictureViewController: UIViewController, UIImagePickerControllerDel
         
         if let image = fb.currentUser.profileImage {
             profileImageButton.setImage(image, for: .normal)
+            profileImageButton.imageView!.contentMode = .scaleAspectFill
             profileImageButton.imageView!.layer.masksToBounds = false
             profileImageButton.imageView!.clipsToBounds = true
         } else {
             profileImageButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+            profileImageButton.imageView!.contentMode = .scaleAspectFill
             profileImageButton.imageView!.layer.masksToBounds = false
             profileImageButton.imageView!.clipsToBounds = true
         }
