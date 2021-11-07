@@ -52,7 +52,7 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .left
             let messageText = NSAttributedString(
-                string: "_Name_ is a place for inspiration, developing personal skills, and self improvement. Because of this we ask that you do not post any material that is unrelated to these topics. \n\nExamples of unrelated content include: \n\n- Memes \n\n- Posts about your weekend fun \n\n- Family photos, etc. \n\nIf you do post unrelated content then your account can and will be banned.",
+                string: "Kudu is a place for inspiration, developing personal skills, and self improvement. Because of this we ask that you do not post any material that is unrelated to these topics. \n\nExamples of unrelated content include: \n\n- Memes \n\n- Posts about your weekend fun \n\n- Family photos, etc. \n\nIf you do post unrelated content then your account can and will be banned.",
                 attributes: [
                     NSAttributedString.Key.paragraphStyle: paragraphStyle,
                     NSAttributedString.Key.foregroundColor : UIColor.label,
