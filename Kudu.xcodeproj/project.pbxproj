@@ -113,15 +113,15 @@
 		E0A61F2C271A41FF00026CE1 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
 		E0B6F48B271BDDA700DEDDC3 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
 		E0B6F48D271BDED500DEDDC3 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
-		E0EF3AC12714CACF00D5FDF8 /* StarFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StarFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0EF3AC12714CACF00D5FDF8 /* Kudu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kudu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0EF3AC42714CACF00D5FDF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0EF3AC62714CACF00D5FDF8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		E0EF3AC82714CACF00D5FDF8 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
 		E0EF3ACD2714CAD400D5FDF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0EF3AD02714CAD400D5FDF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E0EF3AD22714CAD400D5FDF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E0EF3AD72714CAD400D5FDF8 /* StarFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StarFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0EF3AE22714CAD400D5FDF8 /* StarFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StarFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0EF3AD72714CAD400D5FDF8 /* KuduTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KuduTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0EF3AE22714CAD400D5FDF8 /* KuduUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KuduUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0EF3AF52714CB4F00D5FDF8 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E0EF3AF72714CD1A00D5FDF8 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		E0EF3AF92714CE2400D5FDF8 /* SubjectsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectsViewController.swift; sourceTree = "<group>"; };
@@ -285,7 +285,7 @@
 		E0EF3AB82714CACF00D5FDF8 = {
 			isa = PBXGroup;
 			children = (
-				E0EF3AC32714CACF00D5FDF8 /* StarFeed */,
+				E0EF3AC32714CACF00D5FDF8 /* Kudu */,
 				E0FDBFEB271D3A5400EC1D1B /* GoogleService-Info.plist */,
 				E0EF3AC22714CACF00D5FDF8 /* Products */,
 				802A6640A035ADFB6E9B212F /* Pods */,
@@ -296,14 +296,14 @@
 		E0EF3AC22714CACF00D5FDF8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E0EF3AC12714CACF00D5FDF8 /* StarFeed.app */,
-				E0EF3AD72714CAD400D5FDF8 /* StarFeedTests.xctest */,
-				E0EF3AE22714CAD400D5FDF8 /* StarFeedUITests.xctest */,
+				E0EF3AC12714CACF00D5FDF8 /* Kudu.app */,
+				E0EF3AD72714CAD400D5FDF8 /* KuduTests.xctest */,
+				E0EF3AE22714CAD400D5FDF8 /* KuduUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E0EF3AC32714CACF00D5FDF8 /* StarFeed */ = {
+		E0EF3AC32714CACF00D5FDF8 /* Kudu */ = {
 			isa = PBXGroup;
 			children = (
 				E0EF3AC42714CACF00D5FDF8 /* AppDelegate.swift */,
@@ -312,10 +312,9 @@
 				E09973AB2716A53100073785 /* Models */,
 				E08250E427152D5400C6D58C /* Views */,
 				E0EF3AF42714CB1200D5FDF8 /* ViewControllers */,
-				E0FDBFED271D3EF500EC1D1B /* Core Data */,
 				E09973AC2716A54700073785 /* Assets */,
 			);
-			path = StarFeed;
+			path = Kudu;
 			sourceTree = "<group>";
 		};
 		E0EF3AF42714CB1200D5FDF8 /* ViewControllers */ = {
@@ -363,6 +362,7 @@
 			isa = PBXGroup;
 			children = (
 				E0FDBFF6271D411900EC1D1B /* FileManagerModel.swift */,
+				E0FDBFED271D3EF500EC1D1B /* Core Data */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -370,9 +370,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E0EF3AC02714CACF00D5FDF8 /* StarFeed */ = {
+		E0EF3AC02714CACF00D5FDF8 /* Kudu */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0EF3AEB2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "StarFeed" */;
+			buildConfigurationList = E0EF3AEB2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "Kudu" */;
 			buildPhases = (
 				F83C973B9B3EF2494ECCC27E /* [CP] Check Pods Manifest.lock */,
 				E0EF3ABD2714CACF00D5FDF8 /* Sources */,
@@ -384,14 +384,14 @@
 			);
 			dependencies = (
 			);
-			name = StarFeed;
+			name = Kudu;
 			productName = StarFeed;
-			productReference = E0EF3AC12714CACF00D5FDF8 /* StarFeed.app */;
+			productReference = E0EF3AC12714CACF00D5FDF8 /* Kudu.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E0EF3AD62714CAD400D5FDF8 /* StarFeedTests */ = {
+		E0EF3AD62714CAD400D5FDF8 /* KuduTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0EF3AEE2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "StarFeedTests" */;
+			buildConfigurationList = E0EF3AEE2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "KuduTests" */;
 			buildPhases = (
 				E1FE4B59970616118E436054 /* [CP] Check Pods Manifest.lock */,
 				E0EF3AD32714CAD400D5FDF8 /* Sources */,
@@ -403,14 +403,14 @@
 			dependencies = (
 				E0EF3AD92714CAD400D5FDF8 /* PBXTargetDependency */,
 			);
-			name = StarFeedTests;
+			name = KuduTests;
 			productName = StarFeedTests;
-			productReference = E0EF3AD72714CAD400D5FDF8 /* StarFeedTests.xctest */;
+			productReference = E0EF3AD72714CAD400D5FDF8 /* KuduTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E0EF3AE12714CAD400D5FDF8 /* StarFeedUITests */ = {
+		E0EF3AE12714CAD400D5FDF8 /* KuduUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0EF3AF12714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "StarFeedUITests" */;
+			buildConfigurationList = E0EF3AF12714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "KuduUITests" */;
 			buildPhases = (
 				A0F683F42ECAA75BE8A0AC68 /* [CP] Check Pods Manifest.lock */,
 				E0EF3ADE2714CAD400D5FDF8 /* Sources */,
@@ -423,9 +423,9 @@
 			dependencies = (
 				E0EF3AE42714CAD400D5FDF8 /* PBXTargetDependency */,
 			);
-			name = StarFeedUITests;
+			name = KuduUITests;
 			productName = StarFeedUITests;
-			productReference = E0EF3AE22714CAD400D5FDF8 /* StarFeedUITests.xctest */;
+			productReference = E0EF3AE22714CAD400D5FDF8 /* KuduUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -450,7 +450,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E0EF3ABC2714CACF00D5FDF8 /* Build configuration list for PBXProject "StarFeed" */;
+			buildConfigurationList = E0EF3ABC2714CACF00D5FDF8 /* Build configuration list for PBXProject "Kudu" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -463,9 +463,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E0EF3AC02714CACF00D5FDF8 /* StarFeed */,
-				E0EF3AD62714CAD400D5FDF8 /* StarFeedTests */,
-				E0EF3AE12714CAD400D5FDF8 /* StarFeedUITests */,
+				E0EF3AC02714CACF00D5FDF8 /* Kudu */,
+				E0EF3AD62714CAD400D5FDF8 /* KuduTests */,
+				E0EF3AE12714CAD400D5FDF8 /* KuduUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -673,12 +673,12 @@
 /* Begin PBXTargetDependency section */
 		E0EF3AD92714CAD400D5FDF8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0EF3AC02714CACF00D5FDF8 /* StarFeed */;
+			target = E0EF3AC02714CACF00D5FDF8 /* Kudu */;
 			targetProxy = E0EF3AD82714CAD400D5FDF8 /* PBXContainerItemProxy */;
 		};
 		E0EF3AE42714CAD400D5FDF8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0EF3AC02714CACF00D5FDF8 /* StarFeed */;
+			target = E0EF3AC02714CACF00D5FDF8 /* Kudu */;
 			targetProxy = E0EF3AE32714CAD400D5FDF8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -819,7 +819,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BFM3LXHGTC;
-				INFOPLIST_FILE = StarFeed/Info.plist;
+				INFOPLIST_FILE = Kudu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -839,7 +839,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BFM3LXHGTC;
-				INFOPLIST_FILE = StarFeed/Info.plist;
+				INFOPLIST_FILE = Kudu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -859,18 +859,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2VCTVC8L8H;
-				INFOPLIST_FILE = StarFeedTests/Info.plist;
+				INFOPLIST_FILE = Kudu/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jonathonbuhler.StarFeedTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trevorbuhler.KuduTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StarFeed.app/StarFeed";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kudu.app/Kudu";
 			};
 			name = Debug;
 		};
@@ -882,18 +882,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2VCTVC8L8H;
-				INFOPLIST_FILE = StarFeedTests/Info.plist;
+				INFOPLIST_FILE = Kudu/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jonathonbuhler.StarFeedTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trevorbuhler.KuduTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StarFeed.app/StarFeed";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kudu.app/Kudu";
 			};
 			name = Release;
 		};
@@ -904,17 +904,17 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2VCTVC8L8H;
-				INFOPLIST_FILE = StarFeedUITests/Info.plist;
+				INFOPLIST_FILE = KuduUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jonathonbuhler.StarFeedUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trevorbuhler.KuduUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = StarFeed;
+				TEST_TARGET_NAME = Kudu;
 			};
 			name = Debug;
 		};
@@ -925,24 +925,24 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2VCTVC8L8H;
-				INFOPLIST_FILE = StarFeedUITests/Info.plist;
+				INFOPLIST_FILE = KuduUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jonathonbuhler.StarFeedUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trevorbuhler.KuduUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = StarFeed;
+				TEST_TARGET_NAME = Kudu;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E0EF3ABC2714CACF00D5FDF8 /* Build configuration list for PBXProject "StarFeed" */ = {
+		E0EF3ABC2714CACF00D5FDF8 /* Build configuration list for PBXProject "Kudu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E0EF3AE92714CAD400D5FDF8 /* Debug */,
@@ -951,7 +951,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0EF3AEB2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "StarFeed" */ = {
+		E0EF3AEB2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "Kudu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E0EF3AEC2714CAD400D5FDF8 /* Debug */,
@@ -960,7 +960,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0EF3AEE2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "StarFeedTests" */ = {
+		E0EF3AEE2714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "KuduTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E0EF3AEF2714CAD400D5FDF8 /* Debug */,
@@ -969,7 +969,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0EF3AF12714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "StarFeedUITests" */ = {
+		E0EF3AF12714CAD400D5FDF8 /* Build configuration list for PBXNativeTarget "KuduUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E0EF3AF22714CAD400D5FDF8 /* Debug */,

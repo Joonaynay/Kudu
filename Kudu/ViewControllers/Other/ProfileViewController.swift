@@ -116,6 +116,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         
         //CollectionView
+        collectionView.alwaysBounceVertical = false
         collectionView.refreshControl = UIRefreshControl()
         collectionView.refreshControl?.addAction(UIAction() { _ in
             if !self.collectionView.bottomRefresh.isLoading {
@@ -151,7 +152,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         infoButton.width(23)
         
         noPostsLabel.centerXToSuperview()
-        noPostsLabel.centerYToSuperview()
+        noPostsLabel.centerYToSuperview(offset: view.width / 4)
         noPostsLabel.height(50)
         noPostsLabel.horizontalToSuperview()
         
