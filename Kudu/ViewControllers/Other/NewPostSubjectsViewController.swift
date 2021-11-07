@@ -112,7 +112,8 @@ class NewPostSubjectsViewController: UIViewController {
         
         //Post button
         postButton.isEnabled = false
-        postButton.addAction(UIAction(title: "") { _ in
+        postButton.addAction(UIAction(title: "") { [weak self] _ in
+            guard let self = self else { return }
             if let image = self.image {
                 self.fb.addPost(image: image, title: self.titleString, subjects: self.subjects, movie: self.movieURL, description: self.desc)
                 self.navigationController?.popToRootViewController(animated: true)

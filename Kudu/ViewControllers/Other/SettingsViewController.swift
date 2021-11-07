@@ -104,7 +104,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
                 textField.placeholder = "New Username"
             }
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self] _ in
+                guard let self = self else { return }
                 self.auth.changeUsername(newUsername: alert.textFields!.first!.text!) { error in
                     if let error = error {
                         let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
@@ -143,7 +144,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
                 textField.isSecureTextEntry = true
             }
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self] _ in
+                guard let self = self else { return }
                 self.auth.signIn(email: Auth.auth().currentUser!.email!, password: alert.textFields!.first!.text!) { error in
                     if error == nil {
                         self.auth.deleteUser { error in
@@ -169,7 +171,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
             //Sign Out
             let alert = UIAlertController(title: nil, message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            alert.addAction(UIAlertAction(title: "Sign Out", style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: "Sign Out", style: .default, handler: { [weak self] _ in
+                guard let self = self else { return }
                 self.auth.signOut { error in
                     let login = UINavigationController(rootViewController: LoginViewController())
                     login.modalTransitionStyle = .flipHorizontal
@@ -274,7 +277,8 @@ class ChangePasswordViewController: UIViewController {
         
         doneButton.isEnabled = false
         
-        doneButton.addAction(UIAction() { _ in
+        doneButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if self.newPassword.text! == self.confirmPassword.text! {
                 self.auth.changePassword(oldPassword: self.oldPassword.text!, newPassword: self.newPassword.text!) { error in
                     if error != nil {
@@ -372,7 +376,8 @@ class ChangeEmailViewController: UIViewController {
         
         doneButton.isEnabled = false
         
-        doneButton.addAction(UIAction() { _ in
+        doneButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if self.newEmail.text! == self.confirmEmail.text! {
                 self.progressView.start()
                 self.auth.signIn(email: Auth.auth().currentUser!.email!, password: self.password.text!) { error in

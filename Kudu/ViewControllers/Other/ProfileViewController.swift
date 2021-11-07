@@ -63,7 +63,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 users.id == user.id
             }) else { return }
             
-            fb.db.getDoc(collection: "users", id: user.id) { doc in
+            fb.db.getDoc(collection: "users", id: user.id) { [weak self] doc in
+                guard let self = self else { return }
                 let followers = doc?.get("followers") as! [String]
                 let posts = doc?.get("posts") as! [String]
                 
@@ -80,7 +81,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         }
         
         if !collectionView.bottomRefresh.isLoading {
-            self.loadProfile(lastDoc: self.lastDoc) { last in
+            self.loadProfile(lastDoc: self.lastDoc) { [weak self] last in
+                guard let self = self else { return }
                 if let last = last {
                     self.lastDoc = last
                 }                
@@ -117,7 +119,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         //CollectionView
         collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addAction(UIAction() { _ in
+        collectionView.refreshControl?.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if !self.collectionView.bottomRefresh.isLoading {
                 self.posts = [Post]()
                 self.loadProfile(lastDoc: nil) { last in
@@ -196,7 +199,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
-                self.loadProfile(lastDoc: self.lastDoc) { last in
+                self.loadProfile(lastDoc: self.lastDoc) { [weak self] last in
+                    guard let self = self else { return }
                     if let last = last {
                         self.lastDoc = last
                     }
@@ -225,7 +229,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 .limit(to: 10)
         }
         
-        db.getDocuments { query, error in
+        db.getDocuments { [weak self] query, error in
+            guard let self = self else { return }
             if let query = query, error == nil {
                 let group = DispatchGroup()
                 for doc in query.documents {
@@ -264,7 +269,8 @@ class ProfileView: UICollectionViewCell {
         return button
     }()
     private lazy var profileImageAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.vc?.navigationController?.pushViewController(ProfilePictureViewController(showBackButton: true), animated: true)
         }
         return action
@@ -273,7 +279,8 @@ class ProfileView: UICollectionViewCell {
     //Edit Profile || Follow Button
     private let editProfileButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     private lazy var editProfileButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             let editProfile = SettingsViewController()
             editProfile.vc = self.vc
             self.vc?.present(editProfile, animated: true)
@@ -282,7 +289,8 @@ class ProfileView: UICollectionViewCell {
     }()
     
     private lazy var followButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.fb.followUser(followUser: self.user!) {
                 self.editProfileButton.label.text = self.fb.currentUser.following.contains(self.user!.id) ? "Unfollow" : "Follow"
                 if let superview = self.superview as? CustomCollectionView {

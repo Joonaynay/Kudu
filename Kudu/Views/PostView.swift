@@ -29,7 +29,8 @@ class PostView: UICollectionViewCell {
     }()
     
     private lazy var imageViewButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if let movie = self.fb.posts[self.post!].movie {
                 self.vc?.present(VideoPlayer(url: movie), animated: true)
             }
@@ -46,7 +47,8 @@ class PostView: UICollectionViewCell {
         return button
     }()
     private lazy var commentsButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             let comments = CommentsViewController(post: self.fb.posts[self.post!])
             comments.hidesBottomBarWhenPushed = true
             self.vc?.navigationController?.pushViewController(comments, animated: true)
@@ -72,7 +74,8 @@ class PostView: UICollectionViewCell {
         return button
     }()
     private lazy var infoButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             let details = VideoDetailsViewController(post: self.fb.posts[self.post!])
             details.vc = self.vc
             details.modalPresentationStyle = .pageSheet
@@ -90,7 +93,8 @@ class PostView: UICollectionViewCell {
         return button
     }()
     private lazy var likeButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.fb.likePost(post: self.post!)
             if self.fb.currentUser.likes.contains(self.fb.posts[self.post!].id) {
                     self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
@@ -121,7 +125,8 @@ class PostView: UICollectionViewCell {
     //Has Profile Image and username
     private let profile = ProfileButton(image: nil, username: "")
     private lazy var profileAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if let index = self.fb.users.firstIndex(where: { user in
                 user.id == self.fb.posts[self.post!].uid
             }) {
@@ -135,7 +140,8 @@ class PostView: UICollectionViewCell {
     
     private let followButton = CustomButton(text: "", color: UIColor.theme.blueColor)
     private lazy var followButtonAction: UIAction = {
-        let action = UIAction() { _ in
+        let action = UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.fb.followUser(followUser: self.fb.users[self.user!]) {
                 if self.fb.currentUser.following.contains(self.fb.users[self.user!].id) {
                     self.followButton.label.text = "Unfollow"

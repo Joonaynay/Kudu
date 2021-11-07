@@ -63,7 +63,8 @@ class LoginViewController: UIViewController {
             let emailAlert = UIAlertController(title: "Reset Email", message: "Please type in your email to recieve a link to reset your password.", preferredStyle: .alert)
             emailAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             emailAlert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
-                self.auth.forgotPassword(email: emailAlert.textFields!.first!.text!) { error in
+                self.auth.forgotPassword(email: emailAlert.textFields!.first!.text!) { [weak self] error in
+                    guard let self = self else { return }
                     if let error = error {
                         let errorAlert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
                         errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
@@ -155,7 +156,8 @@ class LoginViewController: UIViewController {
     
     @objc private func didTapSignInButton() {
         self.progressView.start()
-        auth.signIn(email: email.text!, password: password.text!) { error in
+        auth.signIn(email: email.text!, password: password.text!) { [weak self] error in
+            guard let self = self else { return }
             if error == nil {
                 if Auth.auth().currentUser?.isEmailVerified == true {
                     self.progressView.stop()

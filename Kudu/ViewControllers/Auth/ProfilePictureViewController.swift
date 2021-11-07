@@ -89,12 +89,13 @@ class ProfilePictureViewController: UIViewController, UIImagePickerControllerDel
         }
         
         
-        profileImageButton.addAction(UIAction() { _ in
-            self.presentImagePicker(type: ["public.image"])
+        profileImageButton.addAction(UIAction() { [weak self] _ in
+            self?.presentImagePicker(type: ["public.image"])
         }, for: .touchUpInside)
         
         doneButton.isEnabled = false
-        doneButton.addAction(UIAction() { _ in
+        doneButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if let image = self.image {
                 self.fb.currentUser.profileImage = image
                 self.storage.saveImage(path: "Profile Images", file: self.fb.currentUser.id, image: image)
@@ -117,11 +118,11 @@ class ProfilePictureViewController: UIViewController, UIImagePickerControllerDel
             
         }, for: .touchUpInside)
         
-        skipButton.addAction(UIAction() { _ in
+        skipButton.addAction(UIAction() { [weak self] _ in
             let home = TabBarController()
             home.modalTransitionStyle = .flipHorizontal
             home.modalPresentationStyle = .fullScreen
-            self.present(home, animated: true)
+            self?.present(home, animated: true)
             
         }, for: .touchUpInside)
     }

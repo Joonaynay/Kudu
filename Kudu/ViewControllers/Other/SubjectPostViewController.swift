@@ -42,7 +42,8 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         super.viewDidLoad()
         setupView()
         setupConstraints()
-        loadSubjectPosts(lastDoc: self.lastDoc) { last in
+        loadSubjectPosts(lastDoc: self.lastDoc) { [weak self] last in
+            guard let self = self else { return }
             if let last = last {
                 self.lastDoc = last
             }
@@ -69,10 +70,12 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
         
         //CollectionView
         collectionView.refreshControl = UIRefreshControl()
-        collectionView.refreshControl?.addAction(UIAction() { _ in
+        collectionView.refreshControl?.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if !self.collectionView.bottomRefresh.isLoading {
                 self.posts = [Post]()
-                self.loadSubjectPosts(lastDoc: nil) { last in
+                self.loadSubjectPosts(lastDoc: nil) { [weak self] last in
+                    guard let self = self else { return }
                     if let last = last {
                         self.lastDoc = last
                     }
@@ -127,13 +130,13 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
             
             if !collectionView.bottomRefresh.isLoading {
                 self.collectionView.bottomRefresh.start()
-                self.loadSubjectPosts(lastDoc: self.lastDoc) { last in
+                self.loadSubjectPosts(lastDoc: self.lastDoc) { [weak self] last in
                     if let last = last {
-                        self.lastDoc = last
+                        self?.lastDoc = last
                     }
-                    self.noPostsLabel.text = "No posts available."
-                    self.collectionView.bottomRefresh.stop()
-                    self.collectionView.reloadData()
+                    self?.noPostsLabel.text = "No posts available."
+                    self?.collectionView.bottomRefresh.stop()
+                    self?.collectionView.reloadData()
                 }
             }
         }
@@ -154,7 +157,8 @@ class SubjectPostViewController: UIViewController, UICollectionViewDataSource, U
                 .limit(to: 10)
         }
         
-        db.getDocuments { query, error in
+        db.getDocuments { [weak self] query, error in
+            guard let self = self else { return }
             if let query = query, error == nil {
                 let group = DispatchGroup()
                 for doc in query.documents {
