@@ -96,8 +96,8 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         desc.delegate = self
         
         // Image Button
-        imageButton.addAction(UIAction(title: "") { _ in
-            self.presentImagePicker(type: ["public.image"])
+        imageButton.addAction(UIAction(title: "") { [weak self] _ in
+            self?.presentImagePicker(type: ["public.image"])
         }, for: .touchUpInside)
         
         //Image View
@@ -107,22 +107,23 @@ class NewPostViewController: UIViewController, UIImagePickerControllerDelegate, 
         imageView.layer.masksToBounds = true
         
         // Video Button
-        videoButton.addAction(UIAction(title: "") { _ in
-            self.presentImagePicker(type: ["public.movie"])
+        videoButton.addAction(UIAction(title: "") { [weak self] _ in
+            self?.presentImagePicker(type: ["public.movie"])
         }, for: .touchUpInside)
         
         // Video View
         videoView.backgroundColor = .secondarySystemBackground
         
-        videoView.addAction(UIAction(title: "") { _ in
-            if let url = self.movieURL {
+        videoView.addAction(UIAction(title: "") { [weak self] _ in
+            if let url = self?.movieURL {
                 let player = VideoPlayer(url: url)
-                self.present(player, animated: true)
+                self?.present(player, animated: true)
             }
         }, for: .touchUpInside)
         
         // Next Button
-        nextButton.addAction(UIAction(title: "") { _ in
+        nextButton.addAction(UIAction(title: "") { [weak self] _ in
+            guard let self = self else { return }
             if self.desc.text.count <= 1000 && self.titleText.text!.count <= 100 && self.imageView.image != nil && self.videoView.layer.sublayers?.first != nil {
                 if self.desc.text == "Description" {
                     self.desc.text = ""

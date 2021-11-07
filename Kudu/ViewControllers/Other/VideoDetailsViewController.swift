@@ -159,14 +159,16 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
             scrollView.addSubview(deletePostButton)
         }
         
-        editImageButton.addAction(UIAction() { _ in
+        editImageButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             let picker = ImagePicker(mediaTypes: ["public.image"], allowsEditing: true)
             picker.delegate = self
             self.present(picker, animated: true)
             
         }, for: .touchUpInside)
         
-        editTitleButton.addAction(UIAction() { _ in
+        editTitleButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.view.addSubview(self.titleTextView)
             self.titleTextView.font = self.titleLabel.font
             self.titleTextView.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 9)
@@ -183,7 +185,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
             self.titleDoneButton.width(self.view.width / 4)
         }, for: .touchUpInside)
         
-        editDescButton.addAction(UIAction() { _ in
+        editDescButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.view.addSubview(self.descTextView)
             self.descTextView.font = self.descLabel.font
             self.descTextView.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 9)
@@ -201,7 +204,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
             
         }, for: .touchUpInside)
         
-        titleDoneButton.addAction(UIAction() { _ in
+        titleDoneButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if self.titleTextView.text != self.post.title {
                 self.fb.db.save(collection: "posts", document: self.post.id, field: "title", data: self.titleTextView.text!)
                 do {
@@ -222,7 +226,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
             self.titleDoneButton.removeFromSuperview()
         }, for: .touchUpInside)
         
-        descDoneButton.addAction(UIAction() { _ in
+        descDoneButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             if self.descTextView.text != self.post.title {
                 self.fb.db.save(collection: "posts", document: self.post.id, field: "description", data: self.descTextView.text!)
                 
@@ -239,7 +244,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
             self.descDoneButton.removeFromSuperview()
         }, for: .touchUpInside)
         
-        deletePostButton.addAction(UIAction() { _ in
+        deletePostButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             let warningAlert = UIAlertController(title: "Warning", message: "Are you sure you want to delete this post?", preferredStyle: .actionSheet)
             warningAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             warningAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
@@ -249,7 +255,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                     textField.isSecureTextEntry = true
                 }
                 passwordAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                passwordAlert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+                passwordAlert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self] _ in
+                    guard let self = self else { return }
                     self.auth.signIn(email: Auth.auth().currentUser!.email!, password: passwordAlert.textFields!.first!.text!) { error in
                         if let error = error {
                             let errorAlert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
@@ -305,8 +312,8 @@ class VideoDetailsViewController: UIViewController, UITextViewDelegate, UIImageP
                                 collectionView.reloadData()
                             }
                             let successAlert = UIAlertController(title: "Success", message: "Successfully deleted post.", preferredStyle: .alert)
-                            successAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                                self.dismiss(animated: true)
+                            successAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
+                                self?.dismiss(animated: true)
                             }))
                             self.present(successAlert, animated: true)
                         }

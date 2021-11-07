@@ -111,7 +111,8 @@ class CommentsViewController: UIViewController, UITextViewDelegate {
         stackView.axis = .vertical
         stackView.spacing = 0
         
-        addCommentButton.addAction(UIAction() { _ in
+        addCommentButton.addAction(UIAction() { [weak self] _ in
+            guard let self = self else { return }
             self.textView.endEditing(true)
             self.fb.commentOnPost(currentPost: self.post, comment: self.textView.text!) {
                 self.textView.text = ""
@@ -154,7 +155,8 @@ class CommentsViewController: UIViewController, UITextViewDelegate {
     }
     
     func loadCommentsViews() {
-        self.fb.loadComments(currentPost: self.post) { comments in
+        self.fb.loadComments(currentPost: self.post) { [weak self] comments in
+            guard let self = self else { return }
 
             if let comments = comments {
                 for view in self.stackView.arrangedSubviews {
