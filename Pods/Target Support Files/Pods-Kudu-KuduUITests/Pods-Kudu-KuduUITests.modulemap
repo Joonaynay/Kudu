@@ -1,0 +1,6 @@
+framework module Pods_Kudu_KuduUITests {
+  umbrella header "Pods-Kudu-KuduUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
