@@ -38,7 +38,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIText
         // TitleBar
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
-            titleBar.menuButton.setImage(image, for: .normal)
+            titleBar.profileImage.image = image
+            
         }
         collectionView.reloadData()
     }

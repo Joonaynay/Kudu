@@ -26,7 +26,7 @@ class SubjectsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         titleBar.vc = self
         if let image = fb.currentUser.profileImage {
-            titleBar.menuButton.setImage(image, for: .normal)
+            titleBar.profileImage.image = image
         }
         vGrid.vc = self
     }

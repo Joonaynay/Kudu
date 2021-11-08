@@ -31,7 +31,7 @@ class TitleBar: UIView {
     }()
     
     
-    public let menuButton: UIButton = {
+    private let menuButton: UIButton = {
         let button = UIButton()
         button.showsMenuAsPrimaryAction = true
         button.contentVerticalAlignment = .fill
@@ -39,15 +39,8 @@ class TitleBar: UIView {
         return button
     }()
     
-    private let arrowDownImage: UIImageView = {
-       let arrow = UIImageView()
-        arrow.image = UIImage(systemName: "chevron.down.circle.fill")
-        arrow.tintColor = UIColor.theme.accentColor
-        arrow.contentMode = .scaleToFill
-        arrow.backgroundColor = .systemBackground
-        arrow.layer.cornerRadius = 15
-        return arrow
-    }()
+    public let profileImage = UIImageView()
+    
     
     init(title: String, backButton: Bool) {
         if backButton {
@@ -62,21 +55,17 @@ class TitleBar: UIView {
         super.init(frame: .zero)
         self.titleLabel.text = title
         self.menuButton.menu = createMenu()
+        self.menuButton.setBackgroundImage(UIImage(systemName: "line.3.horizontal"), for: .normal)
+        self.menuButton.imageView!.contentMode = .scaleAspectFill
         if let profileImage = fb.currentUser.profileImage {
-            menuButton.setImage(profileImage, for: .normal)
-            menuButton.imageView!.contentMode = .scaleAspectFill
-            menuButton.imageView!.layer.masksToBounds = false
-            menuButton.imageView!.layer.cornerRadius = 25
-            menuButton.imageView!.clipsToBounds = true
+            self.profileImage.image = profileImage
         } else {
-            menuButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
-            menuButton.imageView!.layer.masksToBounds = false
-            menuButton.imageView!.contentMode = .scaleAspectFill
-            menuButton.imageView!.layer.cornerRadius = 25
-            menuButton.imageView!.clipsToBounds = true
+            self.profileImage.image = UIImage(systemName: "person.circle.fill")
         }
-        
-        menuButton.addSubview(arrowDownImage)
+        profileImage.contentMode = .scaleAspectFill
+        profileImage.layer.masksToBounds = false
+        profileImage.layer.cornerRadius = 25
+        profileImage.clipsToBounds = true
         
         if backButton {
             self.backButton?.addAction(UIAction(title: "") { [weak self] _ in
@@ -88,6 +77,7 @@ class TitleBar: UIView {
             self.addSubview(self.backButton!)
         }
         addSubview(menuButton)
+        addSubview(profileImage)
         addSubview(titleLabel)
         addSubview(line)                
         
@@ -130,6 +120,7 @@ class TitleBar: UIView {
         ])
         return menu
     }
+        
     
     override func didMoveToSuperview() {
         guard superview != nil else {
@@ -152,19 +143,19 @@ class TitleBar: UIView {
         }
         
         titleLabel.height(50)
-        titleLabel.trailingToLeading(of: menuButton, offset: -50)
+        titleLabel.trailingToLeading(of: profileImage, offset: -50)
         titleLabel.bottomToSuperview(offset: -10)
         
         menuButton.trailingToSuperview(offset: 10)
-        menuButton.height(50)
-        menuButton.width(50)
-        menuButton.bottomToSuperview(offset: -10)
+        menuButton.centerYToSuperview()
+        menuButton.height(30)
+        menuButton.width(30)
         
-        arrowDownImage.height(20)
-        arrowDownImage.width(20)
-        arrowDownImage.bottomToSuperview(offset: 6)
-        arrowDownImage.trailingToSuperview()
-
+        profileImage.trailingToLeading(of: menuButton, offset: -10)
+        profileImage.height(50)
+        profileImage.width(50)
+        profileImage.bottomToSuperview(offset: -10)
+    
         
         line.height(1)
         line.bottomToSuperview()
