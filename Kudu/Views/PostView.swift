@@ -7,10 +7,13 @@
 
 import UIKit
 import FirebaseFirestore
+import GoogleMobileAds
 
-class PostView: UICollectionViewCell {
+class PostView: UICollectionViewCell, GADFullScreenContentDelegate {
     
-    let fb = FirebaseModel.shared
+    private let fb = FirebaseModel.shared
+    private let ad = AdModel.shared
+    
     weak var vc: UIViewController?
     
     //Post Title
@@ -31,8 +34,20 @@ class PostView: UICollectionViewCell {
     private lazy var imageViewButtonAction: UIAction = {
         let action = UIAction() { [weak self] _ in
             guard let self = self else { return }
-            if let movie = self.fb.posts[self.post!].movie {
-                self.vc?.present(VideoPlayer(url: movie), animated: true)
+            if let lastDate = self.ad.lastDate {
+                if Date().timeIntervalSince(lastDate) >= 120 {
+                    self.ad.interstitial?.fullScreenContentDelegate = self
+                    if let vc = self.vc {
+                        self.ad.interstitial?.present(fromRootViewController: vc)
+                    }
+                } else {
+                    self.presentVideo()
+                }
+            } else {
+                self.ad.interstitial?.fullScreenContentDelegate = self
+                if let vc = self.vc {
+                    self.ad.interstitial?.present(fromRootViewController: vc)
+                }
             }
         }
         return action
@@ -97,12 +112,12 @@ class PostView: UICollectionViewCell {
             guard let self = self else { return }
             self.fb.likePost(post: self.post!)
             if self.fb.currentUser.likes.contains(self.fb.posts[self.post!].id) {
-                    self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
-                    self.likeButton.tintColor = UIColor.theme.blueColor
-                } else {
-                    self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-                    self.likeButton.tintColor = .label
-                }
+                self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
+                self.likeButton.tintColor = UIColor.theme.blueColor
+            } else {
+                self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+                self.likeButton.tintColor = .label
+            }
             let result = String(format: "%ld %@", locale: Locale.current, self.fb.posts[self.post!].likeCount, "")
             self.likeCount.text = result
         }
@@ -160,7 +175,7 @@ class PostView: UICollectionViewCell {
     private var user: Int?
     
     override init(frame: CGRect) {
-        super.init(frame: frame)        
+        super.init(frame: frame)
         contentView.addSubview(commentsButton)
         contentView.addSubview(titleLabel)
         contentView.addSubview(infoButton)
@@ -186,15 +201,15 @@ class PostView: UICollectionViewCell {
         
         
         if fb.currentUser.likes.contains(fb.posts[post].id) {
-                self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
-                self.likeButton.tintColor = UIColor.theme.blueColor
-            } else {
-                self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-                self.likeButton.tintColor = .label
-            }
+            self.likeButton.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
+            self.likeButton.tintColor = UIColor.theme.blueColor
+        } else {
+            self.likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+            self.likeButton.tintColor = .label
+        }
         let result = String(format: "%ld %@", locale: Locale.current, fb.posts[post].likeCount, "")
         likeCount.text = result
-            
+        
         
         //Button Actions
         infoButton.addAction(infoButtonAction, for: .touchUpInside)
@@ -232,7 +247,7 @@ class PostView: UICollectionViewCell {
         }
         imageViewButton.setImage(fb.posts[post].image, for: .normal)
         imageViewButton.setImage(fb.posts[post].image, for: .disabled)
-
+        
         imageViewButton.imageView!.contentMode = .scaleAspectFill
         
         //Set user image
@@ -313,6 +328,31 @@ class PostView: UICollectionViewCell {
         line.bottomToSuperview()
         line.height(1)
         
+    }
+    
+    func presentVideo() {
+        //Present the video
+        if let movie = self.fb.posts[self.post!].movie {
+            self.vc?.present(VideoPlayer(url: movie), animated: true)
+        }
+    }
+    
+    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        self.ad.lastDate = Date()
+        self.presentVideo()
+    }
+    
+    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+        let request = GADRequest()
+        GADInterstitialAd.load(withAdUnitID: "ca-app-pub-3940256099942544/4411468910", request: request) { [weak self] ad, error in
+            guard let self = self else { return }
+            if let error = error {
+                fatalError(error.localizedDescription)
+            } else {
+                self.ad.interstitial = ad
+            }
+        }
+        self.presentVideo()
     }
     
 }

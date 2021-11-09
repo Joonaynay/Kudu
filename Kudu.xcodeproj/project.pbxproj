@@ -19,6 +19,7 @@
 		7A8AC2D0B81680B96A2F3EC1 /* Pods_Kudu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540B623555DDC765D022D0E7 /* Pods_Kudu.framework */; };
 		819AB81E0CE31D4F4351EB3D /* Pods_Kudu_KuduUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC5EC2569B81423905D9F5F3 /* Pods_Kudu_KuduUITests.framework */; };
 		9E23AB1D82BC35FC119137A4 /* Pods_KuduTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C595D062563AAF54D26B9C2A /* Pods_KuduTests.framework */; };
+		E022ECC1273A1BBF002F81F9 /* AdModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E022ECC0273A1BBF002F81F9 /* AdModel.swift */; };
 		E0345E272730C6B000CC9B91 /* EditPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0345E262730C6B000CC9B91 /* EditPostViewController.swift */; };
 		E0345E292730D75A00CC9B91 /* CustomCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0345E282730D75A00CC9B91 /* CustomCollectionView.swift */; };
 		E058F9B6271952FC006CC85C /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E058F9B5271952FC006CC85C /* PostModel.swift */; };
@@ -95,6 +96,7 @@
 		8DEB76FFD283C59F65E7211D /* Pods-Kudu-KuduUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kudu-KuduUITests.release.xcconfig"; path = "Target Support Files/Pods-Kudu-KuduUITests/Pods-Kudu-KuduUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C595D062563AAF54D26B9C2A /* Pods_KuduTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KuduTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6F7AD988EAAC04D06EF4891 /* Pods-KuduTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KuduTests.release.xcconfig"; path = "Target Support Files/Pods-KuduTests/Pods-KuduTests.release.xcconfig"; sourceTree = "<group>"; };
+		E022ECC0273A1BBF002F81F9 /* AdModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdModel.swift; sourceTree = "<group>"; };
 		E0345E262730C6B000CC9B91 /* EditPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostViewController.swift; sourceTree = "<group>"; };
 		E0345E282730D75A00CC9B91 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		E058F9B5271952FC006CC85C /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 			isa = PBXGroup;
 			children = (
 				E0FDBFF6271D411900EC1D1B /* FileManagerModel.swift */,
+				E022ECC0273A1BBF002F81F9 /* AdModel.swift */,
 				E0FDBFED271D3EF500EC1D1B /* Core Data */,
 			);
 			path = Other;
@@ -612,6 +615,7 @@
 				5246D9E8271D1CFD0024500C /* SettingsViewController.swift in Sources */,
 				E08A65FB2719FDC000254D66 /* SubjectPostViewController.swift in Sources */,
 				E0EF3AF62714CB4F00D5FDF8 /* TabBarController.swift in Sources */,
+				E022ECC1273A1BBF002F81F9 /* AdModel.swift in Sources */,
 				E0F11196271937030062E190 /* FirebaseModel.swift in Sources */,
 				E0F111922719164B0062E190 /* NewPostSubjectsViewController.swift in Sources */,
 				E09973B22716A60200073785 /* LoginViewController.swift in Sources */,
