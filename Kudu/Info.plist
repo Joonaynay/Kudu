@@ -4,8 +4,10 @@
 <dict>
 	<key>SKAdNetworkItems</key>
 	<array>
-        <key>SKAdNetworkItems</key>
-		<string>cstr6suwn9.skadnetwork</string>
+        <dict>
+          <key>SKAdNetworkIdentifier</key>
+          <string>cstr6suwn9.skadnetwork</string>
+        </dict>
 	</array>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-7664155363178978~3072808404</string>

@@ -339,10 +339,6 @@ class PostView: UICollectionViewCell, GADFullScreenContentDelegate {
     
     func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
         self.ad.lastDate = Date()
-        self.presentVideo()
-    }
-    
-    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
         let request = GADRequest()
         GADInterstitialAd.load(withAdUnitID: "ca-app-pub-3940256099942544/4411468910", request: request) { [weak self] ad, error in
             guard let self = self else { return }
@@ -352,6 +348,10 @@ class PostView: UICollectionViewCell, GADFullScreenContentDelegate {
                 self.ad.interstitial = ad
             }
         }
+        self.presentVideo()
+    }
+    
+    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
         self.presentVideo()
     }
     
