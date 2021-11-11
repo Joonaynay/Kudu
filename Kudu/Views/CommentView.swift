@@ -31,6 +31,14 @@ class CommentView: UIView {
         return line
     }()
     
+    let dateLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .right
+        label.font = UIFont.preferredFont(forTextStyle: .caption1)
+        label.textColor = UIColor.theme.lineColor
+        return label
+    }()
+    
     var deleteComment: UIButton = {
        let button = UIButton()
         button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
@@ -68,10 +76,16 @@ class CommentView: UIView {
                 self?.vc?.present(alert, animated: true)
             }, for: .touchUpInside)
         }
+        let format = DateFormatter()
+        format.timeStyle = .none
+        format.dateStyle = .long
+        let dateString = format.string(from: comment.date)
+        dateLabel.text = dateString
+        addSubview(dateLabel)
         addSubview(label)
         addSubview(profile)
         addSubview(rectLine)
-        height(to: label, offset: 70)
+        height(to: label, offset: 80)
         addConstraints()
     }
     
@@ -92,9 +106,12 @@ class CommentView: UIView {
             label.trailingToLeading(of: deleteComment)
             deleteComment.trailingToSuperview(offset: 15)
             deleteComment.centerYToSuperview()
-            deleteComment.height(10)
+            deleteComment.height(9)
             deleteComment.width(30)
         }
+        
+        dateLabel.trailingToSuperview(offset: 5)
+        dateLabel.bottomToSuperview(offset: -5)
         
         rectLine.height(1)
         rectLine.widthToSuperview()

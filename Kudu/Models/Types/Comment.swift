@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct Comment {
+struct Comment: Identifiable {
+    let id: String
     let text: String    
-    let user: User    
+    let user: User
+    let date: Date
 }

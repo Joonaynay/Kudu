@@ -69,33 +69,40 @@ class FirebaseModel: ObservableObject {
     }
     
     
-    func commentOnPost(currentPost: Post, comment: String, completion: @escaping () -> Void) {
+    func commentOnPost(currentPost: Post, comment: String, completion: @escaping (Error?) -> Void) {
         
         //Save comments when someone comments on a post
-        self.saveDeepCollection(collection: "posts", collection2: "comments", document: currentPost.id, document2: currentUser.id, field: "comments", data: [comment]) {
-            completion()
+        let id = UUID()
+        let dict = ["text": comment, "uid": self.currentUser.id, "date": Date().timeIntervalSince1970] as [String: Any]
+        Firestore.firestore().collection("posts").document(currentPost.id).collection("comments").document(id.uuidString).setData(dict) { error in
+            if let error = error {
+                completion(error)
+            } else {
+                completion(nil)
+            }
         }
     }
     
     func loadComments(currentPost: Post, completion:@escaping ([Comment]?) -> Void) {
-        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { [weak self] userDocs in
+        self.getDocsDeep(collection: "posts", document: currentPost.id, collection2: "comments") { [weak self] docs in
             guard let self = self else { return }
             
-            if let userDocs = userDocs {
+            if let docs = docs {
                 var list: [Comment] = []
                 
-                if !userDocs.documents.isEmpty {
+                if !docs.documents.isEmpty {
                     completion(nil)
                 }
                 let group = DispatchGroup()
-                for doc in userDocs.documents {
+                for doc in docs.documents {
                     group.enter()
-                    self.loadConservativeUser(uid: doc.documentID) { user in
-                        let comments = doc.get("comments") as! [String]
+                    guard let uid = doc.get("uid") as? String else { group.leave(); continue }
+                    guard let text = doc.get("text") as? String else { group.leave(); continue }
+                    guard let dateNumber = doc.get("date") as? Double else { group.leave(); continue }
+                    self.loadConservativeUser(uid: uid) { user in                        
+                        let date = Date(timeIntervalSince1970: dateNumber)
                         if let user = user {
-                            for comment in comments {
-                                list.append(Comment(text: comment, user: user))
-                            }
+                            list.append(Comment(id: doc.documentID, text: text, user: user, date: date))
                             group.leave()
                         } else {
                             group.leave()
@@ -106,6 +113,9 @@ class FirebaseModel: ObservableObject {
                     if list.isEmpty {
                         completion(nil)
                     } else {
+                        list.sort { c1, c2 in
+                            c1.date > c2.date
+                        }
                         completion(list)
                     }
                 }
@@ -423,7 +433,7 @@ class FirebaseModel: ObservableObject {
     
     func deleteComment(postId: String, comment: Comment) {
         
-        Firestore.firestore().collection("posts").document(postId).collection("comments").document(self.currentUser.id).updateData(["comments": FieldValue.arrayRemove([comment.text])])
+        Firestore.firestore().collection("posts").document(postId).collection("comments").document(comment.id).delete()
         let index = self.posts.firstIndex { post in
             post.id == postId
         }
