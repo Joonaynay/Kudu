@@ -55,7 +55,7 @@ class TitleBar: UIView {
         super.init(frame: .zero)
         self.titleLabel.text = title
         self.menuButton.menu = createMenu()
-        self.menuButton.setBackgroundImage(UIImage(systemName: "line.3.horizontal"), for: .normal)
+        self.menuButton.setBackgroundImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         self.menuButton.imageView!.contentMode = .scaleAspectFill
         if let profileImage = fb.currentUser.profileImage {
             self.profileImage.image = profileImage
