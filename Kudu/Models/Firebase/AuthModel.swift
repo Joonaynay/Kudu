@@ -139,7 +139,7 @@ class AuthModel: ObservableObject {
                                         
                                         
                                         // Save data in Firestore
-                                        let dict = ["name": name, "username": username, "posts": [], "followers": [], "following": [], "likes": []] as [String : Any]
+                                        let dict = ["name": name, "username": username, "posts": [], "followers": [], "following": [], "likes": [], "age": age.timeIntervalSince1970] as [String : Any]
                                         self.db.newDoc(collection: "users", document: self.auth.currentUser?.uid, data: dict) { uid in }
                                         
                                         //Send Email Verification
