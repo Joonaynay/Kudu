@@ -61,7 +61,7 @@ class AuthModel: ObservableObject {
         
         self.auth.signIn(withEmail: email, password: password) { [weak self] result, error in
             guard let self = self else { return }
-
+            
             if result != nil && error == nil {
                 
                 //Save uid to userdefaults
@@ -104,84 +104,90 @@ class AuthModel: ObservableObject {
         }
     }
     
-    func signUp(email: String, password: String, confirm: String, name: String, username: String, completion:@escaping (String?) -> Void) {
+    func signUp(email: String, password: String, confirm: String, name: String, username: String, age: Date, completion:@escaping (String?) -> Void) {
+        let minimumDate = Calendar.current.date(byAdding: .year, value: -13, to: Date())!
         
-        if name.count < 45 {
-            if username.count < 20 {
-                if confirm == password {
-                    
-                    db.getDocs(collection: "users") { [weak self] query in
-                        guard let self = self else { return }
-                        let group = DispatchGroup()
-                        for doc in query!.documents {
-                            group.enter()
-                            let otherUsername = doc.get("username") as! String
-                            if otherUsername == username {
-                                completion("That username is already taken.")
-                                break
-                            } else {
-                                group.leave()
-                            }
-                        }
+        
+        if age <= minimumDate {
+            if name.count < 45 {
+                if username.count < 20 {
+                    if confirm == password {
                         
-                        group.notify(queue: .main) {
-                            //Create User
-                            self.auth.createUser(withEmail: email, password: password) { [self] result, error in
-                                
-                                //Check for success
-                                if result != nil && error == nil {
+                        db.getDocs(collection: "users") { [weak self] query in
+                            guard let self = self else { return }
+                            let group = DispatchGroup()
+                            for doc in query!.documents {
+                                group.enter()
+                                let otherUsername = doc.get("username") as! String
+                                if otherUsername == username {
+                                    completion("That username is already taken.")
+                                    break
+                                } else {
+                                    group.leave()
+                                }
+                            }
+                            
+                            group.notify(queue: .main) {
+                                //Create User
+                                self.auth.createUser(withEmail: email, password: password) { [self] result, error in
                                     
-                                    //Save uid to userdefaults
-                                    UserDefaults.standard.setValue(self.auth.currentUser?.uid, forKeyPath: "uid")
-                                    
-                                    
-                                    // Save data in Firestore
-                                    let dict = ["name": name, "username": username, "posts": [], "followers": [], "following": [], "likes": []] as [String : Any]
-                                    self.db.newDoc(collection: "users", document: self.auth.currentUser?.uid, data: dict) { uid in }
-                                    
-                                    //Send Email Verification
-                                    self.auth.currentUser!.sendEmailVerification(completion: { error in
-                                        if error != nil {
-                                            completion(error?.localizedDescription)
-                                        } else {
-                                            self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
-                                                if let user = user {
-                                                    
-                                                    //Save to model
-                                                    self.fb.currentUser = user
-                                                    
-                                                    //Save to coredata
-                                                    let currentUser = CurrentUser(context: self.cd.context)
-                                                    currentUser.username = user.username
-                                                    currentUser.id = self.auth.currentUser?.uid
-                                                    currentUser.name = user.name
-                                                    currentUser.followers = user.followers
-                                                    currentUser.following = user.following
-                                                    currentUser.posts = user.posts
-                                                    currentUser.likes = user.likes
-                                                    self.cd.save()
-                                                    
-                                                    completion(nil)
+                                    //Check for success
+                                    if result != nil && error == nil {
+                                        
+                                        //Save uid to userdefaults
+                                        UserDefaults.standard.setValue(self.auth.currentUser?.uid, forKeyPath: "uid")
+                                        
+                                        
+                                        // Save data in Firestore
+                                        let dict = ["name": name, "username": username, "posts": [], "followers": [], "following": [], "likes": []] as [String : Any]
+                                        self.db.newDoc(collection: "users", document: self.auth.currentUser?.uid, data: dict) { uid in }
+                                        
+                                        //Send Email Verification
+                                        self.auth.currentUser!.sendEmailVerification(completion: { error in
+                                            if error != nil {
+                                                completion(error?.localizedDescription)
+                                            } else {
+                                                self.fb.loadUser(uid: self.auth.currentUser!.uid) { user in
+                                                    if let user = user {
+                                                        
+                                                        //Save to model
+                                                        self.fb.currentUser = user
+                                                        
+                                                        //Save to coredata
+                                                        let currentUser = CurrentUser(context: self.cd.context)
+                                                        currentUser.username = user.username
+                                                        currentUser.id = self.auth.currentUser?.uid
+                                                        currentUser.name = user.name
+                                                        currentUser.followers = user.followers
+                                                        currentUser.following = user.following
+                                                        currentUser.posts = user.posts
+                                                        currentUser.likes = user.likes
+                                                        self.cd.save()
+                                                        
+                                                        completion(nil)
+                                                    }
                                                 }
                                             }
-                                        }
-                                    })
-                                    
-                                } else {
-                                    // Return Error
-                                    completion(error?.localizedDescription)
+                                        })
+                                        
+                                    } else {
+                                        // Return Error
+                                        completion(error?.localizedDescription)
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        completion("Password and confirm password do not match.")
                     }
                 } else {
-                    completion("Password and confirm password do not match.")
+                    completion("Username must be less than 20 characters.")
                 }
             } else {
-                completion("Username must be less than 20 characters.")
+                completion("First and last name must be less than 45 characters.")
             }
         } else {
-            completion("First and last name must be less than 45 characters.")
+            completion("You must be 13 years or older to create an account.")
         }
     }
     
@@ -265,34 +271,34 @@ class AuthModel: ObservableObject {
                         }
                     }
                 }
-        }
-    } else {
-        completion("Username must be 20 characters or less.")
-    }
-}
-
-func signOut(completion:@escaping (String?) -> Void) {
-    UserDefaults.standard.setValue(nil, forKeyPath: "uid")
-    self.file.deleteAllImages()
-    self.cd.deleteAll()
-    do {
-        try auth.signOut()
-    } catch let error {
-        completion(error.localizedDescription)
-    }
-    self.fb.posts = [Post]()
-    self.cd.container = NSPersistentContainer(name: "FreshModel")
-    self.cd.container.loadPersistentStores { desc, error in
-        if let error = error {
-            fatalError(error.localizedDescription)
+            }
+        } else {
+            completion("Username must be 20 characters or less.")
         }
     }
-    self.cd.context = self.cd.container.viewContext
     
-    completion(nil)
+    func signOut(completion:@escaping (String?) -> Void) {
+        UserDefaults.standard.setValue(nil, forKeyPath: "uid")
+        self.file.deleteAllImages()
+        self.cd.deleteAll()
+        do {
+            try auth.signOut()
+        } catch let error {
+            completion(error.localizedDescription)
+        }
+        self.fb.posts = [Post]()
+        self.cd.container = NSPersistentContainer(name: "FreshModel")
+        self.cd.container.loadPersistentStores { desc, error in
+            if let error = error {
+                fatalError(error.localizedDescription)
+            }
+        }
+        self.cd.context = self.cd.container.viewContext
+        
+        completion(nil)
+        
+    }
     
-}
-
-
+    
 }
 

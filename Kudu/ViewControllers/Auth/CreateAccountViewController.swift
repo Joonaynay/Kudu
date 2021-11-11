@@ -21,7 +21,12 @@ class CreateAccountViewController: UIViewController {
     public var email = CustomTextField(text: "Email", image: nil)
     public var password = CustomTextField(text: "Password", image: nil)
     public var confirmPassword = CustomTextField(text: "Confirm Password", image: nil)
-    public var agePicker = UIDatePicker()
+    public var agePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.contentHorizontalAlignment = .left
+        picker.datePickerMode = .date
+        return picker
+    }()
     
     private var bottomConstraint: NSLayoutConstraint!
     private var keyboardShowing: Bool = false
@@ -72,6 +77,9 @@ class CreateAccountViewController: UIViewController {
         let passwordHeader = header
         passwordHeader.text = "PASSWORD"
         
+        let ageHeader = header
+        ageHeader.text = "BIRTHDAY"
+        
         //BackButton
         view.addSubview(backButton)
         backButton.setupBackButton()
@@ -86,7 +94,7 @@ class CreateAccountViewController: UIViewController {
             guard let self = self else { return }
             self.progressView.start()
             self.isEditing = false
-            self.auth.signUp(email: self.email.text!, password: self.password.text!, confirm: self.confirmPassword.text!, name: "\(self.firstName.text!) \(self.lastName.text!)", username: self.username.text!) { error in
+            self.auth.signUp(email: self.email.text!, password: self.password.text!, confirm: self.confirmPassword.text!, name: "\(self.firstName.text!) \(self.lastName.text!)", username: self.username.text!, age: self.agePicker.date) { error in
                 if error == nil {
                     self.progressView.stop()
                     let email = EmailViewController()
@@ -120,8 +128,9 @@ class CreateAccountViewController: UIViewController {
             passwordHeader,
             password,
             confirmPassword,
-            createAccountButton,
-            agePicker
+            ageHeader,
+            agePicker,
+            createAccountButton
         ], axis: .vertical, width: nil, height: nil, spacing: 10)
         
         //Detect keyboard
@@ -154,8 +163,9 @@ class CreateAccountViewController: UIViewController {
         email.height(50)
         password.height(50)
         confirmPassword.height(50)
+        agePicker.height(40)
         createAccountButton.height(50)
-        agePicker.height(100)
+        
         
         progressView.edgesToSuperview()
         view.bringSubviewToFront(progressView)
