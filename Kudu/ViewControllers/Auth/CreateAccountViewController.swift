@@ -15,17 +15,15 @@ class CreateAccountViewController: UIViewController {
     private let progressView = ProgressView()
     private let scrollView = CustomScrollView()
     private let stackView = UIView()
-    
     public var firstName = CustomTextField(text: "First Name", image: nil)
     public var lastName = CustomTextField(text: "Last Name", image: nil)
     public var username = CustomTextField(text: "Username", image: nil)
     public var email = CustomTextField(text: "Email", image: nil)
     public var password = CustomTextField(text: "Password", image: nil)
     public var confirmPassword = CustomTextField(text: "Confirm Password", image: nil)
+    public var agePicker = UIDatePicker()
     
     private var bottomConstraint: NSLayoutConstraint!
-
-    
     private var keyboardShowing: Bool = false
     
     private var header: UILabel {
@@ -34,8 +32,8 @@ class CreateAccountViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 10, weight: .heavy)
         return label
     }
-    
     private let backButton = BackButton()
+    
     public let createAccountButton = CustomButton(text: "Create Account", color: UIColor.theme.blueColor)
     
     override func viewDidLoad() {
@@ -122,7 +120,8 @@ class CreateAccountViewController: UIViewController {
             passwordHeader,
             password,
             confirmPassword,
-            createAccountButton
+            createAccountButton,
+            agePicker
         ], axis: .vertical, width: nil, height: nil, spacing: 10)
         
         //Detect keyboard
@@ -156,6 +155,7 @@ class CreateAccountViewController: UIViewController {
         password.height(50)
         confirmPassword.height(50)
         createAccountButton.height(50)
+        agePicker.height(100)
         
         progressView.edgesToSuperview()
         view.bringSubviewToFront(progressView)
