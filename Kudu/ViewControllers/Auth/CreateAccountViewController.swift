@@ -58,6 +58,19 @@ class CreateAccountViewController: UIViewController {
     }
     
     private func setupView() {
+        // Set tags
+        firstName.tag = 0
+        firstName.returnKeyType = .next
+        lastName.tag = 1
+        lastName.returnKeyType = .next
+        username.tag = 2
+        username.returnKeyType = .next
+        email.tag = 3
+        email.returnKeyType = .next
+        password.tag = 4
+        password.returnKeyType = .next
+        confirmPassword.tag = 5
+        
         // View
         view.backgroundColor = .systemBackground
         

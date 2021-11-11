@@ -421,6 +421,18 @@ class FirebaseModel: ObservableObject {
         
     }
     
+    func deleteComment(postId: String, comment: Comment) {
+        
+        Firestore.firestore().collection("posts").document(postId).collection("comments").document(self.currentUser.id).updateData(["comments": FieldValue.arrayRemove([comment.text])])
+        let index = self.posts.firstIndex { post in
+            post.id == postId
+        }
+        guard let index = index else { return }
+        self.posts[index].comments?.removeAll(where: { postComment in
+            postComment.text == comment.text && comment.user.id == postComment.user.id
+        })
+    }
+    
 
     
     func loadConservativeUser(uid: String, completion:@escaping (User?) -> Void) {

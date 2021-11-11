@@ -71,6 +71,10 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         endEditing(true)
+        if textField.returnKeyType == .next {
+            let nextField = self.vc?.view.viewWithTag(textField.tag + 1)
+            nextField?.becomeFirstResponder()
+        }
         return false
     }
     
