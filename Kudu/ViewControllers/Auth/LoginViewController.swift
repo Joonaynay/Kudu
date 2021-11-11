@@ -54,11 +54,16 @@ class LoginViewController: UIViewController {
         imageView.image = image
         
         //Email
+        email.vc = self
         email.keyboardType = .emailAddress
         email.autocorrectionType = .no
+        email.returnKeyType = .next
+        email.tag = 0
         
         //Password
+        password.vc = self
         password.isSecureTextEntry = true
+        password.tag = 1
         forgotPasswordButton.addAction(UIAction() { _ in
             let emailAlert = UIAlertController(title: "Reset Email", message: "Please type in your email to recieve a link to reset your password.", preferredStyle: .alert)
             emailAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

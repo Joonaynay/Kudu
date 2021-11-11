@@ -113,9 +113,9 @@ class CommentsViewController: UIViewController, UITextViewDelegate {
         
         addCommentButton.addAction(UIAction() { [weak self] _ in
             guard let self = self else { return }
-            self.textView.endEditing(true)
             self.fb.commentOnPost(currentPost: self.post, comment: self.textView.text!) {
                 self.textView.text = ""
+                self.textView.endEditing(true)
                 self.loadCommentsViews()
             }
         }, for: .touchUpInside)
@@ -164,7 +164,7 @@ class CommentsViewController: UIViewController, UITextViewDelegate {
                 }
                 self.noCommentsText.text = ""                
                 for comment in comments {
-                    let cview = CommentView(user: comment.user, text: comment.text)
+                    let cview = CommentView(comment: comment, post: self.post)
                     cview.vc = self
                     self.stackView.addArrangedSubview(cview)
                 }

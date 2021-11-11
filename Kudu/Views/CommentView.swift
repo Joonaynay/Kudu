@@ -9,13 +9,15 @@ import UIKit
 
 class CommentView: UIView {
     
+    private let fb = FirebaseModel.shared
+    
     var profile: ProfileButton
     
     weak var vc: UIViewController?
     
-    var user: User
+    var comment: Comment
     
-    var text: String
+    var post: Post
     
     var label: UILabel = {
        let label = UILabel()
@@ -29,15 +31,43 @@ class CommentView: UIView {
         return line
     }()
     
-    init(user: User, text: String) {
-        self.profile = ProfileButton(image: user.profileImage, username: user.username)
-        self.user = user
-        self.text = text
-        self.label.text = text
+    var deleteComment: UIButton = {
+       let button = UIButton()
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.tintColor = .label
+        return button
+    }()
+    
+    init(comment: Comment, post: Post) {
+        self.comment = comment
+        self.post = post
+        self.profile = ProfileButton(image: comment.user.profileImage, username: comment.user.username)
+        self.label.text = comment.text
         super.init(frame: .zero)
-        profile.addAction(UIAction() { _ in
-            self.vc?.navigationController?.pushViewController(ProfileViewController(user: user), animated: true)
+        profile.addAction(UIAction() { [weak self] _ in
+            self?.vc?.navigationController?.pushViewController(ProfileViewController(user: comment.user), animated: true)
         }, for: .touchUpInside)
+        if comment.user.id == fb.currentUser.id {
+            addSubview(deleteComment)
+            deleteComment.addAction(UIAction() { [weak self] _ in
+                let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Delete Comment", style: .default, handler: { _ in
+                    let checkAlert = UIAlertController(title: nil, message: "Are you sure you want to delete this comment?", preferredStyle: .alert)
+                    checkAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                    checkAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                        self?.fb.deleteComment(postId: post.id, comment: comment)
+                        if let vc = self?.vc as? CommentsViewController {
+                            vc.loadCommentsViews()
+                        }
+                    }))
+                    self?.vc?.present(checkAlert, animated: true)
+                }))
+                self?.vc?.present(alert, animated: true)
+            }, for: .touchUpInside)
+        }
         addSubview(label)
         addSubview(profile)
         addSubview(rectLine)
@@ -55,12 +85,20 @@ class CommentView: UIView {
         profile.widthToSuperview()
         
         label.topToBottom(of: profile, offset: 15)
-        label.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+        if comment.user.id != fb.currentUser.id {
+            label.horizontalToSuperview(insets: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
+        } else {
+            label.leadingToSuperview(offset: 15)
+            label.trailingToLeading(of: deleteComment)
+            deleteComment.trailingToSuperview(offset: 15)
+            deleteComment.centerYToSuperview()
+            deleteComment.height(10)
+            deleteComment.width(30)
+        }
         
         rectLine.height(1)
         rectLine.widthToSuperview()
         rectLine.bottomToSuperview()
         
     }
-    
 }
